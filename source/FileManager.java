@@ -1,5 +1,6 @@
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 
 public class FileManager {
 
@@ -9,17 +10,18 @@ public class FileManager {
         path = p;
     }
 
-    public String readFile() {
-        // Read an entire file's contents into a String
+    public String readFile() throws IOException {
         StringBuilder sb = new StringBuilder();
         try (FileReader fr = new FileReader(path)) {
             int character;
             while ((character = fr.read()) != -1) {
                 sb.append((char) character);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+            // Handle the case where the file is not found
         }
+
         return sb.toString();
     }
 }
