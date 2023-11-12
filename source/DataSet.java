@@ -1,23 +1,25 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Collections;
 
 public class DataSet {
-    ArrayList<DataPoint> dataPoints = new ArrayList();
-    String[] features;
+    public ArrayList<DataPoint> dataPoints = new ArrayList<>();
+    private String[] features;
     //boolean array that can be used later for checking
-    boolean used[];
-    int size = 0;
+    private boolean[] used;
+    private int size;
 
     // Constructor for creating Testing, Validation, & Training
     DataSet(String[] features, int size){
         this.features = features;
-        this.size = size;
+        this.size = 0;
         this.used = new boolean[size];
     }
 
     // Constructor for creating bootstrapped datasets
-    DataSet(String[] features, ArrayList<DataPoint> data){
+    public DataSet(String[] features, ArrayList<DataPoint> data){
+        this.features = features;
         this.dataPoints = data;
         this.size = dataPoints.size();
         this.used = new boolean[size];
@@ -25,7 +27,7 @@ public class DataSet {
     }
 
     // Constructor for original read
-    DataSet(FileText fileText, char delimiter){
+    public DataSet(FileText fileText, char delimiter){
         String fileAsString = fileText.getText();
         String[] entries;
         entries = fileAsString.split("\n");

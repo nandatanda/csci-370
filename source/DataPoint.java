@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -56,6 +57,7 @@ public class DataPoint {
     public String getTitle() {
         return title;
     }
+
 
     /**
      * Get the data of the data point.
