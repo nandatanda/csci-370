@@ -12,8 +12,6 @@ public class DataPoint {
      */
     private final HashMap<String, Object> data;
 
-    private final String[] features;
-
     /**
      * Constructs a {@code DataPoint} object by parsing the provided entry and mapping it to features.
      *
@@ -23,26 +21,26 @@ public class DataPoint {
      */
     public DataPoint(String[] features, String entry, char delimiter) {
         this.data = new HashMap<>();
-        this.features = features;
 
         // Split the entire entry using the delimiter
         String[] values = entry.split(String.valueOf(delimiter));
 
         // Populate the HashMap using features and corresponding values
         for (int j = 0; j < features.length && j < values.length; j++) {
-            String newFeature = features[j];
-            Object newValue;
+            String newFeature = features[j].trim();
 
-            if (j == 0) {
-                // For the first feature (title), directly use the value from the entry string
-                newValue = values[j];
+            Object newValue;
+            if (j == 0 || (j == values.length - 1 && j == features.length - 1)) {
+                // For the first and last features, directly use the value from the entry string
+                newValue = values[j].trim();
             } else {
-                // For subsequent features, interpret "1" or "true" as boolean true, and other values as boolean false
+                // For other features, interpret "1" or "true" as boolean true, and other values as boolean false
                 newValue = values[j].equals("1") || values[j].equalsIgnoreCase("true");
             }
 
             data.put(newFeature, newValue);
         }
+
     }
 
     /**
@@ -62,13 +60,12 @@ public class DataPoint {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append("Title: ").append(data.get(features[0])).append("\n");
-
         for (Map.Entry<String, Object> entry : data.entrySet()) {
             result.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
         }
 
         return result.toString();
     }
+
 
 }
