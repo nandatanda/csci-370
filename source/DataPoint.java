@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The {@code DataPoint} class represents a single game entry in a dataset.
@@ -11,6 +12,8 @@ public class DataPoint {
      */
     private final HashMap<String, Object> data;
 
+    private final String[] features;
+
     /**
      * Constructs a {@code DataPoint} object by parsing the provided entry and mapping it to features.
      *
@@ -20,6 +23,7 @@ public class DataPoint {
      */
     public DataPoint(String[] features, String entry, char delimiter) {
         this.data = new HashMap<>();
+        this.features = features;
 
         // Split the entire entry using the delimiter
         String[] values = entry.split(String.valueOf(delimiter));
@@ -41,7 +45,6 @@ public class DataPoint {
         }
     }
 
-
     /**
      * Get the data of the data point.
      *
@@ -59,7 +62,7 @@ public class DataPoint {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append("Title: ").append(title).append("\n");
+        result.append("Title: ").append(data.get(features[0])).append("\n");
 
         for (Map.Entry<String, Object> entry : data.entrySet()) {
             result.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
