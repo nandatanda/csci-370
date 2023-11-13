@@ -22,7 +22,7 @@ public class DataSet {
     private int size;
 
     /**
-     * Constructor for creating testing, validation, & training datasets.
+     * Constructor for creating testing, validation & training datasets.
      *
      * @param features the array of feature names
      * @param size     the size of the dataset
