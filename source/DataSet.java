@@ -5,6 +5,9 @@ import java.util.Collections;
 
 public class DataSet {
     public ArrayList<DataPoint> dataPoints = new ArrayList<>();
+
+    private int trainingSize = 7;
+    private int testingSize = 3;
     private String[] features;
     //boolean array that can be used later for checking
     private boolean[] used;
@@ -51,6 +54,7 @@ public class DataSet {
     }
 
 
+    // splits Dataset into training and testing
     public ArrayList<DataSet> split(){
         // training, testing, validation
         ArrayList<DataSet> subsets = new ArrayList<>();
@@ -65,7 +69,7 @@ public class DataSet {
         // loop through all data points and separate
         for(int i = 0; i < size; i++){
             int subsetIndex = i % 10;
-            int targetSubset = (subsetIndex < 7) ? 0 : ((subsetIndex < 9) ? 1:2);
+            int targetSubset = (subsetIndex < trainingSize) ? 0 : 1;
             subsets.get(targetSubset).addEntry(dataPoints.get(i));
         }
 
