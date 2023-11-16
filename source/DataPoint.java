@@ -1,4 +1,3 @@
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -6,7 +5,7 @@ import java.util.Map;
  * The {@code DataPoint} class represents a single game entry in a dataset.
  * Each data point has a title and associated boolean values for different features.
  */
-public class DataPoint implements Serializable {
+public class DataPoint {
 
     /**
      * The data associated with the data point, stored as feature-value pairs.

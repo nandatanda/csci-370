@@ -1,10 +1,9 @@
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Collections;
 
-public class DataSet implements Serializable {
+public class DataSet {
     public ArrayList<DataPoint> dataPoints = new ArrayList<>();
     private String[] features;
     //boolean array that can be used later for checking
