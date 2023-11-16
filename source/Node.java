@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Node<DataPoint>{
     String[] features;
-    public Node(ArrayList<DataPoint> dPoints, String){
+    public Node(ArrayList<DataPoint> dPoints, String features){
         this.dataPoints = dPoints;
     }
     private ArrayList<DataPoint> dataPoints;
