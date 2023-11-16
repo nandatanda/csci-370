@@ -1,9 +1,9 @@
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.Collections;
 
-public class DataSet {
+public class DataSet implements Serializable {
     public ArrayList<DataPoint> dataPoints = new ArrayList<>();
 
     private int trainingSize = 7;
