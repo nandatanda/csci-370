@@ -9,9 +9,8 @@ public class Main {
         char delimiter = ',';
         FileText content = new FileText(args[0]);
 
-
         DataSet superset = new DataSet(content, delimiter);
         System.out.print("\n" + superset.dataPoints.get(1));
     }
-
 }
+
