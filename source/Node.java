@@ -12,7 +12,8 @@ public class Node{
     public Node left = null;
     public Node right = null;
 
-    private double giniIndex;
+    private double giniImpurity;
+    private double splittingFeatureIndex;
     public Node(ArrayList<DataPoint> dp){
         this.dataPoints = dp;
     }
@@ -25,36 +26,37 @@ public class Node{
         this.dataPoints = dPoints;
         this.targetFeatureClassifications = targetFeatureClassifications;
         this.randomFeatureSubset = randomFeatureSubset;
-        // count the number of points that classify as one of the target features E, ET, T, M
         calcFeatureTotals();
-        calcGiniIndex();
+        // count the number of points that classify as one of the target features E, ET, T, M
+        this.giniImpurity = calcGiniImpurity();
 
 
     }
 
-    public double getGiniIIndex() {
-        return giniIndex;
+    public double getGiniImpurity() {
+        return giniImpurity;
     }
 
     public void setGiniIndex(double giniImpurity) {
-        this.giniIndex = giniImpurity;
+        this.giniImpurity = giniImpurity;
     }
 
     public void getBestSplit(){
-        // starts at the parent
-        double bestIndex = this.giniIndex;
-        for(String feature : randomFeatureSubset){
-            split(feature, bestIndex);
+        double bestImpurity = Double.POSITIVE_INFINITY;
+
+        for(int i = 0; i < randomFeatureSubset.length; i++){
+            double impurityOfSplit = split(randomFeatureSubset[i], bestImpurity, i);
+            if (impurityOfSplit < bestImpurity){
+                bestImpurity = impurityOfSplit;
+            }
+
         }
-        //it should split based on the best feature
 
     }
 
-    private void split(String splittingFeature, double bestIndex){
-
+    private double split(String splittingFeature, double bestImpurity, int index){
         ArrayList<DataPoint> left = new ArrayList<>();
         ArrayList<DataPoint> right = new ArrayList<>();
-        // separate two based on the threshold
         for (DataPoint current : dataPoints) {
             boolean isNegativeClass = (boolean) current.getData().get(splittingFeature);
             if (isNegativeClass) {
@@ -63,18 +65,22 @@ public class Node{
                 right.add(current);
             }
         }
-
+        // create the left & right nodes to initialize and get gini index
         Node lNode = new Node(left, targetFeatureClassifications, randomFeatureSubset);
+        double leftWeightedImpurity = ( (double) left.size() / dataPoints.size() ) * lNode.getGiniImpurity();
         Node rNode = new Node(right, targetFeatureClassifications, randomFeatureSubset);
-        if (lNode.getGiniIIndex() + rNode.getGiniIIndex() < bestIndex){
+        double rightWeightedImpurity = ( (double) right.size() / dataPoints.size() ) * rNode.getGiniImpurity();
+        if (leftWeightedImpurity + rightWeightedImpurity < bestImpurity){
             this.left = lNode;
             this.right = rNode;
+            this.splittingFeatureIndex = index;
         }
+
+        return leftWeightedImpurity + rightWeightedImpurity;
 
     }
 
-
-    public double calcGiniIndex(){
+    public double calcGiniImpurity(){
         double gini = 1, classProbability;
         for (int count : this.targetFeatureTotals) {
             classProbability = (double) count / dataPoints.size();
@@ -82,23 +88,18 @@ public class Node{
         }
         return gini;
     }
-    public int[] calcFeatureTotals(){
-        int[] tempCounts = new int[]{0,0,0,0};
-        for(int i = 0; i < dataPoints.size(); i++){
-            DataPoint dp = dataPoints.get(i);
+    public void calcFeatureTotals(){
+        for (DataPoint dp : dataPoints) {
             String targetFeatureValue = (String) dp.getData().get("esrb_rating");
 
-            // check each datapoint, if its of a certain target feature, increment feature array
-            for(int j = 0; j < targetFeatureClassifications.length; j++){
-                String targetFeature = targetFeatureClassifications[j];
-                String dpFeatureValue = (String) dataPoints.get(j).getData().get("esrb_rating");
-               if (targetFeatureValue.equals(dpFeatureValue)){
-                   //add to the featureCount corresponding with that feature
-                   tempCounts[i]++;
-               }
+            for (int j = 0; j < targetFeatureClassifications.length; j++) {
+                String classification = targetFeatureClassifications[j];
+
+                if (targetFeatureValue.equals(classification)) {
+                    targetFeatureTotals[j]++;
+                }
             }
         }
-        return tempCounts;
     }
 
 }
