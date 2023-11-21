@@ -36,7 +36,17 @@ public class FileText {
      *
      * @return the content of the file as a {@code String}
      */
-    public String getText() {
+    @Override
+    public String toString() {
         return text;
+    }
+
+    /**
+     * Splits the text content of the file into an array of strings based on newline characters.
+     *
+     * @return an array of strings representing the lines of the file
+     */
+    public String[] rows() {
+        return text.split("\n");
     }
 }
