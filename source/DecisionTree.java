@@ -4,7 +4,7 @@ public class DecisionTree {
 
     //Root node of the decision
     private Node root;
-    private DataSet bootStrappedDataSet;
+    private DataSet bootstrappedDataSet;
     private int dSetLength;
     private int maxDepth;
     private int minNumSamples;
@@ -27,20 +27,16 @@ public class DecisionTree {
 /**
  * wfwrg
  */
-   DecisionTree (DataSet bootStrappedDataSet, String targetFeature)
+   DecisionTree (DataSet bootstrappedDataSet, String targetFeature)
     {
+        this.bootstrappedDataSet = bootstrappedDataSet;
 
     }
 
-    public void generateBootStrapDataSet(DataSet dSet)
-    {
-        //Randomly generate bootstrap dataset
-        Random rand = new Random();
-        for (int i = 0; i < this.dSetLength; i++) {
-            int r = rand.nextInt(this.dSetLength);
-            //DataPoint current = new DataPoint();
-        }
-    }
+
+
+
+
 
 
     public void displayOutput()
