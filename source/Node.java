@@ -8,11 +8,11 @@ public class Node{
 
     private int [] targetFeatureTotals = new int[]{0,0,0,0};
     private String[] randomFeatureSubset;
+    private int splittingFeatureIndex = 0;
     public Node left = null;
     public Node right = null;
 
     private double giniImpurity;
-    private double splittingFeatureIndex;
     public Node(ArrayList<DataRecord> dp){
         this.dataPoints = dp;
     }
@@ -41,14 +41,13 @@ public class Node{
     }
 
     public void getBestSplit(){
-        double bestImpurity = Double.POSITIVE_INFINITY;
+        double lowestImpurity = Double.POSITIVE_INFINITY;
 
         for(int i = 0; i < randomFeatureSubset.length; i++){
-            double impurityOfSplit = split(randomFeatureSubset[i], bestImpurity, i);
-            if (impurityOfSplit < bestImpurity){
-                bestImpurity = impurityOfSplit;
+            double impurityOfSplit = split(randomFeatureSubset[i], lowestImpurity, i);
+            if (impurityOfSplit < lowestImpurity){
+                lowestImpurity = impurityOfSplit;
             }
-
         }
 
     }
@@ -66,16 +65,19 @@ public class Node{
         }
         // create the left & right nodes to initialize and get gini index
         Node lNode = new Node(left, targetFeatureClassifications, randomFeatureSubset);
-        double leftWeightedImpurity = ( (double) left.size() / dataPoints.size() ) * lNode.getGiniImpurity();
         Node rNode = new Node(right, targetFeatureClassifications, randomFeatureSubset);
+        double leftWeightedImpurity = ( (double) left.size() / dataPoints.size() ) * lNode.getGiniImpurity();
         double rightWeightedImpurity = ( (double) right.size() / dataPoints.size() ) * rNode.getGiniImpurity();
+        //
         if (leftWeightedImpurity + rightWeightedImpurity < bestImpurity){
             this.left = lNode;
             this.right = rNode;
             this.splittingFeatureIndex = index;
+            return leftWeightedImpurity + rightWeightedImpurity;
         }
 
-        return leftWeightedImpurity + rightWeightedImpurity;
+        //otherwise return the lowest impurity
+        return bestImpurity;
 
     }
 

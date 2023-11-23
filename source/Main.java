@@ -23,7 +23,10 @@ public class Main {
         FileText content = new FileText("data/Video_games_esrb_rating.csv");
 
         // Load the dataset and split it into subsets
-        loadDatasetAndSplit(content, delimiter);
+        ArrayList<DataSet> subsets = loadDatasetAndSplit(content, delimiter);
+        DataSet trainingSet = subsets.get(0);
+        DataSet testingSet = subsets.get(1);
+
     }
 
     /**
@@ -32,7 +35,7 @@ public class Main {
      * @param fileText  the FileText object containing dataset information
      * @param delimiter the delimiter used in the dataset
      */
-    public static void loadDatasetAndSplit(FileText fileText, String delimiter) {
+    public static ArrayList<DataSet> loadDatasetAndSplit(FileText fileText, String delimiter) {
         // Create variables to hold the superset and subsets of the dataset
         DataSet superset;
         ArrayList<DataSet> subsets;
@@ -57,15 +60,9 @@ public class Main {
             subsets = serializer.loadListFromFile("data/subsets.ser", DataSet.class);
         }
 
-        // Access and print a piece of data from the training set of the first subset
-        DataSet trainingSet = subsets.get(0);
-        System.out.println(trainingSet.data.get(0).get("title"));
-
         // Load the superset again (for demonstration purposes)
         superset = new DataSet(fileText, delimiter);
         // Print information about a data point from the superset
-        System.out.print("\n" + superset.data.get(1));
-
-        System.out.println();
+        return subsets;
     }
 }
