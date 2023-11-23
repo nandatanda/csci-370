@@ -1,9 +1,8 @@
 import java.util.ArrayList;
-import java.util.Objects;
 
 
 public class Node{
-    private final ArrayList<DataPoint> dataPoints;
+    private final ArrayList<DataRecord> dataPoints;
     //temporarily hard-coding to have an idea
     private String[] targetFeatureClassifications = {"E", "ET", "T", "M"};
 
@@ -14,7 +13,7 @@ public class Node{
 
     private double giniImpurity;
     private double splittingFeatureIndex;
-    public Node(ArrayList<DataPoint> dp){
+    public Node(ArrayList<DataRecord> dp){
         this.dataPoints = dp;
     }
 
@@ -22,7 +21,7 @@ public class Node{
         this.dataPoints = new ArrayList<>();
     }
 
-    public Node(ArrayList<DataPoint> dPoints, String[] targetFeatureClassifications, String[] randomFeatureSubset){
+    public Node(ArrayList<DataRecord> dPoints, String[] targetFeatureClassifications, String[] randomFeatureSubset){
         this.dataPoints = dPoints;
         this.targetFeatureClassifications = targetFeatureClassifications;
         this.randomFeatureSubset = randomFeatureSubset;
@@ -55,10 +54,10 @@ public class Node{
     }
 
     private double split(String splittingFeature, double bestImpurity, int index){
-        ArrayList<DataPoint> left = new ArrayList<>();
-        ArrayList<DataPoint> right = new ArrayList<>();
-        for (DataPoint current : dataPoints) {
-            boolean isNegativeClass = (boolean) current.getData().get(splittingFeature);
+        ArrayList<DataRecord> left = new ArrayList<>();
+        ArrayList<DataRecord> right = new ArrayList<>();
+        for (DataRecord current : dataPoints) {
+            boolean isNegativeClass = (boolean) current.get(splittingFeature);
             if (isNegativeClass) {
                 left.add(current);
             } else {
@@ -89,8 +88,8 @@ public class Node{
         return gini;
     }
     public void calcFeatureTotals(){
-        for (DataPoint dp : dataPoints) {
-            String targetFeatureValue = (String) dp.getData().get("esrb_rating");
+        for (DataRecord dp : dataPoints) {
+            String targetFeatureValue = (String) dp.get("esrb_rating");
 
             for (int j = 0; j < targetFeatureClassifications.length; j++) {
                 String classification = targetFeatureClassifications[j];
