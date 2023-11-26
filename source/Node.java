@@ -3,18 +3,24 @@ import java.util.ArrayList;
 
 public class Node{
     private final ArrayList<DataRecord> dataPoints;
-    //temporarily hard-coding to have an idea
+
+    private int numberOfSamples;
+
+    public ArrayList<DataRecord> getDataPoints(){
+        return dataPoints;
+    }
+
+    public int getNumberOfSamples(){
+        return numberOfSamples;
+    }
     private String[] targetFeatureClassifications = {"E", "ET", "T", "M"};
 
     private int [] targetFeatureTotals = new int[]{0,0,0,0};
-    private ArrayList<String> bootstrappedFeatures;
     private int splittingFeatureIndex = 0;
     public Node left = null;
     public Node right = null;
 
-    private int depth = 0;
-    private int minSamples;
-    private int maxDepth;
+    private int depth;
 
     private double giniImpurity;
     public Node(ArrayList<DataRecord> dp){
@@ -25,16 +31,16 @@ public class Node{
         this.dataPoints = new ArrayList<>();
     }
 
-    public Node(ArrayList<DataRecord> dPoints, String[] targetFeatureClassifications, ArrayList<String> randomFeatureSubset, int minSamples, int depth, int maxDepth){
+    public Node(ArrayList<DataRecord> dPoints, int depth){
         this.dataPoints = dPoints;
-        this.targetFeatureClassifications = targetFeatureClassifications;
-        this.bootstrappedFeatures = randomFeatureSubset;
-        this.minSamples = minSamples;
+        this.numberOfSamples = dPoints.size();
+
         this.depth = depth;
-        this.maxDepth = maxDepth;
+
         calcFeatureTotals();
         // count the number of points that classify as one of the target features E, ET, T, M
         this.giniImpurity = calcGiniImpurity();
+
 
 
     }
@@ -47,24 +53,29 @@ public class Node{
         this.giniImpurity = giniImpurity;
     }
 
-    public void getBestSplit(String[] splittingFeatures, int minSamples, int maxDepth){
+    public void getBestSplit(ArrayList<String> splittingFeatures, int MIN_SAMPLES, int MAX_DEPTH){
+        if(numberOfSamples < MIN_SAMPLES || depth < MAX_DEPTH){
+            return;
+        }
 
         double lowestImpurity = Double.POSITIVE_INFINITY;
 
-        for(int i = 0; i < bootstrappedFeatures.size(); i++){
-            double impurityOfSplit = split(bootstrappedFeatures.get(i), lowestImpurity, i);
+        for(int i = 0; i < splittingFeatures.size(); i++){
+            double impurityOfSplit = split(splittingFeatures.get(i), lowestImpurity, i);
             if (impurityOfSplit < lowestImpurity){
                 lowestImpurity = impurityOfSplit;
             }
         }
         //remove the that index from the bootstrapped features
-        bootstrappedFeatures.remove(splittingFeatureIndex);
-        left.getBestSplit(splittingFeatures, minSamples, maxDepth);
-        right.getBestSplit(splittingFeatures, minSamples, maxDepth);
+        splittingFeatures.remove(splittingFeatureIndex);
+        left.getBestSplit(splittingFeatures, MIN_SAMPLES, MAX_DEPTH);
+        right.getBestSplit(splittingFeatures, MIN_SAMPLES, MAX_DEPTH);
 
     }
 
-    private double split(String splittingFeature, double bestImpurity, int index){
+
+
+    public double split(String splittingFeature, double bestImpurity, int index){
         ArrayList<DataRecord> left = new ArrayList<>();
         ArrayList<DataRecord> right = new ArrayList<>();
         for (DataRecord current : dataPoints) {
@@ -76,8 +87,8 @@ public class Node{
             }
         }
         // create the left & right nodes to initialize and get gini index
-        Node lNode = new Node(left, targetFeatureClassifications, bootstrappedFeatures, minSamples, depth+1, maxDepth);
-        Node rNode = new Node(right, targetFeatureClassifications, bootstrappedFeatures, minSamples, depth+1, maxDepth);
+        Node lNode = new Node(left, depth+1);
+        Node rNode = new Node(right, depth+1);
         double leftWeightedImpurity = ( (double) left.size() / dataPoints.size() ) * lNode.getGiniImpurity();
         double rightWeightedImpurity = ( (double) right.size() / dataPoints.size() ) * rNode.getGiniImpurity();
         if (leftWeightedImpurity + rightWeightedImpurity < bestImpurity){
