@@ -1,5 +1,5 @@
 trainingDirectory,data/Video_games_esrb_rating.csv
-testingDrectory,null
+testingDirectory,null
 trainingSplit,70
 testingSplit,30
 nameIndex,0
