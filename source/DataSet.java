@@ -58,6 +58,10 @@ public class DataSet implements Serializable {
         return size;
     }
 
+    public DataRecord get(int i) {
+        return data.get(i);
+    }
+
     public void addEntry(DataRecord dp) {
         data.add(dp);
         this.size++;
