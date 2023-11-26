@@ -1,22 +1,23 @@
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Collections;
 
 public class DataSet implements Serializable {
 
     private final String[] features;
+    public ArrayList<String> splittingFeatures = new ArrayList<>();
     public ArrayList<DataRecord> data = new ArrayList<>();
     private int size;
     private int trainingSize = 7;
     private int testingSize = 3;
-    private boolean[] used; // Boolean array that can be used later for checking
 
     // Constructor for creating Training, Testing, and Validation datasets
-    DataSet(String[] features, int size) {
+    DataSet(String[] features, ArrayList<String> splittingFeatures, int size) {
         this.features = features;
+        this.splittingFeatures = splittingFeatures;
         this.size = size;
-        this.used = new boolean[size];
     }
 
     // Constructor for creating bootstrapped datasets
@@ -24,16 +25,17 @@ public class DataSet implements Serializable {
         this.features = features;
         this.data = data;
         this.size = data.size();
-        this.used = new boolean[size];
     }
 
     // Constructor for original read
     public DataSet(FileText file, String delimiter) {
         // Split the file's contents by row to form entries
         String[] entries = file.rows();
-
-        // Split the first entry (header) into features using the specified delimiter
+        // Stores all the features
         this.features = entries[0].split(delimiter);
+        // Separates the features that are important for determining split from other splits
+        this.splittingFeatures.addAll(Arrays.asList(features).subList(1, features.length - 1));
+
 
         // Iterate over the remaining entries, starting from index 1
         for (int i = 1; i < entries.length; i++) {
@@ -43,7 +45,6 @@ public class DataSet implements Serializable {
             data.add(row);
         }
 
-        // Set the size of the dataset
         this.size = data.size();
     }
 
@@ -65,7 +66,7 @@ public class DataSet implements Serializable {
         Collections.shuffle(data, new Random());
 
         for(int i = 0; i < 3; i++){
-            subsets.add(new DataSet(features, 0));
+            subsets.add(new DataSet(features, splittingFeatures, 0));
         }
 
         // loop through all data points and separate
