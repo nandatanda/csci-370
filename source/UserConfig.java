@@ -31,7 +31,7 @@ public class UserConfig {
      * @return the training data directory path
      */
     public String trainingDirectory() {
-        return configPairs.get("trainingDirectory").toString();
+        return configPairs.get("trainingDirectory").toString().trim();
     }
 
     /**
@@ -40,7 +40,7 @@ public class UserConfig {
      * @return the testing data directory path
      */
     public String testingDirectory() {
-        return configPairs.get("testingDirectory").toString();
+        return configPairs.get("testingDirectory").toString().trim();
     }
 
     /**
