@@ -1,0 +1,7 @@
+trainingDirectory,data/Video_games_esrb_rating.csv
+testingDirectory,null
+trainingSplit,70
+testingSplit,30
+nameIndex,0
+ratingIndex,-1
+delimiter,comma
