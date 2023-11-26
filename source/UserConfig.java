@@ -1,9 +1,6 @@
 import java.io.IOException;
 import java.util.LinkedHashMap;
 
-import java.io.IOException;
-import java.util.LinkedHashMap;
-
 /**
  * The {@code UserConfig} class reads configuration settings from a CSV file and provides methods
  * to access these settings.
@@ -12,11 +9,26 @@ public class UserConfig {
     private LinkedHashMap<String, Object> configPairs = new LinkedHashMap<>();
 
     /**
+     * Default constructor for {@code UserConfig}.
+     * Creates an object with null values. Actual values can be loaded later using the {@code loadConfig} method.
+     */
+    public UserConfig() {
+        // Initialize configPairs with null values
+        configPairs.put("trainingDirectory", null);
+        configPairs.put("testingDirectory", null);
+        configPairs.put("trainingSplit", null);
+        configPairs.put("testingSplit", null);
+        configPairs.put("nameIndex", null);
+        configPairs.put("ratingIndex", null);
+        configPairs.put("delimiter", null);
+    }
+
+    /**
      * Constructs a {@code UserConfig} object by reading configuration settings from a CSV file.
      *
      * @throws IOException if an I/O error occurs during file operations
      */
-    UserConfig() throws IOException {
+    public void loadConfig() throws IOException {
         FileText configText = new FileText("config.csv");
 
         // Parse each row in the configuration file and store key-value pairs
