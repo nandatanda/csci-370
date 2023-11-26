@@ -16,16 +16,14 @@ public class Main {
      * @throws IOException if an I/O error occurs during file operations
      */
     public static void main(String[] args) throws IOException {
+        // Load settings from config.csv
         UserConfig settings = new UserConfig();
-        System.out.println(settings.delimiter());
-
-        String delimiter = ",";
 
         // Create a FileText object to read the content of the CSV file
-        FileText content = new FileText("data/Video_games_esrb_rating.csv");
+        FileText content = new FileText(settings.trainingDirectory());
 
         // Load the dataset and split it into subsets
-        ArrayList<DataSet> subsets = loadDatasetAndSplit(content, delimiter);
+        ArrayList<DataSet> subsets = loadDatasetAndSplit(content, settings.delimiter());
         DataSet trainingSet = subsets.get(0);
         DataSet testingSet = subsets.get(1);
 
