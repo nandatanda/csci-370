@@ -16,7 +16,9 @@ public class Main {
      * @throws IOException if an I/O error occurs during file operations
      */
     public static void main(String[] args) throws IOException {
-        // Set the delimiter for parsing the CSV file
+        Initializer settings = new Initializer();
+        System.out.println(settings.delimiter());
+
         String delimiter = ",";
 
         // Create a FileText object to read the content of the CSV file
