@@ -3,5 +3,5 @@ testingDirectory,null
 trainingSplit,70
 testingSplit,30
 nameIndex,0
-ratingIndex,-1
+ratingIndex,34
 delimiter,comma

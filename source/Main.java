@@ -8,6 +8,8 @@ import java.util.ArrayList;
  */
 public class Main {
 
+    private static UserConfig settings = new UserConfig();
+
     /**
      * The main method that is executed when the program starts.
      * It loads a dataset from a CSV file, splits it into subsets, and performs some basic operations.
@@ -17,7 +19,7 @@ public class Main {
      */
     public static void main(String[] args) throws IOException {
         // Load settings from config.csv
-        UserConfig settings = new UserConfig();
+        settings.loadConfig();
 
         // Create a FileText object to read the content of the CSV file
         FileText content = new FileText(settings.trainingDirectory());
@@ -28,7 +30,7 @@ public class Main {
         DataSet testingSet = subsets.get(1);
 
         RandomForest rf = new RandomForest(trainingSet);
-        System.out.println(rf.set.data.get(0));
+        //System.out.println(rf.set.data.get(0));
 
     }
 
@@ -52,7 +54,7 @@ public class Main {
         // Check if serialized subsets file exists
         if (!subsetsObjectFile.exists()) {
             // If not, create a new superset, split it into subsets, and save them to files
-            superset = new DataSet(fileText, delimiter);
+            superset = new DataSet(fileText, delimiter, settings.nameIndex(), settings.ratingIndex());
             System.out.println(superset);
             subsets = superset.split();
             serializer.saveToFile(superset, "data/dataset.ser");
@@ -64,7 +66,7 @@ public class Main {
         }
 
         // Load the superset again (for demonstration purposes)
-        superset = new DataSet(fileText, delimiter);
+        superset = new DataSet(fileText, delimiter, settings.nameIndex(), settings.ratingIndex());
         // Print information about a data point from the superset
         return subsets;
     }

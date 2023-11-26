@@ -79,7 +79,8 @@ public class UserConfig {
      * @return the index for the name feature
      */
     public int nameIndex() {
-        return Integer.parseInt(configPairs.get("nameIndex").toString());
+        String i = configPairs.get("nameIndex").toString().trim();
+        return Integer.parseInt(i);
     }
 
     /**
@@ -88,7 +89,8 @@ public class UserConfig {
      * @return the index for the rating feature
      */
     public int ratingIndex() {
-        return Integer.parseInt(configPairs.get("ratingIndex").toString());
+        String i = configPairs.get("ratingIndex").toString().trim();
+        return Integer.parseInt(i);
     }
 
     /**

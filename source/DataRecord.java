@@ -15,7 +15,7 @@ public class DataRecord extends LinkedHashMap<String, Object> implements Seriali
      * @param entry     the entry string containing the data record information
      * @param delimiter the delimiter used to separate values in the entry string
      */
-    public DataRecord(String[] features, String entry, String delimiter) {
+    public DataRecord(String[] features, String entry, String delimiter, int nameIndex, int ratingIndex) {
         // Split the entire entry using the delimiter
         String[] values = entry.split(delimiter);
 
@@ -24,8 +24,8 @@ public class DataRecord extends LinkedHashMap<String, Object> implements Seriali
             String newFeature = features[j].trim();
 
             Object newValue;
-            if (j == 0 || (j == values.length - 1 && j == features.length - 1)) {
-                // For the first and last features, directly use the value from the entry string
+            if (j == nameIndex || (j == ratingIndex)) {
+                // For the name and rating features, directly use the value from the entry string
                 newValue = values[j].trim();
             } else {
                 // For other features, interpret "1" or "true" as boolean true, and other values as boolean false

@@ -34,7 +34,7 @@ public class DataSet implements Serializable {
     }
 
     // Constructor for original read
-    public DataSet(FileText file, String delimiter) {
+    public DataSet(FileText file, String delimiter, int nameIndex, int ratingIndex) {
         // Split the file's contents by row to form entries
         String[] entries = file.rows();
         // Stores all the features
@@ -46,7 +46,7 @@ public class DataSet implements Serializable {
         // Iterate over the remaining entries, starting from index 1
         for (int i = 1; i < entries.length; i++) {
             // Create a DataPoint using the features and the current entry
-            DataRecord row = new DataRecord(features, entries[i], delimiter);
+            DataRecord row = new DataRecord(features, entries[i], delimiter, nameIndex, ratingIndex);
             // Add the DataPoint to the dataset
             data.add(row);
         }
