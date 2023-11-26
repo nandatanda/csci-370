@@ -3,7 +3,7 @@ testingDirectory,null
 trainingSplit,70
 testingSplit,30
 nameIndex,0
-ratingIndex,34
+ratingIndex,33
 delimiter,comma
 ratings,E,ET,T,M
 maxDepth,6
