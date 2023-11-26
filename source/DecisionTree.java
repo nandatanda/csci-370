@@ -1,37 +1,31 @@
 import java.util.ArrayList;
-import java.util.Random;
+
 public class DecisionTree {
 
     //Root node of the decision
     private Node root;
+
+    private final int MAX_DEPTH;
+    private final int MIN_SAMPLES;
     private DataSet bootstrappedDataSet;
-    private int dSetLength;
-    private int maxDepth;
-    private int minNumSamples;
+    private ArrayList<String> baggedFeatures;
     private int votesForDataPoint;
-    private ArrayList<String> featuresSelected = new ArrayList<String>();
-    private ArrayList<String> baggedFeatures = new ArrayList<String>();
-    private ArrayList<DataRecord> dataPointList = new ArrayList<DataRecord>();
+
+
 
 
     //Decision Tree Constructor
-    DecisionTree(DataSet dSet, int minNumSamples, int maxDepth)
+    DecisionTree(DataSet boostrappedDataSet, ArrayList<String> baggedFeatures, int MIN_SAMPLES, int MAX_DEPTH)
     {
        //Generate bootstrap
-        this.dSetLength = dSet.data.size();
-        //Randomize function
-        this.dataPointList = dSet.data;
-        this.minNumSamples = minNumSamples;
-        this.maxDepth = maxDepth;
+        this.bootstrappedDataSet = boostrappedDataSet;
+        this.baggedFeatures = baggedFeatures;
+        this.MIN_SAMPLES = MIN_SAMPLES;
+        this.MAX_DEPTH = MAX_DEPTH;
     }
 /**
  * wfwrg
  */
-   DecisionTree (DataSet bootstrappedDataSet, String targetFeature)
-    {
-        this.bootstrappedDataSet = bootstrappedDataSet;
-
-    }
 
 
 

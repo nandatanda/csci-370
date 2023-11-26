@@ -16,7 +16,9 @@ public class RandomForest {
     public void train(DataSet dSet){
 
         for(int i = 0; i < TREES; i++){
-            DecisionTree tree = new DecisionTree(generateBootstrapDataSet(dSet), MIN_SAMPLES, MAX_DEPTH);
+            DataSet bootstrappedDataSet = generateBootstrapDataSet(dataSet);
+            ArrayList<String> baggedFeatures = generateBaggedFeatures(dataSet.getSplittingFeatures());
+            DecisionTree tree = new DecisionTree(bootstrappedDataSet, baggedFeatures, MIN_SAMPLES, MAX_DEPTH);
             decisionTrees.add(tree);
         }
 
@@ -28,7 +30,6 @@ public class RandomForest {
         Random rand = new Random();
 
         DataSet bootstrappedDataset = new DataSet(dataSet.getFeatures(), dataSet.getSplittingFeatures(), dataSet.getSize());
-        generateBootstrapFeatureSet(bootstrappedDataset.getSplittingFeatures());
         for (int i = 0; i < this.dataSet.data.size(); i++) {
             int r = rand.nextInt(this.dataSet.data.size());
             DataRecord randomRecord = dataSet.data.get(r);
@@ -39,18 +40,18 @@ public class RandomForest {
         return bootstrappedDataset;
     }
 
-    public ArrayList<String> generateBootstrapFeatureSet(ArrayList<String> splittingFeatures){
-        ArrayList<String> bootstrappedFeatureSet = new ArrayList<>();
+    public ArrayList<String> generateBaggedFeatures(ArrayList<String> splittingFeatures){
+        ArrayList<String> baggedFeatures = new ArrayList<>();
         Random rand = new Random();
         int fSize = rand.nextInt(splittingFeatures.size());
 
         for(int i = 0; i < fSize; i++){
             int randomIndex = rand.nextInt(splittingFeatures.size());
-            bootstrappedFeatureSet.add(splittingFeatures.get(randomIndex));
+            baggedFeatures.add(splittingFeatures.get(randomIndex));
 
         }
 
-        return bootstrappedFeatureSet;
+        return baggedFeatures;
     }
 
 }
