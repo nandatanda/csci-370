@@ -7,7 +7,13 @@ import java.util.Collections;
 public class DataSet implements Serializable {
 
     private final String[] features;
+    public String[] getFeatures(){
+        return features;
+    }
     public ArrayList<String> splittingFeatures = new ArrayList<>();
+    public ArrayList<String> getSplittingFeatures(){
+        return splittingFeatures;
+    }
     public ArrayList<DataRecord> data = new ArrayList<>();
     private int size;
     private int trainingSize = 7;

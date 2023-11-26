@@ -1,14 +1,56 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public class RandomForest {
-    public DataSet set;
+    public DataSet dataSet;
     public int[] treeVotes;
     private ArrayList<DecisionTree> decisionTrees;
-    RandomForest(DataSet d){
-        this.set = d;
+
+    private final int MIN_SAMPLES = 100;
+    private final int TREES = 100;
+    private final int MAX_DEPTH = 6;
+    RandomForest(DataSet dSet){
+        this.dataSet = dSet;
+
     }
-    public void train(){
-       // start training decision trees
+    public void train(DataSet dSet){
+
+        for(int i = 0; i < TREES; i++){
+            DecisionTree tree = new DecisionTree(generateBootstrapDataSet(dSet), MIN_SAMPLES, MAX_DEPTH);
+            decisionTrees.add(tree);
+        }
+
+    }
+
+    public DataSet generateBootstrapDataSet(DataSet dSet)
+    {
+        //Randomly generate bootstrap dataset
+        Random rand = new Random();
+
+        DataSet bootstrappedDataset = new DataSet(dataSet.getFeatures(), dataSet.getSplittingFeatures(), dataSet.getSize());
+        generateBootstrapFeatureSet(bootstrappedDataset.getSplittingFeatures());
+        for (int i = 0; i < this.dataSet.data.size(); i++) {
+            int r = rand.nextInt(this.dataSet.data.size());
+            DataRecord randomRecord = dataSet.data.get(r);
+            bootstrappedDataset.addEntry(randomRecord);
+
+        }
+
+        return bootstrappedDataset;
+    }
+
+    public ArrayList<String> generateBootstrapFeatureSet(ArrayList<String> splittingFeatures){
+        ArrayList<String> bootstrappedFeatureSet = new ArrayList<>();
+        Random rand = new Random();
+        int fSize = rand.nextInt(splittingFeatures.size());
+
+        for(int i = 0; i < fSize; i++){
+            int randomIndex = rand.nextInt(splittingFeatures.size());
+            bootstrappedFeatureSet.add(splittingFeatures.get(randomIndex));
+
+        }
+
+        return bootstrappedFeatureSet;
     }
 
 }
