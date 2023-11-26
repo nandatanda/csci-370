@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * The {@code Main} class serves as the entry point for the program.
@@ -21,15 +22,22 @@ public class Main {
         // Load settings from config.csv
         settings.loadConfig();
 
+        // Debug settings
+        System.out.println(Arrays.toString(settings.ratings()));
+        String[] newArray = {"a", "b", "c"};
+        for (String s : newArray) {
+            System.out.println(s.trim());
+        }
+
         // Create a FileText object to read the content of the CSV file
         FileText content = new FileText(settings.trainingDirectory());
 
         // Load the dataset and split it into subsets
-        ArrayList<DataSet> subsets = loadDatasetAndSplit(content, settings.delimiter());
-        DataSet trainingSet = subsets.get(0);
-        DataSet testingSet = subsets.get(1);
+        //ArrayList<DataSet> subsets = loadDatasetAndSplit(content, settings.delimiter());
+        //DataSet trainingSet = subsets.get(0);
+        //DataSet testingSet = subsets.get(1);
 
-        RandomForest rf = new RandomForest(trainingSet);
+        //RandomForest rf = new RandomForest(trainingSet);
         //System.out.println(rf.set.data.get(0));
 
     }

@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 
 /**
@@ -21,6 +22,10 @@ public class UserConfig {
         configPairs.put("nameIndex", null);
         configPairs.put("ratingIndex", null);
         configPairs.put("delimiter", null);
+        configPairs.put("ratings", null);
+        configPairs.put("maxDepth", null);
+        configPairs.put("maxTrees", null);
+        configPairs.put("minSamples", null);
     }
 
     /**
@@ -33,7 +38,18 @@ public class UserConfig {
 
         // Parse each row in the configuration file and store key-value pairs
         for (String row : configText.rows()) {
-            configPairs.put(row.split(",")[0], row.split(",")[1]);
+            String[] rowArray = row.split(",");
+            String key = rowArray[0].trim();
+
+            // Additional handling for the "ratings" setting
+            if ("ratings".equals(key)) {
+                // Split the ratings into an array and convert it to a String[]
+                String[] values = Arrays.copyOfRange(rowArray, 1, rowArray.length);
+                configPairs.put(key, values);
+            } else {
+                String value = rowArray[1].trim();
+                configPairs.put(key, value);
+            }
         }
     }
 
@@ -107,5 +123,49 @@ public class UserConfig {
             case "semicolon" -> ";";
             default -> delimiterName; // Return the input as is if not recognized
         };
+    }
+
+    /**
+     * Gets the value(s) of the "ratings" setting, representing the possible ratings in the dataset.
+     *
+     * @return the value(s) of the "ratings" setting
+     *         (e.g., ["E", "ET", "T", "M"] representing different content ratings)
+     */
+    public String[] ratings() {
+        return (String[]) configPairs.get("ratings");
+    }
+
+    /**
+     * Gets the value of the "maxDepth" setting, representing the maximum depth of each decision tree
+     * in the random forest.
+     *
+     * @return the maximum depth of each decision tree in the random forest
+     */
+    public int maxDepth() {
+        String value = configPairs.get("maxDepth").toString().trim();
+        return Integer.parseInt(value);
+    }
+
+    /**
+     * Gets the value of the "maxTrees" setting, representing the maximum number of decision trees
+     * to be included in the random forest.
+     *
+     * @return the maximum number of decision trees in the random forest
+     */
+    public int maxTrees() {
+        String value = configPairs.get("maxTrees").toString().trim();
+        return Integer.parseInt(value);
+    }
+
+    /**
+     * Gets the value of the "minSamples" setting, representing the minimum number of samples
+     * required to split an internal node in each decision tree of the random forest.
+     *
+     * @return the minimum number of samples required to split an internal node in each decision tree
+     *         of the random forest
+     */
+    public int minSamples() {
+        String value = configPairs.get("minSamples").toString().trim();
+        return Integer.parseInt(value);
     }
 }
