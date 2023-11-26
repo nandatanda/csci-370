@@ -1,10 +1,10 @@
 import java.io.IOException;
 import java.util.LinkedHashMap;
 
-public class Initializer {
+public class UserConfig {
     private LinkedHashMap<String, Object> configPairs = new LinkedHashMap<>();
 
-    Initializer() throws IOException {
+    UserConfig() throws IOException {
         FileText configText = new FileText("config.csv");
 
         for (String row : configText.rows()) {

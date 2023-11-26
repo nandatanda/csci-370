@@ -16,7 +16,7 @@ public class Main {
      * @throws IOException if an I/O error occurs during file operations
      */
     public static void main(String[] args) throws IOException {
-        Initializer settings = new Initializer();
+        UserConfig settings = new UserConfig();
         System.out.println(settings.delimiter());
 
         String delimiter = ",";
