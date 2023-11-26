@@ -14,7 +14,7 @@ public class DataSet implements Serializable {
     public ArrayList<String> getSplittingFeatures(){
         return splittingFeatures;
     }
-    public ArrayList<DataRecord> data = new ArrayList<>();
+    private ArrayList<DataRecord> data = new ArrayList<>();
     private int size;
     private int trainingSize = 7;
     private int testingSize = 3;
@@ -54,7 +54,7 @@ public class DataSet implements Serializable {
         this.size = data.size();
     }
 
-    public int getSize() {
+    public int size() {
         return size;
     }
 

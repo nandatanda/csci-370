@@ -29,12 +29,11 @@ public class RandomForest {
         //Randomly generate bootstrap dataset
         Random rand = new Random();
 
-        DataSet bootstrappedDataset = new DataSet(dataSet.getFeatures(), dataSet.getSplittingFeatures(), dataSet.getSize());
-        for (int i = 0; i < this.dataSet.data.size(); i++) {
-            int r = rand.nextInt(this.dataSet.data.size());
-            DataRecord randomRecord = dataSet.data.get(r);
+        DataSet bootstrappedDataset = new DataSet(dataSet.getFeatures(), dataSet.getSplittingFeatures(), dataSet.size());
+        for (int i = 0; i < this.dataSet.size(); i++) {
+            int r = rand.nextInt(this.dataSet.size());
+            DataRecord randomRecord = dataSet.get(r);
             bootstrappedDataset.addEntry(randomRecord);
-
         }
 
         return bootstrappedDataset;
