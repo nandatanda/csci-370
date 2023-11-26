@@ -5,3 +5,7 @@ testingSplit,30
 nameIndex,0
 ratingIndex,34
 delimiter,comma
+ratings,E,ET,T,M
+maxDepth,6
+maxTrees,100
+minSamples,100
