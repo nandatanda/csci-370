@@ -68,6 +68,7 @@ public class Main {
         // Load the superset again (for demonstration purposes)
         superset = new DataSet(fileText, delimiter, settings.nameIndex(), settings.ratingIndex());
         // Print information about a data point from the superset
+        System.out.println(superset.data.get(0));
         return subsets;
     }
 }
