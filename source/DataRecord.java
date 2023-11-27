@@ -12,21 +12,21 @@ public class DataRecord extends LinkedHashMap<String, Object> implements Seriali
     private String rating;
 
     /**
-     * Constructs a {@code DataRecord} object by parsing the provided entry and mapping it to features.
+     * Constructs a {@code DataRecord} object by parsing the provided entry and mapping it to headers.
      *
-     * @param features    an array of feature names
+     * @param headers     an array of all column headers from the csv file
      * @param entry       the entry string containing the data record information
      * @param delimiter   the delimiter used to separate values in the entry string
      * @param nameIndex   the index where the record's title is located
      * @param ratingIndex the index where the record's ESRB classification is located
      */
-    public DataRecord(String[] features, String entry, String delimiter, int nameIndex, int ratingIndex) {
+    public DataRecord(String[] headers, String entry, String delimiter, int nameIndex, int ratingIndex) {
         // Split the entire entry using the delimiter
         String[] values = entry.split(delimiter);
 
-        // Populate the LinkedHashMap using features and corresponding values
-        for (int j = 0; j < features.length && j < values.length; j++) {
-            String newFeature = features[j].trim();
+        // Populate the LinkedHashMap using headers and corresponding values
+        for (int j = 0; j < headers.length && j < values.length; j++) {
+            String newFeature = headers[j].trim();
 
             if (j == nameIndex) {
                 // Store the record's title separately
@@ -35,7 +35,7 @@ public class DataRecord extends LinkedHashMap<String, Object> implements Seriali
                 // Store the record's rating separately
                 rating = values[j].trim();
             } else {
-                // For other features, interpret "1" or "true" as boolean true, and store them as a LinkedHashMap
+                // For other headers, interpret "1" or "true" as boolean true, and store them as a LinkedHashMap
                 Object newValue;
                 newValue = values[j].trim().equals("1") || values[j].equalsIgnoreCase("true");
                 put(newFeature, newValue);

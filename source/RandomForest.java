@@ -17,7 +17,7 @@ public class RandomForest {
 
         for(int i = 0; i < TREES; i++){
             DataSet bootstrappedDataSet = generateBootstrapDataSet(dataSet);
-            ArrayList<String> baggedFeatures = generateBaggedFeatures(dataSet.getSplittingFeatures());
+            ArrayList<String> baggedFeatures = generateBaggedFeatures(dataSet.getFeatures());
             DecisionTree tree = new DecisionTree(bootstrappedDataSet, baggedFeatures, MIN_SAMPLES, MAX_DEPTH);
             decisionTrees.add(tree);
         }
@@ -29,7 +29,7 @@ public class RandomForest {
         //Randomly generate bootstrap dataset
         Random rand = new Random();
 
-        DataSet bootstrappedDataset = new DataSet(dataSet.getFeatures(), dataSet.getSplittingFeatures(), dataSet.size());
+        DataSet bootstrappedDataset = new DataSet(dataSet.getHeaders(), dataSet.getFeatures(), dataSet.size());
         for (int i = 0; i < this.dataSet.size(); i++) {
             int r = rand.nextInt(this.dataSet.size());
             DataRecord randomRecord = dataSet.get(r);

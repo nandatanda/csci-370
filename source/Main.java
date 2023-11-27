@@ -74,4 +74,8 @@ public class Main {
         System.out.println(sampleRecord);
         return subsets;
     }
+
+    public static UserConfig settings() {
+        return  settings;
+    }
 }

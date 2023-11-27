@@ -1,60 +1,56 @@
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.Collections;
 
 public class DataSet implements Serializable {
 
-    private final String[] features;
-
-    public String[] getFeatures() {
-        return features;
-    }
-
-    public ArrayList<String> splittingFeatures = new ArrayList<>();
-
-    public ArrayList<String> getSplittingFeatures() {
-        return splittingFeatures;
-    }
-
+    private UserConfig settings;
+    public ArrayList<String> features = new ArrayList<>();
     private ArrayList<DataRecord> data = new ArrayList<>();
     private int size;
-    private int trainingSize = 7;
-    private int testingSize = 3;
+
+    // Constructor for original read
+    public DataSet(FileText file, UserConfig settings) {
+        this.settings = settings;
+
+        // Split the file's contents by row to form entries
+        String[] entries = file.rows();
+
+        // Store column headers in the first row to a string array
+        String[] csvHeader = entries[0].split(settings.delimiter());
+
+        // Iterate over the remaining entries, starting from index 1
+        for (int i = 1; i < entries.length; i++) {
+            // Create a DataPoint using the header from the csv and the latest entry in the loop
+            String latestEntry = entries[i];
+            DataRecord newRow = new DataRecord(csvHeader, latestEntry, settings.delimiter(), settings.nameIndex(), settings.ratingIndex());
+
+            // Add the DataPoint to the dataset
+            data.add(newRow);
+        }
+
+        // Store the features from the first record & update the size
+        this.features = new ArrayList<String>(data.get(0).keySet());
+        this.size = data.size();
+    }
 
     // Constructor for creating Training, Testing, and Validation datasets
-    DataSet(String[] features, ArrayList<String> splittingFeatures, int size) {
+    DataSet(String[] headers, ArrayList<String> features, int size) {
+        this.headers = headers;
         this.features = features;
-        this.splittingFeatures = splittingFeatures;
         this.size = size;
     }
 
     // Constructor for creating bootstrapped datasets
-    public DataSet(String[] features, ArrayList<DataRecord> data) {
-        this.features = features;
+    public DataSet(String[] headers, ArrayList<DataRecord> data) {
+        this.headers = headers;
         this.data = data;
         this.size = data.size();
     }
 
-    // Constructor for original read
-    public DataSet(FileText file, String delimiter, int nameIndex, int ratingIndex) {
-        // Split the file's contents by row to form entries
-        String[] entries = file.rows();
-        // Stores all the features
-        this.features = entries[0].split(delimiter);
-        // Separates the features that are important for determining split from other splits
-        this.splittingFeatures.addAll(Arrays.asList(features).subList(1, features.length - 1));
-        
-        // Iterate over the remaining entries, starting from index 1
-        for (int i = 1; i < entries.length; i++) {
-            // Create a DataPoint using the features and the current entry
-            DataRecord row = new DataRecord(features, entries[i], delimiter, nameIndex, ratingIndex);
-            // Add the DataPoint to the dataset
-            data.add(row);
-        }
-
-        this.size = data.size();
+    public ArrayList<String> features() {
+        return features;
     }
 
     public int size() {
@@ -79,13 +75,13 @@ public class DataSet implements Serializable {
         Collections.shuffle(data, new Random());
 
         for (int i = 0; i < 3; i++) {
-            subsets.add(new DataSet(features, splittingFeatures, 0));
+            subsets.add(new DataSet(headers, features, 0));
         }
 
         // loop through all data points and separate
         for (int i = 0; i < size; i++) {
             int subsetIndex = i % 10;
-            int targetSubset = (subsetIndex < trainingSize) ? 0 : 1;
+            int targetSubset = (subsetIndex < settings.trainingSplit() / 10) ? 0 : 1;
             subsets.get(targetSubset).addEntry(data.get(i));
         }
 
