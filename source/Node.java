@@ -1,117 +1,72 @@
 import java.util.ArrayList;
 
+public class Node {
 
-public class Node{
+    public Node(ArrayList<DataRecord> dPoints) {
+        this.dataPoints = dPoints;
+
+    }
+
     private final ArrayList<DataRecord> dataPoints;
-    //temporarily hard-coding to have an idea
-    private String[] targetFeatureClassifications = {"E", "ET", "T", "M"};
 
-    private int [] targetFeatureTotals = new int[]{0,0,0,0};
-    private ArrayList<String> bootstrappedFeatures;
-    private int splittingFeatureIndex = 0;
-    public Node left = null;
-    public Node right = null;
-
-    private int depth = 0;
-    private int minSamples;
-    private int maxDepth;
 
     private double giniImpurity;
-    public Node(ArrayList<DataRecord> dp){
-        this.dataPoints = dp;
+
+    private Node left;
+    private Node right;
+
+    private String label;
+
+    public ArrayList<DataRecord> getDataPoints() {
+
+        return dataPoints;
     }
-
-    public Node(){
-        this.dataPoints = new ArrayList<>();
-    }
-
-    public Node(ArrayList<DataRecord> dPoints, String[] targetFeatureClassifications, ArrayList<String> randomFeatureSubset, int minSamples, int depth, int maxDepth){
-        this.dataPoints = dPoints;
-        this.targetFeatureClassifications = targetFeatureClassifications;
-        this.bootstrappedFeatures = randomFeatureSubset;
-        this.minSamples = minSamples;
-        this.depth = depth;
-        this.maxDepth = maxDepth;
-        calcFeatureTotals();
-        // count the number of points that classify as one of the target features E, ET, T, M
-        this.giniImpurity = calcGiniImpurity();
-
-
-    }
-
     public double getGiniImpurity() {
         return giniImpurity;
     }
 
-    public void setGiniIndex(double giniImpurity) {
+
+    public void setGiniImpurity(double giniImpurity) {
         this.giniImpurity = giniImpurity;
     }
 
-    public void getBestSplit(String[] splittingFeatures, int minSamples, int maxDepth){
 
-        double lowestImpurity = Double.POSITIVE_INFINITY;
+    public Node getLeft() {
+        return this.left;
+    }
 
-        for(int i = 0; i < bootstrappedFeatures.size(); i++){
-            double impurityOfSplit = split(bootstrappedFeatures.get(i), lowestImpurity, i);
-            if (impurityOfSplit < lowestImpurity){
-                lowestImpurity = impurityOfSplit;
-            }
-        }
-        //remove the that index from the bootstrapped features
-        bootstrappedFeatures.remove(splittingFeatureIndex);
-        left.getBestSplit(splittingFeatures, minSamples, maxDepth);
-        right.getBestSplit(splittingFeatures, minSamples, maxDepth);
+    public void setLeft(Node lNode) {
+        this.left = lNode;
+    }
+
+    public Node getRight() {
+        return this.right;
+    }
+
+    public void setRight(Node rNode) {
+        this.right = rNode;
+    }
+
+
+    public boolean isLeaf(){
+        return (left == null && right == null);
+    }
+
+    public void setLabel(String label){
+        this.label = label;
+    }
+
+    public String getLabel(){
+        return this.label;
+    }
+
+    public void labelLeaf(){
 
     }
 
-    private double split(String splittingFeature, double bestImpurity, int index){
-        ArrayList<DataRecord> left = new ArrayList<>();
-        ArrayList<DataRecord> right = new ArrayList<>();
-        for (DataRecord current : dataPoints) {
-            boolean isNegativeClass = (boolean) current.get(splittingFeature);
-            if (isNegativeClass) {
-                left.add(current);
-            } else {
-                right.add(current);
-            }
-        }
-        // create the left & right nodes to initialize and get gini index
-        Node lNode = new Node(left, targetFeatureClassifications, bootstrappedFeatures, minSamples, depth+1, maxDepth);
-        Node rNode = new Node(right, targetFeatureClassifications, bootstrappedFeatures, minSamples, depth+1, maxDepth);
-        double leftWeightedImpurity = ( (double) left.size() / dataPoints.size() ) * lNode.getGiniImpurity();
-        double rightWeightedImpurity = ( (double) right.size() / dataPoints.size() ) * rNode.getGiniImpurity();
-        if (leftWeightedImpurity + rightWeightedImpurity < bestImpurity){
-            this.left = lNode;
-            this.right = rNode;
-            this.splittingFeatureIndex = index;
-            return leftWeightedImpurity + rightWeightedImpurity;
-        }
 
 
-        return bestImpurity;
 
-    }
 
-    public double calcGiniImpurity(){
-        double gini = 1, classProbability;
-        for (int count : this.targetFeatureTotals) {
-            classProbability = (double) count / dataPoints.size();
-            gini -= Math.pow(classProbability, 2);
-        }
-        return gini;
-    }
-    public void calcFeatureTotals(){
-        for (DataRecord dp : dataPoints) {
-            String targetFeatureValue = (String) dp.get("esrb_rating");
-
-            for (int j = 0; j < targetFeatureClassifications.length; j++) {
-                String classification = targetFeatureClassifications[j];
-
-                if (targetFeatureValue.equals(classification)) {
-                    targetFeatureTotals[j]++;
-                }
-            }
-        }
-    }
 
 }

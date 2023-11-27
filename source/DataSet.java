@@ -3,79 +3,129 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Collections;
 
+/**
+ * The {@code DataSet} class represents a collection of data records and provides methods
+ * for manipulation and analysis of datasets.
+ */
 public class DataSet implements Serializable {
 
-    private final String[] features;
-    public ArrayList<DataRecord> data = new ArrayList<>();
+    private ArrayList<DataRecord> data;
     private int size;
-    private int trainingSize = 7;
-    private int testingSize = 3;
-    private boolean[] used; // Boolean array that can be used later for checking
+    private final UserConfig settings;
+    private final ArrayList<String> features;
 
-    // Constructor for creating Training, Testing, and Validation datasets
-    DataSet(String[] features, int size) {
-        this.features = features;
-        this.size = size;
-        this.used = new boolean[size];
+    /**
+     * Default constructor for an empty dataset.
+     *
+     * @param settings the configuration settings for the dataset
+     */
+    public DataSet(UserConfig settings) {
+        this.data = new ArrayList<>();
+        this.settings = settings;
+        this.features = new ArrayList<>();
+        this.size = 0;
     }
 
-    // Constructor for creating bootstrapped datasets
-    public DataSet(String[] features, ArrayList<DataRecord> data) {
-        this.features = features;
-        this.data = data;
-        this.size = data.size();
-        this.used = new boolean[size];
-    }
+    /**
+     * Constructor for creating a dataset from a file.
+     *
+     * @param file     the file containing the dataset
+     * @param settings the configuration settings for the dataset
+     */
+    public DataSet(FileText file, UserConfig settings) {
+        this.data = new ArrayList<>();
+        this.settings = settings;
 
-    // Constructor for original read
-    public DataSet(FileText file, String delimiter) {
         // Split the file's contents by row to form entries
         String[] entries = file.rows();
 
-        // Split the first entry (header) into features using the specified delimiter
-        this.features = entries[0].split(delimiter);
+        // Store column headers in the first row to a string array
+        String[] csvHeader = entries[0].split(settings.delimiter());
 
         // Iterate over the remaining entries, starting from index 1
         for (int i = 1; i < entries.length; i++) {
-            // Create a DataPoint using the features and the current entry
-            DataRecord row = new DataRecord(features, entries[i], delimiter);
+            // Create a DataPoint using the header from the csv and the latest entry in the loop
+            String latestEntry = entries[i];
+            DataRecord newRow = new DataRecord(csvHeader, latestEntry, settings.delimiter(), settings.nameIndex(), settings.ratingIndex());
+
             // Add the DataPoint to the dataset
-            data.add(row);
+            data.add(newRow);
         }
 
-        // Set the size of the dataset
+        // Store the features from the first record & update the size
+        this.features = new ArrayList<>(data.get(0).keySet());
         this.size = data.size();
     }
 
-    public int getSize() {
-        return size;
+    /**
+     * Gets the data record at the specified index.
+     *
+     * @param i the index of the data record
+     * @return the data record at the specified index
+     */
+    public DataRecord get(int i) {
+        return data.get(i);
     }
 
-    public void addEntry(DataRecord dp) {
+    /**
+     * Adds a data record to the dataset.
+     *
+     * @param dp the data record to be added
+     */
+    public void add(DataRecord dp) {
         data.add(dp);
         this.size++;
     }
 
-    // splits Dataset into training and testing
-    public ArrayList<DataSet> split(){
-        // training, testing, validation
-        ArrayList<DataSet> subsets = new ArrayList<>();
+    /**
+     * Gets the list of features in the dataset.
+     *
+     * @return the list of features
+     */
+    public ArrayList<String> features() {
+        return features;
+    }
 
-        // randomize in O(n) time
+    /**
+     * Gets the size of the dataset.
+     *
+     * @return the size of the dataset
+     */
+    public int size() {
+        return size;
+    }
+
+    /**
+     * Converts the dataset to an ArrayList of data records.
+     *
+     * @return the dataset as an ArrayList of data records
+     */
+    public ArrayList<DataRecord> asArrayList() {
+        return data;
+    }
+
+    /**
+     * Splits the dataset into training and testing subsets based on the specified ratios.
+     *
+     * @return an ArrayList containing two subsets (training and testing)
+     */
+    public ArrayList<DataSet> split() {
+        // Reserve two empty DataSet objects for the split
+        ArrayList<DataSet> subsets = new ArrayList<>();
+        subsets.add(new DataSet(settings));
+        subsets.add(new DataSet(settings));
+
+        // Randomize the superset to be selected from
         Collections.shuffle(data, new Random());
 
-        for(int i = 0; i < 3; i++){
-            subsets.add(new DataSet(features, 0));
-        }
+        // Calculate the sizes of training and testing subsets based on ratios
+        int trainingSize = size * (settings.trainingRatio() / (settings.trainingRatio() + settings.testingRatio()));
 
-        // loop through all data points and separate
-        for(int i = 0; i < size; i++){
-            int subsetIndex = i % 10;
-            int targetSubset = (subsetIndex < trainingSize) ? 0 : 1;
-            subsets.get(targetSubset).addEntry(data.get(i));
+        // Assign data points to training and testing subsets
+        for (int i = 0; i < size; i++) {
+            int subsetIndex = i < trainingSize ? 0 : 1;
+            subsets.get(subsetIndex).add(data.get(i)); // Use the add method to add DataRecord
         }
-
         return subsets;
-
     }
 }
