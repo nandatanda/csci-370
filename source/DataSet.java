@@ -60,6 +60,10 @@ public class DataSet implements Serializable {
         return size;
     }
 
+    public ArrayList<DataRecord> asArrayList(){
+        return data;
+    }
+
     public ArrayList<DataSet> split() {
         // Reserve two empty DataSet objects for the split
         ArrayList<DataSet> subsets = new ArrayList<>();
@@ -70,7 +74,7 @@ public class DataSet implements Serializable {
         Collections.shuffle(data, new Random());
 
         // Calculate the sizes of training and testing subsets based on ratios
-        int trainingSize = (int) (size * (settings.trainingRatio() / (settings.trainingRatio() + settings.testingRatio())));
+        int trainingSize = size * (settings.trainingRatio() / (settings.trainingRatio() + settings.testingRatio()));
 
         // Assign data points to training and testing subsets
         for (int i = 0; i < size; i++) {
