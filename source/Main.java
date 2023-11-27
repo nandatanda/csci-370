@@ -54,7 +54,7 @@ public class Main {
         // Check if serialized subsets file exists
         if (!subsetsObjectFile.exists()) {
             // If not, create a new superset, split it into subsets, and save them to files
-            superset = new DataSet(fileText, delimiter, settings.nameIndex(), settings.ratingIndex());
+            superset = new DataSet(fileText, settings);
             System.out.println(superset);
             subsets = superset.split();
             serializer.saveToFile(superset, "data/dataset.ser");
@@ -66,7 +66,7 @@ public class Main {
         }
 
         // Load the superset again (for demonstration purposes)
-        superset = new DataSet(fileText, delimiter, settings.nameIndex(), settings.ratingIndex());
+        superset = new DataSet(fileText, settings);
 
         // Print information about a data point from the superset
         DataRecord sampleRecord = superset.get(99);
