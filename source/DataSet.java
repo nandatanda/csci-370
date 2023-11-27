@@ -71,7 +71,6 @@ public class DataSet implements Serializable {
 
         // Calculate the sizes of training and testing subsets based on ratios
         int trainingSize = (int) (size * (settings.trainingRatio() / (settings.trainingRatio() + settings.testingRatio())));
-        int testingSize = size - trainingSize;
 
         // Assign data points to training and testing subsets
         for (int i = 0; i < size; i++) {
