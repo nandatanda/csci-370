@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -7,7 +8,7 @@ import java.util.LinkedHashMap;
  * The {@code UserConfig} class reads configuration settings from a CSV file and provides methods
  * to access these settings.
  */
-public class UserConfig {
+public class UserConfig implements Serializable {
     private LinkedHashMap<String, Object> configPairs = new LinkedHashMap<>();
 
     /**

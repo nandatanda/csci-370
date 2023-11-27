@@ -12,6 +12,7 @@ public class DataSet implements Serializable {
 
     // Default constructor for an empty dataset
     public DataSet(UserConfig settings) {
+        this.data = new ArrayList<>();
         this.settings = settings;
         this.features = new ArrayList<>();
         this.size = 0;
