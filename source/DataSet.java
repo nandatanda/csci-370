@@ -3,6 +3,10 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Collections;
 
+/**
+ * The {@code DataSet} class represents a collection of data records and provides methods
+ * for manipulation and analysis of datasets.
+ */
 public class DataSet implements Serializable {
 
     private ArrayList<DataRecord> data;
@@ -10,7 +14,11 @@ public class DataSet implements Serializable {
     private final UserConfig settings;
     private final ArrayList<String> features;
 
-    // Default constructor for an empty dataset
+    /**
+     * Default constructor for an empty dataset.
+     *
+     * @param settings the configuration settings for the dataset
+     */
     public DataSet(UserConfig settings) {
         this.data = new ArrayList<>();
         this.settings = settings;
@@ -18,7 +26,12 @@ public class DataSet implements Serializable {
         this.size = 0;
     }
 
-    // Constructor for original read
+    /**
+     * Constructor for creating a dataset from a file.
+     *
+     * @param file     the file containing the dataset
+     * @param settings the configuration settings for the dataset
+     */
     public DataSet(FileText file, UserConfig settings) {
         this.data = new ArrayList<>();
         this.settings = settings;
@@ -44,27 +57,58 @@ public class DataSet implements Serializable {
         this.size = data.size();
     }
 
+    /**
+     * Gets the data record at the specified index.
+     *
+     * @param i the index of the data record
+     * @return the data record at the specified index
+     */
     public DataRecord get(int i) {
         return data.get(i);
     }
 
+    /**
+     * Adds a data record to the dataset.
+     *
+     * @param dp the data record to be added
+     */
     public void add(DataRecord dp) {
         data.add(dp);
         this.size++;
     }
 
+    /**
+     * Gets the list of features in the dataset.
+     *
+     * @return the list of features
+     */
     public ArrayList<String> features() {
         return features;
     }
 
+    /**
+     * Gets the size of the dataset.
+     *
+     * @return the size of the dataset
+     */
     public int size() {
         return size;
     }
 
-    public ArrayList<DataRecord> asArrayList(){
+    /**
+     * Converts the dataset to an ArrayList of data records.
+     *
+     * @return the dataset as an ArrayList of data records
+     */
+    public ArrayList<DataRecord> asArrayList() {
         return data;
     }
 
+    /**
+     * Splits the dataset into training and testing subsets based on the specified ratios.
+     *
+     * @return an ArrayList containing two subsets (training and testing)
+     */
     public ArrayList<DataSet> split() {
         // Reserve two empty DataSet objects for the split
         ArrayList<DataSet> subsets = new ArrayList<>();
