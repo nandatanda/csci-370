@@ -78,7 +78,7 @@ public class UserConfig {
      * @return the percentage split for training data
      */
     public int trainingRatio() {
-        return Integer.parseInt(configPairs.get("trainingSplit").toString());
+        return Integer.parseInt(configPairs.get("trainingRatio").toString());
     }
 
     /**
@@ -87,7 +87,7 @@ public class UserConfig {
      * @return the percentage split for testing data
      */
     public int testingRatio() {
-        return Integer.parseInt(configPairs.get("testingSplit").toString());
+        return Integer.parseInt(configPairs.get("testingRatio").toString());
     }
 
     /**
