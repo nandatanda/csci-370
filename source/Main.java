@@ -67,9 +67,9 @@ public class Main {
 
         // Load the superset again (for demonstration purposes)
         superset = new DataSet(fileText, delimiter, settings.nameIndex(), settings.ratingIndex());
-        
+
         // Print information about a data point from the superset
-        DataRecord sampleRecord = superset.get(0);
+        DataRecord sampleRecord = superset.get(99);
         System.out.println("\n" + sampleRecord.title() + " (rated " + sampleRecord.rating() + ")");
         System.out.println(sampleRecord);
         return subsets;

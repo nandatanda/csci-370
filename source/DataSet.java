@@ -7,13 +7,17 @@ import java.util.Collections;
 public class DataSet implements Serializable {
 
     private final String[] features;
-    public String[] getFeatures(){
+
+    public String[] getFeatures() {
         return features;
     }
+
     public ArrayList<String> splittingFeatures = new ArrayList<>();
-    public ArrayList<String> getSplittingFeatures(){
+
+    public ArrayList<String> getSplittingFeatures() {
         return splittingFeatures;
     }
+
     private ArrayList<DataRecord> data = new ArrayList<>();
     private int size;
     private int trainingSize = 7;
@@ -68,19 +72,19 @@ public class DataSet implements Serializable {
     }
 
     // splits Dataset into training and testing
-    public ArrayList<DataSet> split(){
+    public ArrayList<DataSet> split() {
         // training, testing, validation
         ArrayList<DataSet> subsets = new ArrayList<>();
 
         // randomize in O(n) time
         Collections.shuffle(data, new Random());
 
-        for(int i = 0; i < 3; i++){
+        for (int i = 0; i < 3; i++) {
             subsets.add(new DataSet(features, splittingFeatures, 0));
         }
 
         // loop through all data points and separate
-        for(int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++) {
             int subsetIndex = i % 10;
             int targetSubset = (subsetIndex < trainingSize) ? 0 : 1;
             subsets.get(targetSubset).addEntry(data.get(i));
