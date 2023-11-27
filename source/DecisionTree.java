@@ -12,7 +12,7 @@ public class DecisionTree {
         this.MIN_SAMPLES = settings.minSamples();
         this.MAX_DEPTH = settings.maxDepth();
         this.TARGET_FEATURES_VALUES = settings.ratings();
-        this.root = buildTree(MAX_DEPTH, baggedFeatures, bootstrappedDataSet.getData());
+        this.root = buildTree(MAX_DEPTH, baggedFeatures, bootstrappedDataSet.asArrayList());
 
     }
 
