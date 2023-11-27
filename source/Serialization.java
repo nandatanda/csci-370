@@ -13,7 +13,7 @@ public class Serialization<T>{
     private void save(Object objToSave, String filename){
         try(ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(filename))){
             outputStream.writeObject(objToSave);
-            System.out.println("Object saved to " + filename);
+            System.out.println("Object saved to <" + filename + ">");
         }catch(IOException e){
             e.printStackTrace();
         }
@@ -31,7 +31,7 @@ public class Serialization<T>{
         try(ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(filename))){
             Object inputObject = inputStream.readObject();
             if (objClass.isInstance(inputObject)){
-                System.out.println("Object loaded");
+                System.out.println("Object at <" + filename + "> loaded");
                 return (T) inputObject;
             }
 
