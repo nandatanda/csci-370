@@ -23,7 +23,7 @@ public class Main {
         settings.loadConfig();
 
         // Debug settings
-        System.out.println(Arrays.toString(settings.ratings()));
+        System.out.println(settings.ratings());
         String[] newArray = {"a", "b", "c"};
         for (String s : settings.ratings()) {
             System.out.println(s.trim());

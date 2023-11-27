@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 
@@ -59,7 +60,7 @@ public class UserConfig {
      * @return the training data directory path
      */
     public String trainingDirectory() {
-        return configPairs.get("trainingDirectory").toString().trim();
+        return configPairs.get("trainingDirectory").toString();
     }
 
     /**
@@ -68,7 +69,7 @@ public class UserConfig {
      * @return the testing data directory path
      */
     public String testingDirectory() {
-        return configPairs.get("testingDirectory").toString().trim();
+        return configPairs.get("testingDirectory").toString();
     }
 
     /**
@@ -95,7 +96,7 @@ public class UserConfig {
      * @return the index for the name feature
      */
     public int nameIndex() {
-        String i = configPairs.get("nameIndex").toString().trim();
+        String i = configPairs.get("nameIndex").toString();
         return Integer.parseInt(i);
     }
 
@@ -105,7 +106,7 @@ public class UserConfig {
      * @return the index for the rating feature
      */
     public int ratingIndex() {
-        String i = configPairs.get("ratingIndex").toString().trim();
+        String i = configPairs.get("ratingIndex").toString();
         return Integer.parseInt(i);
     }
 
@@ -129,10 +130,11 @@ public class UserConfig {
      * Gets the value(s) of the "ratings" setting, representing the possible ratings in the dataset.
      *
      * @return the value(s) of the "ratings" setting
-     *         (e.g., ["E", "ET", "T", "M"] representing different content ratings)
+     * (e.g., ["E", "ET", "T", "M"] representing different content ratings)
      */
-    public String[] ratings() {
-        return (String[]) configPairs.get("ratings");
+    public ArrayList<String> ratings() {
+        String[] ratingsArray = (String[]) configPairs.get("ratings");
+        return new ArrayList<String>(Arrays.asList(ratingsArray));
     }
 
     /**
@@ -142,7 +144,7 @@ public class UserConfig {
      * @return the maximum depth of each decision tree in the random forest
      */
     public int maxDepth() {
-        String value = configPairs.get("maxDepth").toString().trim();
+        String value = configPairs.get("maxDepth").toString();
         return Integer.parseInt(value);
     }
 
@@ -153,7 +155,7 @@ public class UserConfig {
      * @return the maximum number of decision trees in the random forest
      */
     public int maxTrees() {
-        String value = configPairs.get("maxTrees").toString().trim();
+        String value = configPairs.get("maxTrees").toString();
         return Integer.parseInt(value);
     }
 
@@ -162,10 +164,10 @@ public class UserConfig {
      * required to split an internal node in each decision tree of the random forest.
      *
      * @return the minimum number of samples required to split an internal node in each decision tree
-     *         of the random forest
+     * of the random forest
      */
     public int minSamples() {
-        String value = configPairs.get("minSamples").toString().trim();
+        String value = configPairs.get("minSamples").toString();
         return Integer.parseInt(value);
     }
 }
