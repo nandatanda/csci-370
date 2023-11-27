@@ -21,7 +21,7 @@ public class Main {
         // Load settings from config.csv
         settings.loadConfig();
 
-        // Create a FileText object to read the content of the CSV file
+        // Create a FileText object to read the content of the dataset csv
         FileText content = new FileText(settings.trainingDirectory());
 
         // Load the dataset and split it into subsets
