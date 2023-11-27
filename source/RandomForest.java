@@ -3,14 +3,16 @@ import java.util.Random;
 
 public class RandomForest {
     public DataSet dataSet;
+    UserConfig settings;
     public int[] treeVotes;
     private ArrayList<DecisionTree> decisionTrees;
 
     private final int MIN_SAMPLES = 100;
     private final int TREES = 100;
     private final int MAX_DEPTH = 6;
-    RandomForest(DataSet dSet){
+    RandomForest(DataSet dSet, UserConfig settings){
         this.dataSet = dSet;
+        this.settings = settings;
 
     }
     public void train(DataSet dSet){
@@ -18,7 +20,7 @@ public class RandomForest {
         for(int i = 0; i < TREES; i++){
             DataSet bootstrappedDataSet = generateBootstrapDataSet(dataSet);
             ArrayList<String> baggedFeatures = generateBaggedFeatures(dataSet.getSplittingFeatures());
-            DecisionTree tree = new DecisionTree(bootstrappedDataSet, baggedFeatures);
+            DecisionTree tree = new DecisionTree(bootstrappedDataSet, baggedFeatures, settings);
             decisionTrees.add(tree);
         }
 

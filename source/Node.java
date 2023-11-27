@@ -15,9 +15,19 @@ public class Node {
     private Node left;
     private Node right;
 
+    private String label;
+
     public ArrayList<DataRecord> getDataPoints() {
 
         return dataPoints;
+    }
+    public double getGiniImpurity() {
+        return giniImpurity;
+    }
+
+
+    public void setGiniImpurity(double giniImpurity) {
+        this.giniImpurity = giniImpurity;
     }
 
 
@@ -38,14 +48,22 @@ public class Node {
     }
 
 
-    public double getGiniImpurity() {
-        return giniImpurity;
+    public boolean isLeaf(){
+        return (left == null && right == null);
     }
 
-
-    public void setGiniImpurity(double giniImpurity) {
-        this.giniImpurity = giniImpurity;
+    public void setLabel(String label){
+        this.label = label;
     }
+
+    public String getLabel(){
+        return this.label;
+    }
+
+    public void labelLeaf(){
+
+    }
+
 
 
 

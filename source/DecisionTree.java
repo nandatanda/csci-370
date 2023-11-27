@@ -1,28 +1,28 @@
 
 
+import java.sql.Array;
 import java.util.ArrayList;
 
 public class DecisionTree {
-    DecisionTree(ArrayList<String> baggedFeatures, ArrayList<DataRecord> samplesInNode) {
-        this.baggedFeatures = baggedFeatures;
-        this.root = buildTree(MAX_DEPTH, samplesInNode);
-    }
 
-    DecisionTree(DataSet boostrappedDataSet, ArrayList<String> baggedFeatures) {
+    DecisionTree(DataSet boostrappedDataSet, ArrayList<String> baggedFeatures, UserConfig settings) {
         //Generate bootstrap
         this.bootstrappedDataSet = boostrappedDataSet;
         this.baggedFeatures = baggedFeatures;
-        this.root = buildTree(MAX_DEPTH, bootstrappedDataSet.getData());
+        this.MIN_SAMPLES = settings.minSamples();
+        this.MAX_DEPTH = settings.maxDepth();
+        this.TARGET_FEATURES_VALUES = settings.ratings();
+        this.root = buildTree(MAX_DEPTH, baggedFeatures, bootstrappedDataSet.getData());
 
     }
 
-    private final String[] TARGET_FEATURES_VALUES = {"E", "ET", "T", "M"};
-
+    private final ArrayList<String> TARGET_FEATURES_VALUES;
+    private final DataSet bootstrappedDataSet;
+    private final ArrayList<String> baggedFeatures;
     private Node root;
-    private final int MIN_SAMPLES = 100;
-    private final int MAX_DEPTH = 6;
-    private DataSet bootstrappedDataSet;
-    private ArrayList<String> baggedFeatures;
+    private final int MIN_SAMPLES;
+    private final int MAX_DEPTH;
+
 
     public Node getRoot() {
         return this.root;
@@ -49,16 +49,22 @@ public class DecisionTree {
     }
 
 
-    private Node buildTree(int maxDepth, ArrayList<DataRecord> samplesInNode) {
+    private Node buildTree(int maxDepth, ArrayList<String> baggedFeatures, ArrayList<DataRecord> samplesInNode) {
         if (maxDepth < 0 || samplesInNode.size() < MIN_SAMPLES) return null;
         Node currentNode = new Node(samplesInNode);
 
         String feature = getBestFeature(baggedFeatures, samplesInNode);
+        // Gets left and right split
         ArrayList<ArrayList<DataRecord>> split = getSplit(feature, samplesInNode);
+        baggedFeatures.remove(feature);
 
         if (maxDepth > 0 && samplesInNode.size() > MIN_SAMPLES) {
-            currentNode.setLeft(buildTree(maxDepth - 1, split.get(0)));
-            currentNode.setRight(buildTree(maxDepth - 1, split.get(1)));
+            currentNode.setLeft(buildTree(maxDepth - 1, baggedFeatures, split.get(0)));
+            currentNode.setRight(buildTree(maxDepth - 1, baggedFeatures, split.get(1)));
+            if (currentNode.isLeaf()) {
+                // label leaf
+//                currentNode.labelLeaf(calculateFeatureDistribution(left));
+            }
         }
         return currentNode;
     }
@@ -76,6 +82,7 @@ public class DecisionTree {
         }
         return bestFeature;
     }
+
 
     private double getSplitImpurity(String splittingFeature, ArrayList<DataRecord> datapoints) {
         ArrayList<ArrayList<DataRecord>> split = getSplit(splittingFeature, datapoints);
@@ -114,11 +121,11 @@ public class DecisionTree {
     }
 
     public int[] calculateFeatureDistribution(ArrayList<DataRecord> datapoints) {
-        int[] targetFeatureTotals = new int[TARGET_FEATURES_VALUES.length];
+        int[] targetFeatureTotals = new int[TARGET_FEATURES_VALUES.size()];
         for (DataRecord r : datapoints) {
             String current = (String) r.get("esrb_rating");
-            for (int j = 0; j < TARGET_FEATURES_VALUES.length; j++) {
-                String targetFeatureValue = TARGET_FEATURES_VALUES[j];
+            for (int j = 0; j < TARGET_FEATURES_VALUES.size(); j++) {
+                String targetFeatureValue = TARGET_FEATURES_VALUES.get(j);
                 if (current.equals(targetFeatureValue)) {
                     targetFeatureTotals[j]++;
                 }
