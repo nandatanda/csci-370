@@ -4,16 +4,21 @@ import java.util.LinkedHashMap;
 
 /**
  * The {@code DataRecord} class represents a single game entry in a dataset.
- * Each data record has a title and associated values for different features.
+ * Each data record has a title, rating, and associated values for different features.
  */
 public class DataRecord extends LinkedHashMap<String, Object> implements Serializable {
+
+    private String title;
+    private String rating;
 
     /**
      * Constructs a {@code DataRecord} object by parsing the provided entry and mapping it to features.
      *
-     * @param features  an array of feature names
-     * @param entry     the entry string containing the data record information
-     * @param delimiter the delimiter used to separate values in the entry string
+     * @param features    an array of feature names
+     * @param entry       the entry string containing the data record information
+     * @param delimiter   the delimiter used to separate values in the entry string
+     * @param nameIndex   the index where the record's title is located
+     * @param ratingIndex the index where the record's ESRB classification is located
      */
     public DataRecord(String[] features, String entry, String delimiter, int nameIndex, int ratingIndex) {
         // Split the entire entry using the delimiter
@@ -23,17 +28,37 @@ public class DataRecord extends LinkedHashMap<String, Object> implements Seriali
         for (int j = 0; j < features.length && j < values.length; j++) {
             String newFeature = features[j].trim();
 
-            Object newValue;
-            if (j == nameIndex || (j == ratingIndex)) {
-                // For the name and rating features, directly use the value from the entry string
-                newValue = values[j].trim();
+            if (j == nameIndex) {
+                // Store the record's title separately
+                title = values[j].trim();
+            } else if (j == ratingIndex) {
+                // Store the record's rating separately
+                rating = values[j].trim();
             } else {
-                // For other features, interpret "1" or "true" as boolean true, and other values as boolean false
-                newValue = values[j].equals("1") || values[j].equalsIgnoreCase("true");
+                // For other features, interpret "1" or "true" as boolean true, and store them as a LinkedHashMap
+                Object newValue;
+                newValue = values[j].trim().equals("1") || values[j].equalsIgnoreCase("true");
+                put(newFeature, newValue);
             }
-
-            put(newFeature, newValue);
         }
+    }
+
+    /**
+     * Get the title of the data record.
+     *
+     * @return the title of the data record
+     */
+    public String title() {
+        return title;
+    }
+
+    /**
+     * Get the rating of the data record.
+     *
+     * @return the ESRB rating of the data record
+     */
+    public String rating() {
+        return rating;
     }
 
     /**
