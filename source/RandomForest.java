@@ -3,22 +3,24 @@ import java.util.Random;
 
 public class RandomForest {
     public DataSet dataSet;
+    UserConfig settings;
     public int[] treeVotes;
     private ArrayList<DecisionTree> decisionTrees;
 
     private final int MIN_SAMPLES = 100;
     private final int TREES = 100;
     private final int MAX_DEPTH = 6;
-    RandomForest(DataSet dSet){
+    RandomForest(DataSet dSet, UserConfig settings){
         this.dataSet = dSet;
+        this.settings = settings;
 
     }
     public void train(DataSet dSet){
 
         for(int i = 0; i < TREES; i++){
             DataSet bootstrappedDataSet = generateBootstrapDataSet(dataSet);
-            ArrayList<String> baggedFeatures = generateBaggedFeatures(dataSet.getFeatures());
-            DecisionTree tree = new DecisionTree(bootstrappedDataSet, baggedFeatures, MIN_SAMPLES, MAX_DEPTH);
+            ArrayList<String> baggedFeatures = generateBaggedFeatures(dataSet.getSplittingFeatures());
+            DecisionTree tree = new DecisionTree(bootstrappedDataSet, baggedFeatures, settings);
             decisionTrees.add(tree);
         }
 
@@ -29,11 +31,11 @@ public class RandomForest {
         //Randomly generate bootstrap dataset
         Random rand = new Random();
 
-        DataSet bootstrappedDataset = new DataSet(dataSet.getHeaders(), dataSet.getFeatures(), dataSet.size());
+        DataSet bootstrappedDataset = new DataSet(dataSet.getFeatures(), dataSet.getSplittingFeatures(), dataSet.size());
         for (int i = 0; i < this.dataSet.size(); i++) {
             int r = rand.nextInt(this.dataSet.size());
             DataRecord randomRecord = dataSet.get(r);
-            bootstrappedDataset.add(randomRecord);
+            bootstrappedDataset.addEntry(randomRecord);
         }
 
         return bootstrappedDataset;
