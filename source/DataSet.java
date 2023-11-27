@@ -19,6 +19,10 @@ public class DataSet implements Serializable {
     }
 
     private ArrayList<DataRecord> data = new ArrayList<>();
+
+    public ArrayList<DataRecord> getData(){
+        return this.data;
+    }
     private int size;
     private int trainingSize = 7;
     private int testingSize = 3;
@@ -45,7 +49,7 @@ public class DataSet implements Serializable {
         this.features = entries[0].split(delimiter);
         // Separates the features that are important for determining split from other splits
         this.splittingFeatures.addAll(Arrays.asList(features).subList(1, features.length - 1));
-        
+
         // Iterate over the remaining entries, starting from index 1
         for (int i = 1; i < entries.length; i++) {
             // Create a DataPoint using the features and the current entry

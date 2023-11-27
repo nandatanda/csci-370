@@ -18,7 +18,7 @@ public class RandomForest {
         for(int i = 0; i < TREES; i++){
             DataSet bootstrappedDataSet = generateBootstrapDataSet(dataSet);
             ArrayList<String> baggedFeatures = generateBaggedFeatures(dataSet.getSplittingFeatures());
-            DecisionTree tree = new DecisionTree(bootstrappedDataSet, baggedFeatures, MIN_SAMPLES, MAX_DEPTH);
+            DecisionTree tree = new DecisionTree(bootstrappedDataSet, baggedFeatures);
             decisionTrees.add(tree);
         }
 
