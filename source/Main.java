@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * The {@code Main} class serves as the entry point for the program.
@@ -9,7 +8,7 @@ import java.util.Arrays;
  */
 public class Main {
 
-    private static UserConfig settings = new UserConfig();
+    private static final UserConfig settings = new UserConfig();
 
     /**
      * The main method that is executed when the program starts.
@@ -21,13 +20,6 @@ public class Main {
     public static void main(String[] args) throws IOException {
         // Load settings from config.csv
         settings.loadConfig();
-
-        // Debug settings
-        System.out.println(settings.ratings());
-        String[] newArray = {"a", "b", "c"};
-        for (String s : settings.ratings()) {
-            System.out.println(s.trim());
-        }
 
         // Create a FileText object to read the content of the CSV file
         FileText content = new FileText(settings.trainingDirectory());
