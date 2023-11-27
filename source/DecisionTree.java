@@ -26,7 +26,7 @@ public class DecisionTree {
         this.baggedFeatures = baggedFeatures;
         this.MIN_SAMPLES = MIN_SAMPLES;
         this.MAX_DEPTH = MAX_DEPTH;
-        this.root = new Node(bootstrappedDataSet.getData(), 0);
+        //this.root = new Node(bootstrappedDataSet.getData(), 0);
         this.root.getBestSplit(baggedFeatures, MIN_SAMPLES, MAX_DEPTH);
     }
 /**
