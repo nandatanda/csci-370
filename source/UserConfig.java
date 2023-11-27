@@ -73,20 +73,20 @@ public class UserConfig {
     }
 
     /**
-     * Gets the percentage split for training data.
+     * Gets the split for training data as a ratio.
      *
      * @return the percentage split for training data
      */
-    public int trainingSplit() {
+    public int trainingRatio() {
         return Integer.parseInt(configPairs.get("trainingSplit").toString());
     }
 
     /**
-     * Gets the percentage split for testing data.
+     * Gets the split for testing data as a ratio.
      *
      * @return the percentage split for testing data
      */
-    public int testingSplit() {
+    public int testingRatio() {
         return Integer.parseInt(configPairs.get("testingSplit").toString());
     }
 

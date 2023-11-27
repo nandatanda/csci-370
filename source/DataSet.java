@@ -5,13 +5,21 @@ import java.util.Collections;
 
 public class DataSet implements Serializable {
 
-    private UserConfig settings;
-    public ArrayList<String> features = new ArrayList<>();
-    private ArrayList<DataRecord> data = new ArrayList<>();
+    private ArrayList<DataRecord> data;
     private int size;
+    private final UserConfig settings;
+    private final ArrayList<String> features;
+
+    // Default constructor for an empty dataset
+    public DataSet(UserConfig settings) {
+        this.settings = settings;
+        this.features = new ArrayList<>();
+        this.size = 0;
+    }
 
     // Constructor for original read
     public DataSet(FileText file, UserConfig settings) {
+        this.data = new ArrayList<>();
         this.settings = settings;
 
         // Split the file's contents by row to form entries
@@ -31,22 +39,17 @@ public class DataSet implements Serializable {
         }
 
         // Store the features from the first record & update the size
-        this.features = new ArrayList<String>(data.get(0).keySet());
+        this.features = new ArrayList<>(data.get(0).keySet());
         this.size = data.size();
     }
 
-    // Constructor for creating Training, Testing, and Validation datasets
-    DataSet(String[] headers, ArrayList<String> features, int size) {
-        this.headers = headers;
-        this.features = features;
-        this.size = size;
+    public DataRecord get(int i) {
+        return data.get(i);
     }
 
-    // Constructor for creating bootstrapped datasets
-    public DataSet(String[] headers, ArrayList<DataRecord> data) {
-        this.headers = headers;
-        this.data = data;
-        this.size = data.size();
+    public void add(DataRecord dp) {
+        data.add(dp);
+        this.size++;
     }
 
     public ArrayList<String> features() {
@@ -57,35 +60,24 @@ public class DataSet implements Serializable {
         return size;
     }
 
-    public DataRecord get(int i) {
-        return data.get(i);
-    }
-
-    public void addEntry(DataRecord dp) {
-        data.add(dp);
-        this.size++;
-    }
-
-    // splits Dataset into training and testing
     public ArrayList<DataSet> split() {
-        // training, testing, validation
+        // Reserve two empty DataSet objects for the split
         ArrayList<DataSet> subsets = new ArrayList<>();
+        subsets.add(new DataSet(settings));
+        subsets.add(new DataSet(settings));
 
-        // randomize in O(n) time
+        // Randomize the superset to be selected from
         Collections.shuffle(data, new Random());
 
-        for (int i = 0; i < 3; i++) {
-            subsets.add(new DataSet(headers, features, 0));
-        }
+        // Calculate the sizes of training and testing subsets based on ratios
+        int trainingSize = (int) (size * (settings.trainingRatio() / (settings.trainingRatio() + settings.testingRatio())));
+        int testingSize = size - trainingSize;
 
-        // loop through all data points and separate
+        // Assign data points to training and testing subsets
         for (int i = 0; i < size; i++) {
-            int subsetIndex = i % 10;
-            int targetSubset = (subsetIndex < settings.trainingSplit() / 10) ? 0 : 1;
-            subsets.get(targetSubset).addEntry(data.get(i));
+            int subsetIndex = i < trainingSize ? 0 : 1;
+            subsets.get(subsetIndex).add(data.get(i)); // Use the add method to add DataRecord
         }
-
         return subsets;
-
     }
 }

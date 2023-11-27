@@ -33,7 +33,7 @@ public class RandomForest {
         for (int i = 0; i < this.dataSet.size(); i++) {
             int r = rand.nextInt(this.dataSet.size());
             DataRecord randomRecord = dataSet.get(r);
-            bootstrappedDataset.addEntry(randomRecord);
+            bootstrappedDataset.add(randomRecord);
         }
 
         return bootstrappedDataset;
