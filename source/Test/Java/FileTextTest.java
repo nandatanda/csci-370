@@ -1,14 +1,11 @@
-package Test.Java;
-
-import org.junit.jupiter.api.Test;
 
 class FileTextTest {
-    /**
-     * Test is the file is read in properly
-     */
-    @Test
-    void fileIsRead()
-    {
 
+    @org.junit.jupiter.api.Test
+    void testToString() {
+    }
+
+    @org.junit.jupiter.api.Test
+    void rows() {
     }
 }
