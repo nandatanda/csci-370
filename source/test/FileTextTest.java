@@ -12,7 +12,7 @@ class FileTextTest {
         //when
         Executable executable = () -> new FileText(testFilePath);
         //Then
-        assertDoesNotThrow(() -> executable, "IO Error");
+        assertDoesNotThrow(executable, "IO Error");
     }
 
     @Test
