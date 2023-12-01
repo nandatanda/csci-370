@@ -16,7 +16,7 @@ class FileTextTest {
     }
 
     @Test
-    void should_ReturnNonEmptyArrayOfStrings_GivenInput() throws Exception {
+    void should_ReturnNonEmptyArrayOfStrings_When_GivenInput() throws Exception {
         //given
         final String testFilePath = "source/test/resources/Video_games_esrb_rating_test.csv";
         //when

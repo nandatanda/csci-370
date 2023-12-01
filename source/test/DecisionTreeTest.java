@@ -1,42 +1,26 @@
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class DecisionTreeTest {
 
-    @Test
-    void getRoot() {
+    private ArrayList<String> targetFeaturesValuesMock;
+    private DataSet bootstrappedDataSetMock;
+    private ArrayList<String> baggedFeaturesMock;
+    private Node rootMock;
+    private int minSampleMock;
+    private int maxDepthMock;
+
+    @BeforeEach
+    void setup(){
+
     }
 
     @Test
-    void getMinSamples() {
+    void should_BuildTree_When_ObjectIsCreated() {
     }
 
-    @Test
-    void getMaxDepth() {
-    }
-
-    @Test
-    void getBootstrappedDataSet() {
-    }
-
-    @Test
-    void getBaggedFeatures() {
-    }
-
-    @Test
-    void setRoot() {
-    }
-
-    @Test
-    void getSplit() {
-    }
-
-    @Test
-    void calculateGiniImpurity() {
-    }
-
-    @Test
-    void calculateFeatureDistribution() {
-    }
 }
