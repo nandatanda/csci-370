@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class MaxHeap {
-    private ArrayList<Node> heap;
+    private final ArrayList<Node> heap;
 
     public MaxHeap() {
         heap = new ArrayList<>();
@@ -18,10 +18,10 @@ public class MaxHeap {
         int index = heap.size() - 1;
         while (index > 0) {
             int parentIndex = (index - 1) / 2;
-            // compare gini impurity
-//            if (heap.get(node) <= heap.get(parentIndex)) {
-//                break; // Heap property is satisfied
-//            }
+
+            if (heap.get(index).getGiniImpurity() <= heap.get(parentIndex).getGiniImpurity()) {
+                break; // Heap property is satisfied
+            }
             swap(index, parentIndex);
             index = parentIndex;
         }
@@ -54,14 +54,13 @@ public class MaxHeap {
             int rightChild = 2 * index + 2;
             int largest = index;
 
-            //compare gini impurity
-//            if (leftChild < size && heap.get(leftChild) > heap.get(largest)) {
-//                largest = leftChild;
-//            }
-            // compare gini impurity
-//            if (rightChild < size && heap.get(rightChild) > heap.get(largest)) {
-//                largest = rightChild;
-//            }
+//            compare by gini impurity
+            if (leftChild < size && heap.get(leftChild).getGiniImpurity() > heap.get(largest).getGiniImpurity()) {
+                largest = leftChild;
+            }
+            if (rightChild < size && heap.get(rightChild).getGiniImpurity() > heap.get(largest).getGiniImpurity()) {
+                largest = rightChild;
+            }
 
             if (largest == index) {
                 break; // Heap property is satisfied
