@@ -12,6 +12,15 @@ public class DataRecord extends LinkedHashMap<String, Object> implements Seriali
     private String rating;
 
     /**
+     * Default constructor for {@code DataRecord}.
+     * Sets the fields to default values.
+     */
+    public DataRecord() {
+        this.title = "";
+        this.rating = "";
+    }
+
+    /**
      * Constructs a {@code DataRecord} object by parsing the provided entry and mapping it to headers.
      *
      * @param headers     an array of all column headers from the csv file
