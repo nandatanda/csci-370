@@ -8,17 +8,22 @@ public class DecisionTree {
         this.baggedFeatures = baggedFeatures;
         this.MIN_SAMPLES = settings.minSamples();
         this.MAX_DEPTH = settings.maxDepth();
-        this.TARGET_FEATURES_VALUES = settings.ratings();
-        this.root = buildTree(MAX_DEPTH, baggedFeatures, bootstrappedDataSet.asArrayList());
+        this.TARGET_FEATURES = settings.ratings();
+        this.maxHeap = new MaxHeap();
+        this.root = new Node(bootstrappedDataSet.asArrayList());
+        maxHeap.insert(root);
+        buildTree(this.root, 0);
 
     }
 
-    private final ArrayList<String> TARGET_FEATURES_VALUES;
+    private final ArrayList<String> TARGET_FEATURES;
     private final DataSet bootstrappedDataSet;
     private final ArrayList<String> baggedFeatures;
-    private Node root;
+
     private final int MIN_SAMPLES;
     private final int MAX_DEPTH;
+    private MaxHeap maxHeap;
+    private Node root;
 
 
     public Node getRoot() {
@@ -45,91 +50,48 @@ public class DecisionTree {
         this.root = rootNode;
     }
 
-
-    private Node buildTree(int maxDepth, ArrayList<String> baggedFeatures, ArrayList<DataRecord> samplesInNode) {
-        if (maxDepth < 0 || samplesInNode.size() < MIN_SAMPLES) return null;
-        Node currentNode = new Node(samplesInNode);
-
-        String feature = getBestFeature(baggedFeatures, samplesInNode);
-        // Gets left and right split
-        ArrayList<ArrayList<DataRecord>> split = getSplit(feature, samplesInNode);
-        baggedFeatures.remove(feature);
-
-        if (maxDepth > 0 && samplesInNode.size() > MIN_SAMPLES) {
-            currentNode.setLeft(buildTree(maxDepth - 1, baggedFeatures, split.get(0)));
-            currentNode.setRight(buildTree(maxDepth - 1, baggedFeatures, split.get(1)));
-            if (currentNode.isLeaf()) {
-                // label leaf
-//                currentNode.labelLeaf(calculateFeatureDistribution(left));
-            }
+    private void buildTree(Node n, int depth) {
+        if (depth >= MAX_DEPTH || n.getDataPoints().size() <= MIN_SAMPLES) {
+            n.labelLeaf();
+            // another scenario is when it is a leaf node but doesn't satisfy this criteria
+            return;
         }
-        return currentNode;
-    }
-
-
-    private String getBestFeature(ArrayList<String> candidateFeatures, ArrayList<DataRecord> datapoints) {
-        double lowestImpurity = Double.POSITIVE_INFINITY;
-        String bestFeature = "";
-        for (String candidateFeature : candidateFeatures) {
-            double currentImpurity = getSplitImpurity(candidateFeature, datapoints);
-            if (currentImpurity < lowestImpurity) {
-                lowestImpurity = currentImpurity;
-                bestFeature = candidateFeature;
-            }
-        }
-        return bestFeature;
-    }
-
-
-    private double getSplitImpurity(String splittingFeature, ArrayList<DataRecord> datapoints) {
-        ArrayList<ArrayList<DataRecord>> split = getSplit(splittingFeature, datapoints);
-        double lWeightedImpurity = (double) split.get(0).size() / datapoints.size() * calculateGiniImpurity(split.get(0));
-        double rWeightedImpurity = (double) split.get(1).size() / datapoints.size() * calculateGiniImpurity(split.get(1));
-        return lWeightedImpurity + rWeightedImpurity;
-    }
-
-    public ArrayList<ArrayList<DataRecord>> getSplit(String feature, ArrayList<DataRecord> samples) {
-        ArrayList<DataRecord> left = new ArrayList<>();
-        ArrayList<DataRecord> right = new ArrayList<>();
-        for (DataRecord current : samples) {
-            boolean positiveClassification = (boolean) current.get(feature);
-            if (positiveClassification) {
-                right.add(current);
-            } else {
-                left.add(current);
-            }
-        }
-        ArrayList<ArrayList<DataRecord>> split = new ArrayList<>();
-        split.add(left);
-        split.add(right);
-        return split;
-
-    }
-
-
-    public double calculateGiniImpurity(ArrayList<DataRecord> datapoints) {
-        int[] featureDistribution = calculateFeatureDistribution(datapoints);
-        double gini = 1, classProbability;
-        for (int count : featureDistribution) {
-            classProbability = (double) count / datapoints.size();
-            gini -= Math.pow(classProbability, 2);
-        }
-        return gini;
-    }
-
-    public int[] calculateFeatureDistribution(ArrayList<DataRecord> datapoints) {
-        int[] targetFeatureTotals = new int[TARGET_FEATURES_VALUES.size()];
-        for (DataRecord r : datapoints) {
-            String current = (String) r.get("esrb_rating");
-            for (int j = 0; j < TARGET_FEATURES_VALUES.size(); j++) {
-                String targetFeatureValue = TARGET_FEATURES_VALUES.get(j);
-                if (current.equals(targetFeatureValue)) {
-                    targetFeatureTotals[j]++;
+        Node parent = maxHeap.removeMax();
+        for (String f : baggedFeatures) {
+            Node left = new Node(f, TARGET_FEATURES);
+            Node right = new Node(f, TARGET_FEATURES);
+            for (DataRecord d : n.getDataPoints()) {
+                if ((boolean) d.get(f)) {
+                    right.add(d);
+                } else {
+                    left.add(d);
                 }
             }
+            left.calculateGiniImpurity();
+            right.calculateGiniImpurity();
+            maxHeap.insert(left);
+            maxHeap.insert(right);
+            parent.setSplitImpurity(getSplitImpurity(parent, left, right));
+            parent.setLeft(left);
+            parent.setRight(right);
+            maxHeap.insert(parent);
         }
-        return targetFeatureTotals;
 
+        Node bestNode = maxHeap.removeMax();
+        n.setLeft(bestNode.getLeft());
+        n.setRight(bestNode.getRight());
+        if (n.getLeft().getGiniImpurity() < n.getGiniImpurity()) {
+            buildTree(n.getLeft(), depth + 1);
+        } else {
+            buildTree(n.getRight(), depth + 1);
+        }
+
+    }
+
+    private double getSplitImpurity(Node parent, Node left, Node right) {
+        double lWeighted = (double) left.getDataPoints().size() / parent.getDataPoints().size() * left.getGiniImpurity();
+        double rWeighted = (double) right.getDataPoints().size() / parent.getDataPoints().size() * right.getGiniImpurity();
+        return lWeighted + rWeighted;
     }
 
 

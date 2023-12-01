@@ -1,15 +1,30 @@
 import java.util.ArrayList;
 
+
 public class Node {
 
-    public Node(ArrayList<DataRecord> dPoints) {
-        this.dataPoints = dPoints;
+
+    public Node(ArrayList<DataRecord> datapoints) {
+        this.datapoints = datapoints;
+    }
+
+    public Node(String feature, ArrayList<String> ratings) {
+        this.splitFeature = feature;
+        this.datapoints = new ArrayList<>();
+        this.ratingsDistribution = new DataRecord();
+        for (String r : ratings) {
+            ratingsDistribution.put(r, 0);
+        }
 
     }
 
-    private final ArrayList<DataRecord> dataPoints;
+    private final ArrayList<DataRecord> datapoints;
 
+    private DataRecord ratingsDistribution;
 
+    private String splitFeature;
+
+    private double splitImpurity;
     private double giniImpurity;
 
     private Node left;
@@ -18,9 +33,43 @@ public class Node {
     private String label;
 
     public ArrayList<DataRecord> getDataPoints() {
-
-        return dataPoints;
+        return datapoints;
     }
+
+    public void add(DataRecord datapoint) {
+        String rating = datapoint.rating();
+        int ratingTotal = (int) ratingsDistribution.get(rating);
+        ratingTotal++;
+        ratingsDistribution.put(rating, ratingTotal);
+        datapoints.add(datapoint);
+
+    }
+
+    public String getSplitFeature() {
+        return this.splitFeature;
+    }
+
+    public void setSplitFeature(String f) {
+        this.splitFeature = f;
+    }
+
+    public void calculateGiniImpurity() {
+        double gini = 1, classProbability;
+        for (String f : ratingsDistribution.keySet()) {
+            classProbability = (double) ratingsDistribution.get(f) / datapoints.size();
+            gini -= Math.pow(classProbability, 2);
+        }
+        giniImpurity = gini;
+    }
+
+    public double getSplitImpurity() {
+        return splitImpurity;
+    }
+
+    public void setSplitImpurity(double impurity) {
+        this.splitImpurity = impurity;
+    }
+
     public double getGiniImpurity() {
         return giniImpurity;
     }
@@ -48,25 +97,21 @@ public class Node {
     }
 
 
-    public boolean isLeaf(){
+    public boolean isLeaf() {
         return (left == null && right == null);
     }
 
-    public void setLabel(String label){
+    public void setLabel(String label) {
         this.label = label;
     }
 
-    public String getLabel(){
+    public String getLabel() {
         return this.label;
     }
 
-    public void labelLeaf(){
-
+    public void labelLeaf() {
+        //label majority feature in leaf
     }
-
-
-
-
 
 
 }
