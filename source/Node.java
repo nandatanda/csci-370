@@ -111,6 +111,17 @@ public class Node {
 
     public void labelLeaf() {
         //label majority feature in leaf
+        String majority = "";
+        int greatestCount = 0;
+        for(String f : ratingsDistribution.keySet()){
+            int currentCount = (int) ratingsDistribution.get(f);
+            if (currentCount > greatestCount){
+                greatestCount = currentCount;
+                majority = f;
+            }
+        }
+
+        label = majority;
     }
 
 

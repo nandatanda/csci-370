@@ -100,5 +100,20 @@ public class DecisionTree {
         return lWeighted + rWeighted;
     }
 
+    public String castVote(DataRecord datapoint){
+        // start form the root and loop through and get the majority lablel if datapoint classifies
+        Node currentNode = root;
+        while(!currentNode.isLeaf()){
+            String feature = currentNode.getSplitFeature();
+            if ((boolean)datapoint.get(feature)){
+                currentNode = currentNode.getRight();
+            }
+            else{
+                currentNode = currentNode.getLeft();
+            }
+        }
+        return currentNode.getLabel();
+    }
+
 
 }
