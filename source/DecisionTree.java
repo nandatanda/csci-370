@@ -56,7 +56,7 @@ public class DecisionTree {
             // another scenario is when it is a leaf node but doesn't satisfy this criteria
             return;
         }
-        Node parent = minHeap.removeMax();
+        Node parent = minHeap.removeMin();
         for (String f : baggedFeatures) {
             Node left = new Node(f, TARGET_FEATURES);
             Node right = new Node(f, TARGET_FEATURES);
@@ -77,14 +77,18 @@ public class DecisionTree {
             minHeap.insert(parent);
         }
 
-        Node bestNode = minHeap.removeMax();
+        Node bestNode = minHeap.removeMin();
         n.setLeft(bestNode.getLeft());
         n.setRight(bestNode.getRight());
         if (n.getLeft().getGiniImpurity() < n.getGiniImpurity()) {
             minHeap.insert(bestNode.getLeft());
+            //label the leaf because we are no longer splitting on the right side
+            n.getRight().labelLeaf();
             buildTree(bestNode.getLeft(), depth + 1);
         } else {
             minHeap.insert(bestNode.getRight());
+            //label the leaf because we are no longer splitting on left side
+            n.getLeft().labelLeaf();
             buildTree(bestNode.getRight(), depth + 1);
         }
 

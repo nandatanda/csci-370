@@ -2,43 +2,55 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class RandomForest {
-    public DataSet dataSet;
-    UserConfig settings;
-    public int[] treeVotes;
-    private ArrayList<DecisionTree> decisionTrees;
+    RandomForest(DataSet trainingSet, DataSet testingSet, UserConfig settings) {
+        this.trainingSet = trainingSet;
+        this.testingSet = testingSet;
+        this.MIN_SAMPLES = settings.minSamples();
+        this.NUM_TREES = settings.maxTrees();
+        this.MAX_DEPTH = settings.maxDepth();
+
+        this.settings = settings;
+
+    }
+
+    private final DataSet trainingSet;
+    private final DataSet testingSet;
 
     private final int MIN_SAMPLES;
     private final int NUM_TREES;
     private final int MAX_DEPTH;
 
-    RandomForest(DataSet dSet, UserConfig settings) {
-        this.MIN_SAMPLES = settings.minSamples();
-        this.NUM_TREES = settings.maxTrees();
-        this.MAX_DEPTH = settings.maxDepth();
-        this.dataSet = dSet;
-        this.settings = settings;
+    UserConfig settings;
+    public ArrayList<String> treeVotes;
+    private ArrayList<DecisionTree> decisionTrees;
 
-    }
 
-    public void train(DataSet dSet) {
+    public void train() {
 
         for (int i = 0; i < NUM_TREES; i++) {
-            DataSet bootstrappedDataSet = generateBootstrapDataSet(dataSet);
-            ArrayList<String> baggedFeatures = generateBaggedFeatures(dataSet.features());
+            DataSet bootstrappedDataSet = generateBootstrapDataSet();
+            ArrayList<String> baggedFeatures = generateBaggedFeatures(trainingSet.features());
             DecisionTree tree = new DecisionTree(bootstrappedDataSet, baggedFeatures, settings);
             decisionTrees.add(tree);
         }
 
     }
 
-    public DataSet generateBootstrapDataSet(DataSet dSet) {
+    public void test(){
+        DataRecord datapoint;
+        for(int i = 0; i < testingSet.size(); i++){
+            // loop through training set passing in a data point at each point
+        }
+    }
+
+    public DataSet generateBootstrapDataSet() {
         //Randomly generate bootstrap dataset
         Random rand = new Random();
 
         DataSet bootstrappedDataset = new DataSet(settings);
-        for (int i = 0; i < this.dataSet.size(); i++) {
-            int r = rand.nextInt(this.dataSet.size());
-            DataRecord randomRecord = dataSet.get(r);
+        for (int i = 0; i < trainingSet.size(); i++) {
+            int r = rand.nextInt(trainingSet.size());
+            DataRecord randomRecord = trainingSet.get(r);
             bootstrappedDataset.add(randomRecord);
         }
 

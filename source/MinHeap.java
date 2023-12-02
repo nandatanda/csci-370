@@ -28,7 +28,7 @@ public class MinHeap {
     }
 
     // Extract the maximum element from the heap
-    public Node removeMax() {
+    public Node removeMin() {
         if (heap.isEmpty()) {
             throw new IllegalStateException("Heap is empty");
         }
