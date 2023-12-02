@@ -45,7 +45,7 @@ public class RandomForest {
     public ArrayList<String> generateBaggedFeatures(ArrayList<String> splittingFeatures) {
         ArrayList<String> baggedFeatures = new ArrayList<>();
         Random rand = new Random();
-        int fSize = rand.nextInt(splittingFeatures.size());
+        int fSize = rand.nextInt(splittingFeatures.size() + 1);
 
         for (int i = 0; i < fSize; i++) {
             int randomIndex = rand.nextInt(splittingFeatures.size());
