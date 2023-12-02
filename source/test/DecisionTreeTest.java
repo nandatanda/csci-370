@@ -9,30 +9,32 @@ import java.util.ArrayList;
 import static org.mockito.Mockito.*;
 
 class DecisionTreeTest {
+
+    private ArrayList<DataRecord> dataPointsTest = new ArrayList<>();
+    private ArrayList<String> baggedFeaturesTest = new ArrayList<>();
+    private int minSampleTest;
+    private int maxDepthTest;
     @Mock
-    private UserConfig settingsMock;
-    private DecisionTree treeMock;
-    private ArrayList<String> targetFeaturesValuesMock = new ArrayList<String>();
-    private DataSet bootstrappedDataSetMock;
-    private ArrayList<String> baggedFeaturesMock = new ArrayList<String>();
-    private Node rootMock;
-    private int minSampleMock;
-    private int maxDepthMock;
+    private UserConfig settingsTest;
+    private DecisionTree treeTest;
+    DataSet bootstrappedDataSetTest;
+
+
 
     @BeforeEach
     void setup(){
-        this.rootMock = mock(Node.class);
-        this.settingsMock = mock(UserConfig.class);
-        this.treeMock = mock(DecisionTree.class);
-        this.bootstrappedDataSetMock = mock(DataSet.class);
+        this.settingsTest = mock(UserConfig.class);
+        this.treeTest = mock(DecisionTree.class);
+        this.bootstrappedDataSetTest = mock(DataSet.class);
 
 
-        this.treeMock = new DecisionTree(bootstrappedDataSetMock, baggedFeaturesMock,settingsMock);
+        this.treeTest = new DecisionTree(bootstrappedDataSetTest, baggedFeaturesTest, settingsTest);
+
     }
 
     @Test
     void should_BuildTree_When_ObjectIsCreated() {
-       //Not implemented
+       System.out.println(this.treeTest.calculateGiniImpurity(dataPointsTest));
     }
 
 }
