@@ -3,31 +3,34 @@ import java.util.ArrayList;
 public class DecisionTree {
 
     DecisionTree(DataSet boostrappedDataSet, ArrayList<String> baggedFeatures, UserConfig settings) {
-        //Generate bootstrap
         this.bootstrappedDataSet = boostrappedDataSet;
         this.baggedFeatures = baggedFeatures;
         this.MIN_SAMPLES = settings.minSamples();
         this.MAX_DEPTH = settings.maxDepth();
         this.TARGET_FEATURES = settings.ratings();
-        this.maxHeap = new MaxHeap();
+        this.maxHeap = new MinHeap();
         this.root = new Node(bootstrappedDataSet.asArrayList());
         maxHeap.insert(root);
         buildTree(this.root, 0);
 
     }
 
-    private final ArrayList<String> TARGET_FEATURES;
     private final DataSet bootstrappedDataSet;
     private final ArrayList<String> baggedFeatures;
-
     private final int MIN_SAMPLES;
     private final int MAX_DEPTH;
-    private MaxHeap maxHeap;
+
+    private final ArrayList<String> TARGET_FEATURES;
+    private final MinHeap maxHeap;
+
     private Node root;
 
+    public DataSet getBootstrappedDataSet() {
+        return this.bootstrappedDataSet;
+    }
 
-    public Node getRoot() {
-        return this.root;
+    public ArrayList<String> getBaggedFeatures() {
+        return this.baggedFeatures;
     }
 
     public int getMinSamples() {
@@ -38,13 +41,10 @@ public class DecisionTree {
         return this.MAX_DEPTH;
     }
 
-    public DataSet getBootstrappedDataSet() {
-        return this.bootstrappedDataSet;
+    public Node getRoot() {
+        return this.root;
     }
 
-    public ArrayList<String> getBaggedFeatures() {
-        return this.baggedFeatures;
-    }
 
     public void setRoot(Node rootNode) {
         this.root = rootNode;

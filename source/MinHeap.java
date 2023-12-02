@@ -1,9 +1,9 @@
 import java.util.ArrayList;
 
-public class MaxHeap {
+public class MinHeap {
     private final ArrayList<Node> heap;
 
-    public MaxHeap() {
+    public MinHeap() {
         heap = new ArrayList<>();
     }
 
@@ -19,7 +19,7 @@ public class MaxHeap {
         while (index > 0) {
             int parentIndex = (index - 1) / 2;
 
-            if (heap.get(index).getGiniImpurity() <= heap.get(parentIndex).getGiniImpurity()) {
+            if (heap.get(index).getGiniImpurity() >= heap.get(parentIndex).getGiniImpurity()) {
                 break; // Heap property is satisfied
             }
             swap(index, parentIndex);
@@ -52,22 +52,22 @@ public class MaxHeap {
         while (index < size) {
             int leftChild = 2 * index + 1;
             int rightChild = 2 * index + 2;
-            int largest = index;
+            int smallest = index;
 
 //            compare by gini impurity
-            if (leftChild < size && heap.get(leftChild).getGiniImpurity() > heap.get(largest).getGiniImpurity()) {
-                largest = leftChild;
+            if (leftChild < size && heap.get(leftChild).getGiniImpurity() < heap.get(smallest).getGiniImpurity()) {
+                smallest = leftChild;
             }
-            if (rightChild < size && heap.get(rightChild).getGiniImpurity() > heap.get(largest).getGiniImpurity()) {
-                largest = rightChild;
+            if (rightChild < size && heap.get(rightChild).getGiniImpurity() < heap.get(smallest).getGiniImpurity()) {
+                smallest = rightChild;
             }
 
-            if (largest == index) {
+            if (smallest == index) {
                 break; // Heap property is satisfied
             }
 
-            swap(index, largest);
-            index = largest;
+            swap(index, smallest);
+            index = smallest;
         }
     }
 
