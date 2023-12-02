@@ -8,7 +8,6 @@ public class RandomForest {
         this.MIN_SAMPLES = settings.minSamples();
         this.NUM_TREES = settings.maxTrees();
         this.MAX_DEPTH = settings.maxDepth();
-
         this.settings = settings;
 
     }
@@ -21,14 +20,19 @@ public class RandomForest {
     private final int MAX_DEPTH;
 
     UserConfig settings;
-    public ArrayList<String> treeVotes;
+    private ArrayList<String> treeVotes;
     private ArrayList<DecisionTree> decisionTrees;
+
+    public ArrayList<String> getTreeVotes(){
+        return this.treeVotes;
+    }
 
 
     public void train() {
 
         for (int i = 0; i < NUM_TREES; i++) {
             DataSet bootstrappedDataSet = generateBootstrapDataSet();
+            System.out.println(trainingSet.features());
             ArrayList<String> baggedFeatures = generateBaggedFeatures(trainingSet.features());
             DecisionTree tree = new DecisionTree(bootstrappedDataSet, baggedFeatures, settings);
             decisionTrees.add(tree);
@@ -36,9 +40,9 @@ public class RandomForest {
 
     }
 
-    public void test(){
+    public void test() {
         DataRecord datapoint;
-        for(int i = 0; i < testingSet.size(); i++){
+        for (int i = 0; i < testingSet.size(); i++) {
             datapoint = testingSet.get(i);
             for (DecisionTree decisionTree : decisionTrees) {
                 treeVotes.add(decisionTree.castVote(datapoint));

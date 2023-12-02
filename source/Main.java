@@ -29,7 +29,8 @@ public class Main {
         DataSet trainingSet = subsets.get(0);
         DataSet testingSet = subsets.get(1);
 
-        //RandomForest rf = new RandomForest(trainingSet);
+        RandomForest rf = new RandomForest(trainingSet, testingSet, settings);
+        System.out.println(trainingSet.features());
         //System.out.println(rf.set.data.get(0));
 
     }

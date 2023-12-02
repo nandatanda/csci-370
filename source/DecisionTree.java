@@ -101,7 +101,7 @@ public class DecisionTree {
     }
 
     public String castVote(DataRecord datapoint){
-        // start form the root and loop through and get the majority lablel if datapoint classifies
+        // start form the root and loop through and get the majority label if datapoint classifies
         Node currentNode = root;
         while(!currentNode.isLeaf()){
             String feature = currentNode.getSplitFeature();
