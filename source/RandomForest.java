@@ -39,7 +39,10 @@ public class RandomForest {
     public void test(){
         DataRecord datapoint;
         for(int i = 0; i < testingSet.size(); i++){
-            // loop through training set passing in a data point at each point
+            datapoint = testingSet.get(i);
+            for (DecisionTree decisionTree : decisionTrees) {
+                treeVotes.add(decisionTree.castVote(datapoint));
+            }
         }
     }
 
