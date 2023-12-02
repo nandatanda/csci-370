@@ -81,9 +81,11 @@ public class DecisionTree {
         n.setLeft(bestNode.getLeft());
         n.setRight(bestNode.getRight());
         if (n.getLeft().getGiniImpurity() < n.getGiniImpurity()) {
-            buildTree(n.getLeft(), depth + 1);
+            minHeap.insert(bestNode.getLeft());
+            buildTree(bestNode.getLeft(), depth + 1);
         } else {
-            buildTree(n.getRight(), depth + 1);
+            minHeap.insert(bestNode.getRight());
+            buildTree(bestNode.getRight(), depth + 1);
         }
 
     }
