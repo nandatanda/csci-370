@@ -8,9 +8,9 @@ public class DecisionTree {
         this.MIN_SAMPLES = settings.minSamples();
         this.MAX_DEPTH = settings.maxDepth();
         this.TARGET_FEATURES = settings.ratings();
-        this.maxHeap = new MinHeap();
+        this.minHeap = new MinHeap();
         this.root = new Node(bootstrappedDataSet.asArrayList());
-        maxHeap.insert(root);
+        minHeap.insert(root);
         buildTree(this.root, 0);
 
     }
@@ -21,7 +21,7 @@ public class DecisionTree {
     private final int MAX_DEPTH;
 
     private final ArrayList<String> TARGET_FEATURES;
-    private final MinHeap maxHeap;
+    private final MinHeap minHeap;
 
     private Node root;
 
@@ -56,7 +56,7 @@ public class DecisionTree {
             // another scenario is when it is a leaf node but doesn't satisfy this criteria
             return;
         }
-        Node parent = maxHeap.removeMax();
+        Node parent = minHeap.removeMax();
         for (String f : baggedFeatures) {
             Node left = new Node(f, TARGET_FEATURES);
             Node right = new Node(f, TARGET_FEATURES);
@@ -69,15 +69,15 @@ public class DecisionTree {
             }
             left.calculateGiniImpurity();
             right.calculateGiniImpurity();
-            maxHeap.insert(left);
-            maxHeap.insert(right);
+            minHeap.insert(left);
+            minHeap.insert(right);
             parent.setSplitImpurity(getSplitImpurity(parent, left, right));
             parent.setLeft(left);
             parent.setRight(right);
-            maxHeap.insert(parent);
+            minHeap.insert(parent);
         }
 
-        Node bestNode = maxHeap.removeMax();
+        Node bestNode = minHeap.removeMax();
         n.setLeft(bestNode.getLeft());
         n.setRight(bestNode.getRight());
         if (n.getLeft().getGiniImpurity() < n.getGiniImpurity()) {
