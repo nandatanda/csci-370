@@ -19,10 +19,10 @@ public class DataSet implements Serializable {
      *
      * @param settings the configuration settings for the dataset
      */
-    public DataSet(UserConfig settings) {
+    public DataSet(UserConfig settings, ArrayList<String> features) {
         this.data = new ArrayList<>();
         this.settings = settings;
-        this.features = new ArrayList<>();
+        this.features = features;
         this.size = 0;
     }
 
@@ -112,8 +112,8 @@ public class DataSet implements Serializable {
     public ArrayList<DataSet> split() {
         // Reserve two empty DataSet objects for the split
         ArrayList<DataSet> subsets = new ArrayList<>();
-        subsets.add(new DataSet(settings));
-        subsets.add(new DataSet(settings));
+        subsets.add(new DataSet(settings, features));
+        subsets.add(new DataSet(settings, features));
 
         // Randomize the superset to be selected from
         Collections.shuffle(data, new Random());
