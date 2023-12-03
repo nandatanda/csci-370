@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
  * The {@code DataRecord} class represents a single game entry in a dataset.
  * Each data record has a title, rating, and associated values for different features.
  */
-public class DataRecord extends LinkedHashMap<String, Object> implements Serializable {
+public class DataRecord extends LinkedHashMap<String, Boolean> implements Serializable {
 
     private String title;
     private String rating;
@@ -45,8 +45,7 @@ public class DataRecord extends LinkedHashMap<String, Object> implements Seriali
                 rating = values[j].trim();
             } else {
                 // For other headers, interpret "1" or "true" as boolean true, and store them as a LinkedHashMap
-                Object newValue;
-                newValue = values[j].trim().equals("1") || values[j].equalsIgnoreCase("true");
+                Boolean newValue = values[j].trim().equals("1") || values[j].equalsIgnoreCase("true");
                 put(newFeature, newValue);
             }
         }
@@ -78,11 +77,12 @@ public class DataRecord extends LinkedHashMap<String, Object> implements Seriali
      * @throws IndexOutOfBoundsException if the index is out of bounds
      */
     public String keyAt(int k) {
+        // Check that the specified index is not out of bounds
         if (k < 0 || k >= size()) {
             throw new IndexOutOfBoundsException("Index " + k + " is out of bounds for the LinkedHashMap");
         }
 
-        // Get the key at the specified index
+        // Get the key at that index
         Iterator<String> iterator = keySet().iterator();
         for (int i = 0; i < k; i++) {
             iterator.next();
@@ -98,18 +98,18 @@ public class DataRecord extends LinkedHashMap<String, Object> implements Seriali
      * @return the value at the specified index
      * @throws IndexOutOfBoundsException if the index is out of bounds
      */
-    public String valueAt(int k) {
+    public Boolean valueAt(int k) {
+        // Check that the specified index is not out of bounds
         if (k < 0 || k >= size()) {
             throw new IndexOutOfBoundsException("Index " + k + " is out of bounds for the LinkedHashMap");
         }
 
-        // Get the value at the specified index
-        Iterator<Object> iterator = values().iterator();
+        // Get the value at that index
+        Iterator<Boolean> iterator = values().iterator();
         for (int i = 0; i < k; i++) {
             iterator.next();
         }
 
-        Object value = iterator.next();
-        return value != null ? value.toString() : null;
+        return iterator.next();
     }
 }
