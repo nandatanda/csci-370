@@ -90,7 +90,7 @@ public class RatingsMap extends LinkedHashMap<String, Integer> implements Serial
      *
      * @param key the key whose associated value is to be incremented
      */
-    public void incrementValue(String key) {
+    public void increment(String key) {
         put(key, get(key) + 1);
     }
 
@@ -100,8 +100,8 @@ public class RatingsMap extends LinkedHashMap<String, Integer> implements Serial
      * @param k the index of the value to be incremented
      * @throws IndexOutOfBoundsException if the index is out of bounds
      */
-    public void incrementValueAt(int k) {
+    public void incrementAt(int k) {
         String key = keyAt(k);
-        incrementValue(key);
+        increment(key);
     }
 }
