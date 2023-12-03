@@ -54,7 +54,9 @@ public class RandomForest {
         //Randomly generate bootstrap dataset
         Random rand = new Random();
 
-        DataSet bootstrappedDataset = new DataSet(settings);
+        DataSet bootstrappedDataset = new DataSet();
+        bootstrappedDataset.config(settings);
+
         for (int i = 0; i < trainingSet.size(); i++) {
             int r = rand.nextInt(trainingSet.size());
             DataRecord randomRecord = trainingSet.get(r);
