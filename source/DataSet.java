@@ -9,20 +9,19 @@ import java.util.Collections;
  */
 public class DataSet implements Serializable {
 
-    private ArrayList<DataRecord> data;
+    private final ArrayList<DataRecord> data;
     private int size;
-    private final UserConfig settings;
-    private final ArrayList<String> features;
+    private UserConfig settings;
+    private ArrayList<String> features;
 
     /**
      * Default constructor for an empty dataset.
      *
-     * @param settings the configuration settings for the dataset
      */
-    public DataSet(UserConfig settings, ArrayList<String> features) {
+    public DataSet() {
         this.data = new ArrayList<>();
-        this.settings = settings;
-        this.features = features;
+        this.settings = null;
+        this.features = null;
         this.size = 0;
     }
 
@@ -58,6 +57,27 @@ public class DataSet implements Serializable {
     }
 
     /**
+     * Gets the list of features in the dataset.
+     *
+     * @return the list of features
+     */
+    public ArrayList<String> features() {
+        return features;
+    }
+
+    public void setFeatures(ArrayList<String> featureList) {
+        features = featureList;
+    }
+
+    public UserConfig settings() {
+        return settings;
+    }
+
+    public void config(UserConfig settings) {
+        this.settings = settings;
+    }
+
+    /**
      * Gets the data record at the specified index.
      *
      * @param i the index of the data record
@@ -75,15 +95,6 @@ public class DataSet implements Serializable {
     public void add(DataRecord dp) {
         data.add(dp);
         this.size++;
-    }
-
-    /**
-     * Gets the list of features in the dataset.
-     *
-     * @return the list of features
-     */
-    public ArrayList<String> features() {
-        return features;
     }
 
     /**
@@ -110,10 +121,17 @@ public class DataSet implements Serializable {
      * @return an ArrayList containing two subsets (training and testing)
      */
     public ArrayList<DataSet> split() {
-        // Reserve two empty DataSet objects for the split
+        // Make a container to return all subsets
         ArrayList<DataSet> subsets = new ArrayList<>();
-        subsets.add(new DataSet(settings, features));
-        subsets.add(new DataSet(settings, features));
+
+        // Prepare an empty dataset, maintaining settings and features from parent
+        DataSet emptySet = new DataSet();
+        emptySet.config(this.settings);
+        emptySet.setFeatures(this.features);
+
+        // Add two empty dataset copies to the container
+        subsets.add(emptySet);
+        subsets.add(emptySet);
 
         // Randomize the superset to be selected from
         Collections.shuffle(data, new Random());
