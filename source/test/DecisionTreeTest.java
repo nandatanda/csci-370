@@ -17,7 +17,7 @@ class DecisionTreeTest {
     @Mock
     private UserConfig settingsTest;
     private DecisionTree treeTest;
-    DataSet bootstrappedDataSetTest;
+    private DataSet bootstrappedDataSetTest;
 
 
 
@@ -34,7 +34,9 @@ class DecisionTreeTest {
 
     @Test
     void should_BuildTree_When_ObjectIsCreated() {
-       System.out.println(this.treeTest.calculateGiniImpurity(dataPointsTest));
+        //Given
+        //When
+        //Then
     }
 
 }
