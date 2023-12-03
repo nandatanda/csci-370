@@ -69,8 +69,6 @@ public class DecisionTree {
             }
             left.calculateGiniImpurity();
             right.calculateGiniImpurity();
-            minHeap.insert(left);
-            minHeap.insert(right);
             parent.setSplitImpurity(getSplitImpurity(parent, left, right));
             parent.setLeft(left);
             parent.setRight(right);
