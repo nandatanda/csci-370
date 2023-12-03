@@ -1,24 +1,8 @@
 import java.util.ArrayList;
 
-
 public class Node {
 
-
-    public Node(ArrayList<DataRecord> datapoints) {
-        this.datapoints = datapoints;
-    }
-
-    public Node(String feature, ArrayList<String> ratings) {
-        this.splitFeature = feature;
-        this.datapoints = new ArrayList<>();
-        this.ratingsDistribution = new DataRecord();
-        for (String r : ratings) {
-            ratingsDistribution.put(r, 0);
-        }
-
-    }
-
-    private final ArrayList<DataRecord> datapoints;
+    private final ArrayList<DataRecord> data;
 
     private DataRecord ratingsDistribution;
 
@@ -32,8 +16,22 @@ public class Node {
 
     private String label;
 
+    public Node(ArrayList<DataRecord> data) {
+        this.data = data;
+    }
+
+    public Node(String feature, ArrayList<String> ratings) {
+        this.splitFeature = feature;
+        this.data = new ArrayList<>();
+        this.ratingsDistribution = new DataRecord();
+        for (String r : ratings) {
+            ratingsDistribution.put(r, 0);
+        }
+
+    }
+
     public ArrayList<DataRecord> getDataPoints() {
-        return datapoints;
+        return data;
     }
 
     public void add(DataRecord datapoint) {
@@ -41,7 +39,7 @@ public class Node {
         int ratingTotal = (int) ratingsDistribution.get(rating);
         ratingTotal++;
         ratingsDistribution.put(rating, ratingTotal);
-        datapoints.add(datapoint);
+        data.add(datapoint);
 
     }
 
@@ -56,7 +54,7 @@ public class Node {
     public void calculateGiniImpurity() {
         double gini = 1, classProbability;
         for (String f : ratingsDistribution.keySet()) {
-            classProbability = (double) ratingsDistribution.get(f) / datapoints.size();
+            classProbability = (double) ratingsDistribution.get(f) / data.size();
             gini -= Math.pow(classProbability, 2);
         }
         giniImpurity = gini;
