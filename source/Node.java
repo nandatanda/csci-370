@@ -4,7 +4,7 @@ public class Node {
 
     private final ArrayList<DataRecord> data;
 
-    private DataRecord ratingsDistribution;
+    private RatingsMap ratingsDistribution;
 
     private String splitFeature;
 
@@ -23,10 +23,8 @@ public class Node {
     public Node(String feature, ArrayList<String> ratings) {
         this.splitFeature = feature;
         this.data = new ArrayList<>();
-        this.ratingsDistribution = new DataRecord();
-        for (String r : ratings) {
-            ratingsDistribution.put(r, 0);
-        }
+        this.ratingsDistribution = new RatingsMap();
+        this.ratingsDistribution.initialize();
 
     }
 
