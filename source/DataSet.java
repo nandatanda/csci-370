@@ -16,7 +16,6 @@ public class DataSet implements Serializable {
 
     /**
      * Default constructor for an empty dataset.
-     *
      */
     public DataSet() {
         this.data = new ArrayList<>();
@@ -65,14 +64,29 @@ public class DataSet implements Serializable {
         return features;
     }
 
+    /**
+     * Sets the list of features in the dataset.
+     *
+     * @param featureList the list of features to set
+     */
     public void setFeatures(ArrayList<String> featureList) {
         features = featureList;
     }
 
+    /**
+     * Gets the configuration settings for the dataset.
+     *
+     * @return the configuration settings
+     */
     public UserConfig settings() {
         return settings;
     }
 
+    /**
+     * Sets the configuration settings for the dataset.
+     *
+     * @param settings the configuration settings to set
+     */
     public void config(UserConfig settings) {
         this.settings = settings;
     }
