@@ -112,6 +112,4 @@ public class DecisionTree {
         }
         return currentNode.getLabel();
     }
-
-
 }
