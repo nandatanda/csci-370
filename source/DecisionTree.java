@@ -58,8 +58,8 @@ public class DecisionTree {
         }
         Node parent = minHeap.removeMin();
         for (String f : baggedFeatures) {
-            Node left = new Node(f, RATINGS_LIST);
-            Node right = new Node(f, RATINGS_LIST);
+            Node left = new Node(f);
+            Node right = new Node(f);
             for (DataRecord d : n.data()) {
                 if ((boolean) d.get(f)) {
                     right.add(d);
