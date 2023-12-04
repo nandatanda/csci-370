@@ -2,115 +2,89 @@ import java.util.ArrayList;
 
 public class Node {
 
-    private final ArrayList<DataRecord> data;
-
-    private RatingsMap ratingsDistribution;
-
-    private String splitFeature;
-
-    private double splitImpurity;
+    private RatingsMap ratingsCount;
+    private String splittingFeature;
+    private double giniIndex;
     private double giniImpurity;
 
+    private final DataSet data;
     private Node left;
     private Node right;
-
     private String label;
 
-    public Node(ArrayList<DataRecord> data) {
+    public Node() {
+
+    }
+
+    public Node(DataSet data) {
         this.data = data;
     }
 
     public Node(String feature, ArrayList<String> ratings) {
-        this.splitFeature = feature;
+        this.splittingFeature = feature;
         this.data = new ArrayList<>();
-        this.ratingsDistribution = new RatingsMap();
-        this.ratingsDistribution.initialize();
-
+        this.ratingsCount = new RatingsMap();
+        this.ratingsCount.initialize();
     }
 
-    public ArrayList<DataRecord> getDataPoints() {
+    public DataSet data() {
         return data;
     }
 
     public void add(DataRecord datapoint) {
         String rating = datapoint.rating();
-        int ratingTotal = (int) ratingsDistribution.get(rating);
-        ratingTotal++;
-        ratingsDistribution.put(rating, ratingTotal);
+        ratingsCount.increment(rating);
         data.add(datapoint);
 
     }
 
-    public String getSplitFeature() {
-        return this.splitFeature;
+    public String splittingFeature() {
+        return this.splittingFeature;
     }
 
-    public void setSplitFeature(String f) {
-        this.splitFeature = f;
+    public void setSplittingFeature(String f) {
+        this.splittingFeature = f;
     }
 
     public void calculateGiniImpurity() {
         double gini = 1, classProbability;
-        for (String f : ratingsDistribution.keySet()) {
-            classProbability = (double) ratingsDistribution.get(f) / data.size();
+        for (String f : ratingsCount.keySet()) {
+            classProbability = (double) ratingsCount.get(f) / data.size();
             gini -= Math.pow(classProbability, 2);
         }
         giniImpurity = gini;
     }
 
-    public double getSplitImpurity() {
-        return splitImpurity;
+    public double giniIndex() {
+        return giniIndex;
     }
 
-    public void setSplitImpurity(double impurity) {
-        this.splitImpurity = impurity;
-    }
-
-    public double getGiniImpurity() {
+    public double giniImpurity() {
         return giniImpurity;
     }
 
-
-    public void setGiniImpurity(double giniImpurity) {
-        this.giniImpurity = giniImpurity;
+    public Node left() {
+        return left;
     }
 
-
-    public Node getLeft() {
-        return this.left;
+    public Node right() {
+        return right;
     }
-
-    public void setLeft(Node lNode) {
-        this.left = lNode;
-    }
-
-    public Node getRight() {
-        return this.right;
-    }
-
-    public void setRight(Node rNode) {
-        this.right = rNode;
-    }
-
 
     public boolean isLeaf() {
         return (left == null && right == null);
     }
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getLabel() {
+    public String label() {
         return this.label;
     }
 
-    public void labelLeaf() {
+    public void assignLabel() {
         //label majority feature in leaf
         String majority = "";
         int greatestCount = 0;
-        for (String f : ratingsDistribution.keySet()) {
-            int currentCount = (int) ratingsDistribution.get(f);
+        for (String f : ratingsCount.keySet()) {
+            int currentCount = (int) ratingsCount.get(f);
             if (currentCount > greatestCount) {
                 greatestCount = currentCount;
                 majority = f;

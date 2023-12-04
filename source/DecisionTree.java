@@ -9,7 +9,7 @@ public class DecisionTree {
         this.MAX_DEPTH = settings.maxDepth();
         this.RATINGS_LIST = settings.ratings();
         this.minHeap = new MinHeap();
-        this.root = new Node(bootstrappedDataSet.asArrayList());
+        this.root = new Node(bootstrappedDataSet);
         minHeap.insert(root);
         buildTree(this.root, 0);
 
@@ -51,8 +51,8 @@ public class DecisionTree {
     }
 
     private void buildTree(Node n, int depth) {
-        if (depth >= MAX_DEPTH || n.getDataPoints().size() <= MIN_SAMPLES) {
-            n.labelLeaf();
+        if (depth >= MAX_DEPTH || n.data().size() <= MIN_SAMPLES) {
+            n.assignLabel();
             // another scenario is when it is a leaf node but doesn't satisfy this criteria
             return;
         }
@@ -60,7 +60,7 @@ public class DecisionTree {
         for (String f : baggedFeatures) {
             Node left = new Node(f, RATINGS_LIST);
             Node right = new Node(f, RATINGS_LIST);
-            for (DataRecord d : n.getDataPoints()) {
+            for (DataRecord d : n.data()) {
                 if ((boolean) d.get(f)) {
                     right.add(d);
                 } else {
@@ -76,25 +76,25 @@ public class DecisionTree {
         }
 
         Node bestNode = minHeap.removeMin();
-        n.setLeft(bestNode.getLeft());
-        n.setRight(bestNode.getRight());
-        if (n.getLeft().getGiniImpurity() < n.getGiniImpurity()) {
-            minHeap.insert(bestNode.getLeft());
+        n.setLeft(bestNode.left());
+        n.setRight(bestNode.right());
+        if (n.left().giniImpurity() < n.giniImpurity()) {
+            minHeap.insert(bestNode.left());
             //label the leaf because we are no longer splitting on the right side
-            n.getRight().labelLeaf();
-            buildTree(bestNode.getLeft(), depth + 1);
+            n.right().assignLabel();
+            buildTree(bestNode.left(), depth + 1);
         } else {
-            minHeap.insert(bestNode.getRight());
+            minHeap.insert(bestNode.right());
             //label the leaf because we are no longer splitting on left side
-            n.getLeft().labelLeaf();
-            buildTree(bestNode.getRight(), depth + 1);
+            n.left().assignLabel();
+            buildTree(bestNode.right(), depth + 1);
         }
 
     }
 
     private double getSplitImpurity(Node parent, Node left, Node right) {
-        double lWeighted = (double) left.getDataPoints().size() / parent.getDataPoints().size() * left.getGiniImpurity();
-        double rWeighted = (double) right.getDataPoints().size() / parent.getDataPoints().size() * right.getGiniImpurity();
+        double lWeighted = (double) left.data().size() / parent.data().size() * left.giniImpurity();
+        double rWeighted = (double) right.data().size() / parent.data().size() * right.giniImpurity();
         return lWeighted + rWeighted;
     }
 
@@ -102,14 +102,14 @@ public class DecisionTree {
         // start form the root and loop through and get the majority label if datapoint classifies
         Node currentNode = root;
         while(!currentNode.isLeaf()){
-            String feature = currentNode.getSplitFeature();
+            String feature = currentNode.splittingFeature();
             if ((boolean)datapoint.get(feature)){
-                currentNode = currentNode.getRight();
+                currentNode = currentNode.right();
             }
             else{
-                currentNode = currentNode.getLeft();
+                currentNode = currentNode.left();
             }
         }
-        return currentNode.getLabel();
+        return currentNode.label();
     }
 }

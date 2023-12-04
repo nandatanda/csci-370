@@ -1,5 +1,6 @@
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Collections;
 
@@ -7,7 +8,7 @@ import java.util.Collections;
  * The {@code DataSet} class represents a collection of data records and provides methods
  * for manipulation and analysis of datasets.
  */
-public class DataSet implements Serializable {
+public class DataSet implements Serializable, Iterable<DataRecord>{
 
     private final ArrayList<DataRecord> data;
     private int size;
@@ -159,5 +160,32 @@ public class DataSet implements Serializable {
             subsets.get(subsetIndex).add(data.get(i)); // Use the add method to add DataRecord
         }
         return subsets;
+    }
+
+    /**
+     * Iterator implementation for the DataSet class.
+     */
+    private class DataSetIterator implements Iterator<DataRecord> {
+        private int currentIndex = 0;
+
+        @Override
+        public boolean hasNext() {
+            return currentIndex < size;
+        }
+
+        @Override
+        public DataRecord next() {
+            return data.get(currentIndex++);
+        }
+    }
+
+    /**
+     * Gets an iterator over the data records in the dataset.
+     *
+     * @return an iterator over the data records
+     */
+    @Override
+    public Iterator<DataRecord> iterator() {
+        return new DataSetIterator();
     }
 }
