@@ -109,7 +109,7 @@ public class DataSet implements Serializable, Iterable<DataRecord>{
      */
     public void add(DataRecord dp) {
         data.add(dp);
-        this.size++;
+        size++;
     }
 
     /**
