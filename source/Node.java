@@ -13,7 +13,7 @@ public class Node {
     private String label;
 
     public Node() {
-
+        data = new DataSet();
     }
 
     public Node(DataSet data) {
