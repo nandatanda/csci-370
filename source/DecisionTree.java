@@ -7,7 +7,7 @@ public class DecisionTree {
         this.baggedFeatures = baggedFeatures;
         this.MIN_SAMPLES = settings.minSamples();
         this.MAX_DEPTH = settings.maxDepth();
-        this.TARGET_FEATURES = settings.ratings();
+        this.RATINGS_LIST = settings.ratings();
         this.minHeap = new MinHeap();
         this.root = new Node(bootstrappedDataSet.asArrayList());
         minHeap.insert(root);
@@ -20,7 +20,7 @@ public class DecisionTree {
     private final int MIN_SAMPLES;
     private final int MAX_DEPTH;
 
-    private final ArrayList<String> TARGET_FEATURES;
+    private final ArrayList<String> RATINGS_LIST;
     private final MinHeap minHeap;
 
     private Node root;
@@ -58,8 +58,8 @@ public class DecisionTree {
         }
         Node parent = minHeap.removeMin();
         for (String f : baggedFeatures) {
-            Node left = new Node(f, TARGET_FEATURES);
-            Node right = new Node(f, TARGET_FEATURES);
+            Node left = new Node(f, RATINGS_LIST);
+            Node right = new Node(f, RATINGS_LIST);
             for (DataRecord d : n.getDataPoints()) {
                 if ((boolean) d.get(f)) {
                     right.add(d);
@@ -69,7 +69,7 @@ public class DecisionTree {
             }
             left.calculateGiniImpurity();
             right.calculateGiniImpurity();
-            parent.setSplitImpurity(getSplitImpurity(parent, left, right));
+            parent.setGiniIndex(getSplitImpurity(parent, left, right));
             parent.setLeft(left);
             parent.setRight(right);
             minHeap.insert(parent);
