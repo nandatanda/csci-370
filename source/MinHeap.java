@@ -19,7 +19,7 @@ public class MinHeap {
         while (index > 0) {
             int parentIndex = (index - 1) / 2;
 
-            if (heap.get(index).getSplitImpurity() >= heap.get(parentIndex).getSplitImpurity()) {
+            if (heap.get(index).getGiniIndex() >= heap.get(parentIndex).getGiniIndex()) {
                 break; // Heap property is satisfied
             }
             swap(index, parentIndex);
@@ -55,10 +55,10 @@ public class MinHeap {
             int smallest = index;
 
 //            compare by gini impurity
-            if (leftChild < size && heap.get(leftChild).getSplitImpurity() < heap.get(smallest).getSplitImpurity()) {
+            if (leftChild < size && heap.get(leftChild).getGiniIndex() < heap.get(smallest).getGiniIndex()) {
                 smallest = leftChild;
             }
-            if (rightChild < size && heap.get(rightChild).getSplitImpurity() < heap.get(smallest).getSplitImpurity()) {
+            if (rightChild < size && heap.get(rightChild).getGiniIndex() < heap.get(smallest).getGiniIndex()) {
                 smallest = rightChild;
             }
 
