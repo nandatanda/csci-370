@@ -67,8 +67,8 @@ public class DecisionTree {
                     left.add(d);
                 }
             }
-            left.calculateGiniImpurity();
-            right.calculateGiniImpurity();
+            left.calculateImpurity();
+            right.calculateImpurity();
             parent.setGiniIndex(getSplitImpurity(parent, left, right));
             parent.setLeft(left);
             parent.setRight(right);
