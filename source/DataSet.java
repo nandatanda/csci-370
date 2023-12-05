@@ -8,11 +8,18 @@ import java.util.Collections;
  * The {@code DataSet} class represents a collection of data records and provides methods
  * for manipulation and analysis of datasets.
  */
-public class DataSet implements Serializable, Iterable<DataRecord>{
+public class DataSet implements Serializable, Iterable<DataRecord> {
 
+    // List to store data records
     private final ArrayList<DataRecord> data;
+
+    // Size of the dataset
     private int size;
+
+    // Configuration settings for the dataset
     private UserConfig settings;
+
+    // List of features in the dataset
     private ArrayList<String> features;
 
     /**
@@ -28,12 +35,11 @@ public class DataSet implements Serializable, Iterable<DataRecord>{
     /**
      * Constructor for creating a dataset from a file.
      *
-     * @param file     the file containing the dataset
-     * @param settings the configuration settings for the dataset
+     * @param file the file containing the dataset
      */
-    public DataSet(FileText file, UserConfig settings) {
+    public DataSet(FileText file) {
         this.data = new ArrayList<>();
-        this.settings = settings;
+        configure(Main.settings());
 
         // Split the file's contents by row to form entries
         String[] entries = file.rows();
@@ -88,7 +94,7 @@ public class DataSet implements Serializable, Iterable<DataRecord>{
      *
      * @param settings the configuration settings to set
      */
-    public void config(UserConfig settings) {
+    public void configure(UserConfig settings) {
         this.settings = settings;
     }
 
@@ -126,8 +132,66 @@ public class DataSet implements Serializable, Iterable<DataRecord>{
      *
      * @return the dataset as an ArrayList of data records
      */
-    public ArrayList<DataRecord> asArrayList() {
+    public ArrayList<DataRecord> data() {
         return data;
+    }
+
+    /**
+     * Shuffles the order of records in the dataset.
+     */
+    public void shuffle() {
+        Collections.shuffle(data, new Random());
+    }
+
+    /**
+     * Partitions the dataset into x equal subsets.
+     *
+     * @param x the number of partitions
+     * @return an ArrayList containing x subsets
+     */
+    public ArrayList<DataSet> partition(int x) {
+        ArrayList<DataSet> partitionList = new ArrayList<>();
+
+        // Calculate the size of each partition
+        int partitionSize = size / x;
+
+        // Handle the case where x is greater than the size of the dataset
+        if (partitionSize == 0) {
+            partitionSize = 1;
+            x = size;  // Set x to the size of the dataset
+        }
+
+        // Randomize the order of records
+        shuffle();
+
+        // Partition the records
+        int startIndex = 0;
+        for (int i = 0; i < x; i++) {
+            // Calculate the end index for the current partition
+            int endIndex = startIndex + partitionSize;
+            if (i == x - 1) {
+                // Adjust the end index for the last partition to include any remaining records
+                endIndex = size;
+            }
+
+            // Create a new DataSet for the current partition
+            DataSet partition = new DataSet();
+            partition.configure(settings);
+            partition.setFeatures(features);
+
+            // Add records from startIndex to endIndex to the current partition
+            for (int j = startIndex; j < endIndex; j++) {
+                partition.add(data.get(j));
+            }
+
+            // Add the current partition to the list
+            partitionList.add(partition);
+
+            // Update the startIndex for the next partition
+            startIndex = endIndex;
+        }
+
+        return partitionList;
     }
 
     /**
@@ -135,21 +199,21 @@ public class DataSet implements Serializable, Iterable<DataRecord>{
      *
      * @return an ArrayList containing two subsets (training and testing)
      */
-    public ArrayList<DataSet> split() {
-        // Make a container to return all subsets
+    public ArrayList<DataSet> splitForTrainingAndTesting() {
+        // Make a container to return both subsets
         ArrayList<DataSet> subsets = new ArrayList<>();
 
         // Prepare an empty dataset, maintaining settings and features from parent
         DataSet emptySet = new DataSet();
-        emptySet.config(this.settings);
-        emptySet.setFeatures(this.features);
+        emptySet.configure(settings);
+        emptySet.setFeatures(features);
 
         // Add two empty dataset copies to the container
         subsets.add(emptySet);
         subsets.add(emptySet);
 
         // Randomize the superset to be selected from
-        Collections.shuffle(data, new Random());
+        shuffle();
 
         // Calculate the sizes of training and testing subsets based on ratios
         int trainingSize = size * (settings.trainingRatio() / (settings.trainingRatio() + settings.testingRatio()));

@@ -61,7 +61,11 @@ public class UserConfig implements Serializable {
      * @return the training data directory path
      */
     public String trainingDirectory() {
-        return configPairs.get("trainingDirectory").toString();
+        String text = configPairs.get("trainingDirectory").toString();
+        if (text.equals("null")) {
+            return null;
+        }
+        return text;
     }
 
     /**
@@ -70,7 +74,11 @@ public class UserConfig implements Serializable {
      * @return the testing data directory path
      */
     public String testingDirectory() {
-        return configPairs.get("testingDirectory").toString();
+        String text = configPairs.get("testingDirectory").toString();
+        if (text.equals("null")) {
+            return null;
+        }
+        return text;
     }
 
     /**

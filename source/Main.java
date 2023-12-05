@@ -18,65 +18,94 @@ public class Main {
      * @throws IOException if an I/O error occurs during file operations
      */
     public static void main(String[] args) throws IOException {
+        FileText testingText;
+        ArrayList<DataSet> subsetsList;
+
         // Load settings from config.csv
         settings.loadConfig();
 
-        // Create a FileText object to read the content of the dataset csv
-        FileText content = new FileText(settings.trainingDirectory());
-
-        // Load the dataset and split it into subsets
-        ArrayList<DataSet> subsets = loadDatasetAndSplit(content, settings.delimiter());
-        DataSet trainingSet = subsets.get(0);
-        DataSet testingSet = subsets.get(1);
-
-        RandomForest rf = new RandomForest(trainingSet, testingSet, settings);
-        System.out.println(trainingSet.features());
-        //System.out.println(rf.set.data.get(0));
-
-    }
-
-    /**
-     * Loads the dataset from a file, splits it into subsets, and performs some basic operations.
-     *
-     * @param fileText  the FileText object containing dataset information
-     * @param delimiter the delimiter used in the dataset
-     */
-    public static ArrayList<DataSet> loadDatasetAndSplit(FileText fileText, String delimiter) {
-        // Create variables to hold the superset and subsets of the dataset
-        DataSet superset;
-        ArrayList<DataSet> subsets;
-
-        // File to store serialized subsets
-        File subsetsObjectFile = new File("data/subsets.ser");
-
-        // Create a serializer for object serialization
+        // Initialize serialization object
         Serialization<DataSet> serializer = new Serialization<>();
 
         // Check if serialized subsets file exists
-        if (!subsetsObjectFile.exists()) {
-            // If not, create a new superset, split it into subsets, and save them to files
-            superset = new DataSet(fileText, settings);
-            System.out.println(superset);
-            subsets = superset.split();
-            serializer.saveToFile(superset, "data/dataset.ser");
-            serializer.saveListToFile(subsets, "data/subsets.ser");
-
-        } else {
+        File subsetsObjectFile = new File("data/subsets.ser");
+        if (subsetsObjectFile.exists()) {
             // If the serialized subsets file exists, load subsets from the file
-            subsets = serializer.loadListFromFile("data/subsets.ser", DataSet.class);
+            subsetsList = serializer.loadListFromFile("data/subsets.ser", DataSet.class);
+        } else {
+            // If the serialized subsets file doesn't exist, a new one must be constructed
+            DataSet trainingRecords;
+            DataSet testingRecords;
+
+            if (settings.testingDirectory() != null) {
+                // If a testing file path is specified, create training and testing datasets from file
+                testingText = new FileText(settings.testingDirectory());
+                trainingRecords = new DataSet(trainingText);
+                testingRecords = new DataSet(testingText);
+            } else {
+                // If there isn't a testing file specified, the training data must be partitioned
+                serializer.saveToFile(new DataSet(trainingText), "data/dataset.ser");
+                trainingRecords = new DataSet(trainingText);
+                subsetsList = new DataSet(trainingText).splitForTrainingAndTesting();
+            }
+
+            serializer.saveToFile(allRecords, "data/dataset.ser");
+            serializer.saveListToFile(subsetsList, "data/subsets.ser");
+
+
+            ArrayList<DataSet> subsets = loadDatasetAndSplit(trainingText, settings.delimiter());
+            DataSet trainingSet = subsets.get(0);
+            DataSet testingSet = subsets.get(1);
+
+            RandomForest rf = new RandomForest(trainingSet, testingSet, settings);
+            System.out.println(trainingSet.features());
+            //System.out.println(rf.set.data.get(0));
+
+        }
+    }
+
+        /**
+         * Loads the dataset from a file, splits it into subsets, and performs some basic operations.
+         *
+         * @param originalText  the FileText object containing dataset information
+         * @param delimiter the delimiter used in the dataset
+         */
+        public static ArrayList<DataSet> loadDatasetAndSplit (FileText originalText, String delimiter){
+            // Create variables to hold the superset and subsets of the dataset
+            DataSet allRecords;
+            ArrayList<DataSet> recordSubsets;
+
+            // File to store serialized subsets
+            File subsetsObjectFile = new File("data/subsets.ser");
+
+            // Create a serializer for object serialization
+            Serialization<DataSet> serializer = new Serialization<>();
+
+            // Check if serialized subsets file exists
+            if (!subsetsObjectFile.exists()) {
+                // If not, create a new superset, split it into subsets, and save them to files
+                allRecords = new DataSet(originalText);
+                System.out.println(allRecords);
+                recordSubsets = allRecords.splitForTrainingAndTesting();
+                serializer.saveToFile(allRecords, "data/dataset.ser");
+                serializer.saveListToFile(recordSubsets, "data/subsets.ser");
+
+            } else {
+                // If the serialized subsets file exists, load subsets from the file
+                recordSubsets = serializer.loadListFromFile("data/subsets.ser", DataSet.class);
+            }
+
+            // Load the superset again (for demonstration purposes)
+            allRecords = new DataSet(originalText);
+
+            // Print information about a data point from the superset
+            DataRecord sampleRecord = allRecords.get(99);
+            System.out.println("\n" + sampleRecord.title() + " (rated " + sampleRecord.rating() + ")");
+            System.out.println(sampleRecord);
+            return recordSubsets;
         }
 
-        // Load the superset again (for demonstration purposes)
-        superset = new DataSet(fileText, settings);
-
-        // Print information about a data point from the superset
-        DataRecord sampleRecord = superset.get(99);
-        System.out.println("\n" + sampleRecord.title() + " (rated " + sampleRecord.rating() + ")");
-        System.out.println(sampleRecord);
-        return subsets;
+        public static UserConfig settings () {
+            return settings;
+        }
     }
-
-    public static UserConfig settings() {
-        return  settings;
-    }
-}

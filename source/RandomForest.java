@@ -55,7 +55,7 @@ public class RandomForest {
         Random rand = new Random();
 
         DataSet bootstrappedDataset = new DataSet();
-        bootstrappedDataset.config(settings);
+        bootstrappedDataset.configure(settings);
 
         for (int i = 0; i < trainingSet.size(); i++) {
             int r = rand.nextInt(trainingSet.size());
