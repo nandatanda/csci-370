@@ -28,8 +28,8 @@ public class Main {
         ArrayList<DataSet> subsetsList = new ArrayList<>();
 
         // Check if serialized subsets file exists
-        File subsetsObjectFile = new File("data/subsets.ser");
-        if (subsetsObjectFile.exists()) {
+        File dataListObjectFile = new File("data/subsets.ser");
+        if (dataListObjectFile.exists()) {
             // If the serialized subsets file exists, load subsets from the file
             subsetsList = serializer.loadListFromFile("data/subsets.ser", DataSet.class);
         } else {
@@ -40,24 +40,12 @@ public class Main {
                 subsetsList.add(new DataSet(new FileText(settings.testingDirectory())));
             } else {
                 // If there isn't a testing file specified, the training data must be partitioned
-                
+                // MISSING CODE
                 subsetsList.add(new DataSet(new FileText(settings.trainingDirectory())));
-
-                trainingRecords = new DataSet(trainingText);
             }
 
             // Save the constructed dataset and subsets objects to serialized files
-            serializer.saveToFile(allRecords, "data/dataset.ser");
             serializer.saveListToFile(subsetsList, "data/subsets.ser");
-
-
-            ArrayList<DataSet> subsets = loadDatasetAndSplit(trainingText, settings.delimiter());
-            DataSet trainingSet = subsets.get(0);
-            DataSet testingSet = subsets.get(1);
-
-            RandomForest rf = new RandomForest(trainingSet, testingSet, settings);
-            System.out.println(trainingSet.features());
-            //System.out.println(rf.set.data.get(0));
 
         }
     }
