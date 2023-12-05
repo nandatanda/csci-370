@@ -48,48 +48,13 @@ public class Main {
             // Save the constructed dataset and subsets objects to serialized files
             serializer.saveListToFile(datasetList, "data/datasets.ser");
         }
+
+        // Test the operation by querying a record that was read from disk
+        System.out.println(datasetList.get(0).get(0).title() + " : " + datasetList.get(1).get(0).toString());
+
+        // Everything is loaded, time to build some trees
+
     }
-
-        /**
-         * Loads the dataset from a file, splits it into subsets, and performs some basic operations.
-         *
-         * @param originalText  the FileText object containing dataset information
-         * @param delimiter the delimiter used in the dataset
-         */
-        public static ArrayList<DataSet> loadDatasetAndSplit (FileText originalText, String delimiter){
-            // Create variables to hold the superset and subsets of the dataset
-            DataSet allRecords;
-            ArrayList<DataSet> recordSubsets;
-
-            // File to store serialized subsets
-            File subsetsObjectFile = new File("data/subsets.ser");
-
-            // Create a serializer for object serialization
-            Serialization<DataSet> serializer = new Serialization<>();
-
-            // Check if serialized subsets file exists
-            if (!subsetsObjectFile.exists()) {
-                // If not, create a new superset, split it into subsets, and save them to files
-                allRecords = new DataSet(originalText);
-                System.out.println(allRecords);
-                recordSubsets = allRecords.splitForTrainingAndTesting();
-                serializer.saveToFile(allRecords, "data/dataset.ser");
-                serializer.saveListToFile(recordSubsets, "data/subsets.ser");
-
-            } else {
-                // If the serialized subsets file exists, load subsets from the file
-                recordSubsets = serializer.loadListFromFile("data/subsets.ser", DataSet.class);
-            }
-
-            // Load the superset again (for demonstration purposes)
-            allRecords = new DataSet(originalText);
-
-            // Print information about a data point from the superset
-            DataRecord sampleRecord = allRecords.get(99);
-            System.out.println("\n" + sampleRecord.title() + " (rated " + sampleRecord.rating() + ")");
-            System.out.println(sampleRecord);
-            return recordSubsets;
-        }
 
         public static UserConfig settings () {
             return settings;
