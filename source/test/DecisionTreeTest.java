@@ -33,10 +33,12 @@ class DecisionTreeTest {
     }
 
     @Test
-    void should_BuildTree_When_ObjectIsCreated() {
+    void should_ReturnValueBetweenZeroAndOne_WhenReturningGini() {
         //Given
+        double giniTest = treeTest.calculateGiniImpurity(dataPointsTest);
         //When
         //Then
+        assertEquals(0, giniTest, 1.00);
     }
 
 }
