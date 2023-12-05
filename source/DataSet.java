@@ -227,6 +227,23 @@ public class DataSet implements Serializable, Iterable<DataRecord> {
     }
 
     /**
+     * Overrides the toString() method to print all records in a formatted manner.
+     *
+     * @return a string representation of the dataset
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        // Iterate through all records
+        for (DataRecord record : data) {
+            sb.append(record.toString()).append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    /**
      * Iterator implementation for the DataSet class.
      */
     private class DataSetIterator implements Iterator<DataRecord> {
