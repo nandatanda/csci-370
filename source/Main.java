@@ -40,11 +40,13 @@ public class Main {
                 subsetsList.add(new DataSet(new FileText(settings.testingDirectory())));
             } else {
                 // If there isn't a testing file specified, the training data must be partitioned
-                serializer.saveToFile(new DataSet(trainingText), "data/dataset.ser");
+                
+                subsetsList.add(new DataSet(new FileText(settings.trainingDirectory())));
+
                 trainingRecords = new DataSet(trainingText);
-                subsetsList = new DataSet(trainingText).splitForTrainingAndTesting();
             }
 
+            // Save the constructed dataset and subsets objects to serialized files
             serializer.saveToFile(allRecords, "data/dataset.ser");
             serializer.saveListToFile(subsetsList, "data/subsets.ser");
 
