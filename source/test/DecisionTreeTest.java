@@ -10,13 +10,13 @@ import static org.mockito.Mockito.*;
 
 class DecisionTreeTest {
 
+    private DecisionTree treeTest;
     private ArrayList<DataRecord> dataPointsTest = new ArrayList<>();
     private ArrayList<String> baggedFeaturesTest = new ArrayList<>();
     private int minSampleTest;
     private int maxDepthTest;
     @Mock
     private UserConfig settingsTest;
-    private DecisionTree treeTest;
     private DataSet bootstrappedDataSetTest;
 
 
@@ -26,10 +26,7 @@ class DecisionTreeTest {
         this.settingsTest = mock(UserConfig.class);
         this.treeTest = mock(DecisionTree.class);
         this.bootstrappedDataSetTest = mock(DataSet.class);
-
-
         this.treeTest = new DecisionTree(bootstrappedDataSetTest, baggedFeaturesTest, settingsTest);
-
     }
 
     @Test

@@ -18,7 +18,7 @@ class RandomForestTest {
 
 
     @BeforeEach
-    void create_Mock_RandomForestObject() {
+    void setup() {
         this.dataSetTest = mock(DataSet.class);
         this.settingsTest = mock(UserConfig.class);
         this.randomForestTest = new RandomForest(dataSetTest, settingsTest);
