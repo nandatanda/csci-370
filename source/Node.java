@@ -106,12 +106,11 @@ public class Node {
      * Calculate the impurity of the node using Gini impurity measure.
      */
     public void calculateImpurity() {
-        double gini = 1, classProbability;
-        for (String f : ratingsCount.keySet()) {
-            classProbability = (double) ratingsCount.get(f) / data.size();
-            gini -= Math.pow(classProbability, 2);
+        double sum = 0.0;
+        for (String rating : ratingsCount.keySet()) {
+            sum += Math.pow((double) ratingsCount.get(rating) / data.size(), 2);
         }
-        giniImpurity = gini;
+        giniImpurity = 1 - sum;
     }
 
     /**
