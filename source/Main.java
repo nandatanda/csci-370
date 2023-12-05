@@ -25,28 +25,28 @@ public class Main {
         Serialization<DataSet> serializer = new Serialization<>();
 
         // Prepare container for data subsets
-        ArrayList<DataSet> subsetsList = new ArrayList<>();
+        ArrayList<DataSet> datasetList = new ArrayList<>();
 
         // Check if serialized subsets file exists
-        File dataListObjectFile = new File("data/subsets.ser");
-        if (dataListObjectFile.exists()) {
+        File datasetsFile = new File("data/datasets.ser");
+        if (datasetsFile.exists()) {
             // If the serialized subsets file exists, load subsets from the file
-            subsetsList = serializer.loadListFromFile("data/subsets.ser", DataSet.class);
+            datasetList = serializer.loadListFromFile("data/datasets.ser", DataSet.class);
         } else {
             // If the serialized subsets file doesn't exist, a new one must be constructed
             if (settings.testingDirectory() != null) {
                 // If a testing file path is specified, create training and testing datasets from file
-                subsetsList.add(new DataSet(new FileText(settings.trainingDirectory())));
-                subsetsList.add(new DataSet(new FileText(settings.testingDirectory())));
+                datasetList.add(new DataSet(new FileText(settings.trainingDirectory())));
+                datasetList.add(new DataSet(new FileText(settings.testingDirectory())));
             } else {
                 // If there isn't a testing file specified, the training data must be partitioned
-                // MISSING CODE
-                subsetsList.add(new DataSet(new FileText(settings.trainingDirectory())));
+                ArrayList<DataSet> dataPartitions = new DataSet(new FileText(settings.trainingDirectory())).splitForTrainingAndTesting();
+                datasetList.add(dataPartitions.get(0));
+                datasetList.add(dataPartitions.get(1));
             }
 
             // Save the constructed dataset and subsets objects to serialized files
-            serializer.saveListToFile(subsetsList, "data/subsets.ser");
-
+            serializer.saveListToFile(datasetList, "data/datasets.ser");
         }
     }
 
