@@ -69,15 +69,15 @@ public class DecisionTree {
             }
             left.calculateImpurity();
             right.calculateImpurity();
-            parent.setGiniIndex(getSplitImpurity(parent, left, right));
-            parent.setLeft(left);
-            parent.setRight(right);
+            //parent.setGiniIndex(getSplitImpurity(parent, left, right));
+            //parent.setLeft(left);
+            //parent.setRight(right);
             minHeap.insert(parent);
         }
 
         Node bestNode = minHeap.removeMin();
-        n.setLeft(bestNode.left());
-        n.setRight(bestNode.right());
+        //n.setLeft(bestNode.left());
+        //n.setRight(bestNode.right());
         if (n.left().giniImpurity() < n.giniImpurity()) {
             minHeap.insert(bestNode.left());
             //label the leaf because we are no longer splitting on the right side
