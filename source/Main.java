@@ -18,14 +18,14 @@ public class Main {
      * @throws IOException if an I/O error occurs during file operations
      */
     public static void main(String[] args) throws IOException {
-        FileText testingText;
-        ArrayList<DataSet> subsetsList;
-
         // Load settings from config.csv
         settings.loadConfig();
 
         // Initialize serialization object
         Serialization<DataSet> serializer = new Serialization<>();
+
+        // Prepare container for data subsets
+        ArrayList<DataSet> subsetsList = new ArrayList<>();
 
         // Check if serialized subsets file exists
         File subsetsObjectFile = new File("data/subsets.ser");
@@ -34,14 +34,10 @@ public class Main {
             subsetsList = serializer.loadListFromFile("data/subsets.ser", DataSet.class);
         } else {
             // If the serialized subsets file doesn't exist, a new one must be constructed
-            DataSet trainingRecords;
-            DataSet testingRecords;
-
             if (settings.testingDirectory() != null) {
                 // If a testing file path is specified, create training and testing datasets from file
-                testingText = new FileText(settings.testingDirectory());
-                trainingRecords = new DataSet(trainingText);
-                testingRecords = new DataSet(testingText);
+                subsetsList.add(new DataSet(new FileText(settings.trainingDirectory())));
+                subsetsList.add(new DataSet(new FileText(settings.testingDirectory())));
             } else {
                 // If there isn't a testing file specified, the training data must be partitioned
                 serializer.saveToFile(new DataSet(trainingText), "data/dataset.ser");
