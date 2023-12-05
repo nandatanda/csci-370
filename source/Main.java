@@ -24,18 +24,18 @@ public class Main {
         // Initialize serialization object
         Serialization<DataSet> serializer = new Serialization<>();
 
-        // Prepare container for data subsets
+        // Prepare container for training and testing sets
         ArrayList<DataSet> datasetList = new ArrayList<>();
 
-        // Check if serialized subsets file exists
+        // Check if a serialized datasets file exists
         File datasetsFile = new File("data/datasets.ser");
         if (datasetsFile.exists()) {
-            // If the serialized subsets file exists, load subsets from the file
+            // If a serialized datasets file exists, load training and testing subsets from the file
             datasetList = serializer.loadListFromFile("data/datasets.ser", DataSet.class);
         } else {
-            // If the serialized subsets file doesn't exist, a new one must be constructed
+            // If the serialized datasets file doesn't exist, a new one must be constructed
             if (settings.testingDirectory() != null) {
-                // If a testing file path is specified, create training and testing datasets from file
+                // If a testing file path is specified, create training and testing datasets from their respective files
                 datasetList.add(new DataSet(new FileText(settings.trainingDirectory())));
                 datasetList.add(new DataSet(new FileText(settings.testingDirectory())));
             } else {
