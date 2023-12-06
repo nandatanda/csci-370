@@ -51,7 +51,7 @@ public class DataSet implements Serializable, Iterable<DataRecord> {
         for (int i = 1; i < entries.length; i++) {
             // Create a DataPoint using the header from the csv and the latest entry in the loop
             String latestEntry = entries[i];
-            DataRecord newRow = new DataRecord(csvHeader, latestEntry, settings.delimiter(), settings.nameIndex(), settings.ratingIndex());
+            DataRecord newRow = new DataRecord(csvHeader, latestEntry);
 
             // Add the DataPoint to the dataset
             data.add(newRow);

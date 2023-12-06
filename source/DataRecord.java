@@ -25,11 +25,12 @@ public class DataRecord extends LinkedHashMap<String, Boolean> implements Serial
      *
      * @param headers     an array of all column headers from the csv file
      * @param entry       the entry string containing the data record information
-     * @param delimiter   the delimiter used to separate values in the entry string
-     * @param nameIndex   the index where the record's title is located
-     * @param ratingIndex the index where the record's ESRB classification is located
      */
-    public DataRecord(String[] headers, String entry, String delimiter, int nameIndex, int ratingIndex) {
+    public DataRecord(String[] headers, String entry) {
+        String delimiter = Main.settings().delimiter();
+        int nameIndex = Main.settings().nameIndex();
+        int ratingIndex = Main.settings().ratingIndex();
+
         // Split the entire entry using the delimiter
         String[] values = entry.split(delimiter);
 
