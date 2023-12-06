@@ -58,10 +58,15 @@ public class Node {
         ratingsCount = new RatingsMap();
         ratingsCount.initialize();
         splittingFeature = feature;
-        giniIndex = 0.0;
-        giniImpurity = 0.0;
 
         this.data = new DataSet();
+
+        // Split the data into left and right children
+        splitData();
+
+        // Find the gini value(s)
+        giniIndex = 0.0;
+        giniImpurity = 0.0;
     }
 
     /**
@@ -185,7 +190,25 @@ public class Node {
         label = majority;
     }
 
-    public void splitBy(String feature) {
-
+    /**
+     * Splits the data into left and right children based on the splitting feature.
+     */
+    private void splitData() {
+        // Iterate through the data to split into left and right children
+        for (DataRecord record : data) {
+            // If the record has the splitting feature, add it to the right child
+            if (record.get(splittingFeature)) {
+                if (right == null) {
+                    right = new Node();
+                }
+                right.add(record);
+            } else {
+                // Otherwise, add it to the left child
+                if (left == null) {
+                    left = new Node();
+                }
+                left.add(record);
+            }
+        }
     }
 }
