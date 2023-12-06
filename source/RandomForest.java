@@ -34,7 +34,7 @@ public class RandomForest {
             DataSet bootstrappedDataSet = generateBootstrapDataSet();
             System.out.println(trainingSet.features());
             ArrayList<String> baggedFeatures = generateBaggedFeatures(trainingSet.features());
-            DecisionTree tree = new DecisionTree(bootstrappedDataSet, baggedFeatures, settings);
+            DecisionTree tree = new DecisionTree(bootstrappedDataSet, baggedFeatures);
             decisionTrees.add(tree);
         }
 

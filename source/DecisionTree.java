@@ -1,95 +1,140 @@
 import java.util.ArrayList;
 
+/**
+ * The {@code DecisionTree} class represents a decision tree used for classification.
+ * It contains methods to build and manipulate the decision tree.
+ */
 public class DecisionTree {
 
-    DecisionTree(DataSet boostrappedDataSet, ArrayList<String> baggedFeatures, UserConfig settings) {
-        this.bootstrappedDataSet = boostrappedDataSet;
-        this.baggedFeatures = baggedFeatures;
-        this.MIN_SAMPLES = settings.minSamples();
-        this.MAX_DEPTH = settings.maxDepth();
-        this.RATINGS_LIST = settings.ratings();
-        this.minHeap = new MinHeap();
-        this.root = new Node(bootstrappedDataSet);
-        minHeap.insert(root);
-        buildTree(this.root, 0);
+    // The dataset used to build the tree
+    private final DataSet data;
 
-    }
-
-    private final DataSet bootstrappedDataSet;
-    private final ArrayList<String> baggedFeatures;
-    private final int MIN_SAMPLES;
-    private final int MAX_DEPTH;
-
-    private final ArrayList<String> RATINGS_LIST;
-    private final MinHeap minHeap;
-
+    // The root node of the decision tree
     private Node root;
 
-    public DataSet getBootstrappedDataSet() {
-        return this.bootstrappedDataSet;
+    // The list of features used for building the tree
+    private final ArrayList<String> features;
+
+    // MinHeap to store the best nodes for splitting
+    private final MinHeap bestNodes;
+
+    /**
+     * Constructor for the DecisionTree class.
+     *
+     * @param bootstrappedDataSet the bootstrap dataset used for building the tree
+     * @param baggedFeatures     the list of features used for building the tree
+     */
+    DecisionTree(DataSet bootstrappedDataSet, ArrayList<String> baggedFeatures) {
+        data = bootstrappedDataSet;
+        root = new Node(data);
+        features = baggedFeatures;
+        bestNodes = new MinHeap();
+
+        bestNodes.insert(root);
+        buildTree(this.root, 0);
     }
 
-    public ArrayList<String> getBaggedFeatures() {
-        return this.baggedFeatures;
+    /**
+     * Get the dataset used for building the tree.
+     *
+     * @return the dataset used for building the tree
+     */
+    public DataSet data() {
+        return data;
     }
 
-    public int getMinSamples() {
-        return this.MIN_SAMPLES;
+    /**
+     * Get the root node of the decision tree.
+     *
+     * @return the root node of the decision tree
+     */
+    public Node root() {
+        return root;
     }
 
-    public int getMaxDepth() {
-        return this.MAX_DEPTH;
+    /**
+     * Get the list of features used for building the tree.
+     *
+     * @return the list of features used for building the tree
+     */
+    public ArrayList<String> features() {
+        return features;
     }
 
-    public Node getRoot() {
-        return this.root;
+    /**
+     * Get the MinHeap storing the best nodes for splitting.
+     *
+     * @return the MinHeap storing the best nodes for splitting
+     */
+    public MinHeap bestNodes() {
+        return bestNodes;
     }
 
-
+    /**
+     * Set the root node of the decision tree.
+     *
+     * @param rootNode the root node to set
+     */
     public void setRoot(Node rootNode) {
         this.root = rootNode;
     }
 
-    private void buildTree(Node n, int depth) {
-        if (depth >= MAX_DEPTH || n.data().size() <= MIN_SAMPLES) {
-            n.assignLabel();
-            // another scenario is when it is a leaf node but doesn't satisfy this criteria
+    /**
+     * Build the decision tree recursively using the best nodes for splitting.
+     *
+     * @param newNode the current node in the tree being processed
+     * @param depth   the depth of the current node in the tree
+     */
+    private void buildTree(Node newNode, int depth) {
+        int min_samples = Main.settings().minSamples();
+        int max_depth = Main.settings().maxDepth();
+
+        // Base case: if depth exceeds the maximum depth or the number of samples is below the threshold, assign a label to the node
+        if (depth >= max_depth || newNode.data().size() <= min_samples) {
+            newNode.assignLabel();
+            // Another scenario is when it is a leaf node but doesn't satisfy this criteria
             return;
         }
-        Node parent = minHeap.removeMin();
-        for (String f : baggedFeatures) {
-            Node left = new Node(f);
-            Node right = new Node(f);
-            for (DataRecord d : n.data()) {
-                if ((boolean) d.get(f)) {
-                    right.add(d);
+
+        // Get the best node from the MinHeap
+        Node parent = bestNodes.removeMin();
+
+        // Iterate through features and create left and right child nodes
+        for (String feature : features) {
+            Node left = new Node(feature);
+            Node right = new Node(feature);
+
+            // Split the records based on the feature
+            for (DataRecord record : newNode.data()) {
+                if (record.get(feature)) {
+                    right.add(record);
                 } else {
-                    left.add(d);
+                    left.add(record);
                 }
             }
+
+            // Calculate impurity for left and right nodes
             left.calculateImpurity();
             right.calculateImpurity();
-            //parent.setGiniIndex(getSplitImpurity(parent, left, right));
-            //parent.setLeft(left);
-            //parent.setRight(right);
-            minHeap.insert(parent);
+
+            bestNodes.insert(parent);
         }
 
-        Node bestNode = minHeap.removeMin();
-        //n.setLeft(bestNode.left());
-        //n.setRight(bestNode.right());
-        if (n.left().giniImpurity() < n.giniImpurity()) {
-            minHeap.insert(bestNode.left());
-            //label the leaf because we are no longer splitting on the right side
-            n.right().assignLabel();
+        // Get the best node from the MinHeap
+        Node bestNode = bestNodes.removeMin();
+
+        // Determine whether to go left or right based on impurity
+        if (newNode.left().giniImpurity() < newNode.giniImpurity()) {
+            bestNodes.insert(bestNode.left());
+            // Label the leaf because we are no longer splitting on the right side
+            newNode.right().assignLabel();
             buildTree(bestNode.left(), depth + 1);
         } else {
-            minHeap.insert(bestNode.right());
-            //label the leaf because we are no longer splitting on left side
-            n.left().assignLabel();
+            bestNodes.insert(bestNode.right());
+            // Label the leaf because we are no longer splitting on the left side
+            newNode.left().assignLabel();
             buildTree(bestNode.right(), depth + 1);
         }
-
     }
 
     private double getSplitImpurity(Node parent, Node left, Node right) {
@@ -98,15 +143,14 @@ public class DecisionTree {
         return lWeighted + rWeighted;
     }
 
-    public String castVote(DataRecord datapoint){
+    public String castVote(DataRecord datapoint) {
         // start form the root and loop through and get the majority label if datapoint classifies
         Node currentNode = root;
-        while(!currentNode.isLeaf()){
+        while (!currentNode.isLeaf()) {
             String feature = currentNode.splittingFeature();
-            if ((boolean)datapoint.get(feature)){
+            if ((boolean) datapoint.get(feature)) {
                 currentNode = currentNode.right();
-            }
-            else{
+            } else {
                 currentNode = currentNode.left();
             }
         }
