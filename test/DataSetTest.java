@@ -1,3 +1,4 @@
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -5,12 +6,12 @@ import org.mockito.Mock;
 import java.io.IOException;
 import java.io.Serializable;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-class DataSetTest implements Serializable {
 
-    final String testFilePath = "source/test/resources/Video_games_esrb_rating_test.csv";
+class DataSetTest {
+
+    final String testFilePath = "test/resources/Video_games_esrb_rating_test.csv";
     FileText testDataCopy = new FileText(testFilePath);
     private DataSet dataSetTest;
     @Mock
@@ -27,7 +28,7 @@ class DataSetTest implements Serializable {
     }
     @Test
     void get() {
-
+        System.out.println("yes");
     }
 //
 //    @Test
