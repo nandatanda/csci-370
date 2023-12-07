@@ -13,8 +13,6 @@ class DecisionTreeTest {
     private DecisionTree treeTest;
     private ArrayList<DataRecord> dataPointsTest = new ArrayList<>();
     private ArrayList<String> baggedFeaturesTest = new ArrayList<>();
-    private int minSampleTest;
-    private int maxDepthTest;
     @Mock
     private UserConfig settingsTest;
     private DataSet bootstrappedDataSetTest;
@@ -30,7 +28,7 @@ class DecisionTreeTest {
     }
 
     @Test
-    void should_ReturnValueBetweenZeroAndOne_WhenReturningGini() {
+    void should_ReturnValueBetweenZeroAndOne_When_ReturningGini() {
         //Given
         double giniTest = treeTest.calculateGiniImpurity(dataPointsTest);
         //When
