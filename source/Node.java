@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * The {@code Node} class represents a node in a decision tree used for classification.
  * Each node contains information about the data it represents, the splitting feature,
@@ -5,14 +7,28 @@
  */
 public class Node {
 
+    // Ratings count for each class label in the dataset
     private final RatingsMap ratingsCount;
-    private String splittingFeature;
-    private double giniIndex;
-    private double giniImpurity;
 
+    // Feature used for splitting the node
+    private String splitFeature;
+
+    // Gini impurity of the node
+    private double impurity;
+
+    // Weighted Gini impurity of the child nodes
+    private double weightedImpurity;
+
+    // Dataset associated with the node
     private final DataSet data;
+
+    // Left child node
     private Node left;
+
+    // Right child node
     private Node right;
+
+    // Label assigned to the node
     private String label;
 
     /**
@@ -21,14 +37,15 @@ public class Node {
     public Node() {
         ratingsCount = new RatingsMap();
         ratingsCount.initialize();
-        splittingFeature = "";
-        giniIndex = 0.0;
-        giniImpurity = 0.0;
 
         data = new DataSet();
         left = null;
         right = null;
+
         label = "";
+        splitFeature = "";
+        updateImpurity();
+        updateWeightedImpurity();
     }
 
     /**
@@ -39,34 +56,15 @@ public class Node {
     public Node(DataSet data) {
         ratingsCount = new RatingsMap();
         ratingsCount.initialize();
-        splittingFeature = "";
-        giniIndex = 0.0;
-        giniImpurity = 0.0;
 
         this.data = data;
         left = null;
         right = null;
+
         label = "";
-    }
-
-    /**
-     * Constructor for a node representing a split on a specific feature with associated ratings.
-     *
-     * @param feature the feature on which the split is performed
-     */
-    public Node(String feature) {
-        ratingsCount = new RatingsMap();
-        ratingsCount.initialize();
-        splittingFeature = feature;
-
-        this.data = new DataSet();
-
-        // Split the data into left and right children
-        splitData();
-
-        // Find the gini value(s)
-        giniIndex = 0.0;
-        giniImpurity = 0.0;
+        splitFeature = "";
+        updateImpurity();
+        updateWeightedImpurity();
     }
 
     /**
@@ -76,6 +74,15 @@ public class Node {
      */
     public DataSet data() {
         return data;
+    }
+
+    /**
+     * Get the splitting feature for the node.
+     *
+     * @return the splitting feature for the node
+     */
+    public String splitFeature() {
+        return this.splitFeature;
     }
 
     /**
@@ -90,50 +97,49 @@ public class Node {
     }
 
     /**
-     * Get the splitting feature for the node.
+     * Get the Gini impurity of the node.
      *
-     * @return the splitting feature for the node
+     * @return the Gini impurity of the node
      */
-    public String splittingFeature() {
-        return this.splittingFeature;
-    }
-
-    /**
-     * Set the splitting feature for the node.
-     *
-     * @param f the splitting feature to set
-     */
-    public void setSplittingFeature(String f) {
-        this.splittingFeature = f;
+    public double impurity() {
+        return impurity;
     }
 
     /**
      * Calculate the impurity of the node using Gini impurity measure.
      */
-    public void calculateImpurity() {
-        double sum = 0.0;
-        for (String rating : ratingsCount.keySet()) {
-            sum += Math.pow((double) ratingsCount.get(rating) / data.size(), 2);
+    public void updateImpurity() {
+        if (size() == 0) {
+            impurity = Double.NaN;
+        } else {
+            double sum = 0.0;
+            for (String rating : ratingsCount.keySet()) {
+                sum += Math.pow((double) ratingsCount.get(rating) / data.size(), 2);
+            }
+            impurity = 1 - sum;
         }
-        giniImpurity = 1 - sum;
     }
 
     /**
-     * Get the Gini index of the node.
+     * Get the weighted Gini impurity of the child nodes.
      *
-     * @return the Gini index of the node
+     * @return the weighted impurity of the children
      */
-    public double giniIndex() {
-        return giniIndex;
+    public double weightedImpurity() {
+        return weightedImpurity;
     }
 
     /**
-     * Get the Gini impurity of the node.
-     *
-     * @return the Gini impurity of the node
+     * Update the weighted Gini impurity of the node's children.
      */
-    public double giniImpurity() {
-        return giniImpurity;
+    public void updateWeightedImpurity() {
+        if (size() == 0 || left == null || right == null) {
+            impurity = Double.NaN;
+        } else {
+            double leftImpurity = (double) left.size() / this.size() * left.impurity();
+            double rightImpurity = (double) right.size() / this.size() * right.impurity();
+            weightedImpurity = leftImpurity + rightImpurity;
+        }
     }
 
     /**
@@ -155,21 +161,30 @@ public class Node {
     }
 
     /**
-     * Check if the node is a leaf node.
-     *
-     * @return true if the node is a leaf node, false otherwise
-     */
-    public boolean isLeaf() {
-        return (left == null && right == null);
-    }
-
-    /**
      * Get the label assigned to the node.
      *
      * @return the label assigned to the node
      */
     public String label() {
         return this.label;
+    }
+
+    /**
+     * Get the number of records contained in a node.
+     *
+     * @return the size of the node
+     */
+    public int size() {
+        return data().size();
+    }
+
+    /**
+     * Check if the node is a leaf node.
+     *
+     * @return true if the node is a leaf node, false otherwise
+     */
+    public boolean isLeaf() {
+        return (left == null && right == null);
     }
 
     /**
@@ -186,8 +201,45 @@ public class Node {
                 majority = f;
             }
         }
-
         label = majority;
+    }
+
+    /**
+     * Evaluate the best split among a list of candidate features.
+     *
+     * @param candidates the list of candidate features
+     */
+    public void performBestSplit(ArrayList<String> candidates) {
+        String bestFeature = "";
+        double bestImpurity = Double.POSITIVE_INFINITY;
+
+        // Evaluate a split on each feature
+        for (String feature : candidates) {
+            // Reset existing children
+            left = null;
+            right = null;
+
+            // Split into new children
+            splitFeature = feature;
+            splitData();
+
+            // Find the impurity of the split
+            updateWeightedImpurity();
+            if (weightedImpurity < bestImpurity) {
+                // If this split is the best so far, store the feature and value
+                bestFeature = splitFeature;
+                bestImpurity = weightedImpurity;
+            }
+        }
+
+        // After evaluating all candidates, store the winning values to class fields
+        splitFeature = bestFeature;
+        weightedImpurity = bestImpurity;
+
+        // Reset children and perform the winning split
+        left = null;
+        right = null;
+        splitData();
     }
 
     /**
@@ -197,7 +249,7 @@ public class Node {
         // Iterate through the data to split into left and right children
         for (DataRecord record : data) {
             // If the record has the splitting feature, add it to the right child
-            if (record.get(splittingFeature)) {
+            if (record.get(splitFeature)) {
                 if (right == null) {
                     right = new Node();
                 }
