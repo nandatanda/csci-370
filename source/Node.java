@@ -134,7 +134,7 @@ public class Node {
      */
     public void updateWeightedImpurity() {
         if (size() == 0 || left == null || right == null) {
-            impurity = Double.NaN;
+            weightedImpurity = Double.NaN;
         } else {
             double leftImpurity = (double) left.size() / this.size() * left.impurity();
             double rightImpurity = (double) right.size() / this.size() * right.impurity();
@@ -175,7 +175,7 @@ public class Node {
      * @return the size of the node
      */
     public int size() {
-        return data().size();
+        return data.size();
     }
 
     /**
