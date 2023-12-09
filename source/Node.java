@@ -92,7 +92,7 @@ public class Node {
      */
     public void add(DataRecord record) {
         String rating = record.rating();
-        ratingsCount.increment(rating);
+        //ratingsCount.increment(rating);
         data.add(record);
     }
 

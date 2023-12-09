@@ -15,9 +15,6 @@ public class DecisionTree {
     // The list of features used for building the tree
     private final ArrayList<String> features;
 
-    // MinHeap to store the best nodes for splitting
-    private final MinHeap bestNodes;
-
     private final int maxDepth = Main.settings().maxDepth();
 
     private final int minSamples = Main.settings().minSamples();
@@ -32,9 +29,7 @@ public class DecisionTree {
         data = bootstrappedDataSet;
         root = new Node(data);
         features = baggedFeatures;
-        bestNodes = new MinHeap();
 
-        bestNodes.insert(root);
         buildTree(this.root, 0);
     }
 
@@ -66,15 +61,6 @@ public class DecisionTree {
     }
 
     /**
-     * Get the MinHeap storing the best nodes for splitting.
-     *
-     * @return the MinHeap storing the best nodes for splitting
-     */
-    public MinHeap bestNodes() {
-        return bestNodes;
-    }
-
-    /**
      * Set the root node of the decision tree.
      *
      * @param rootNode the root node to set
@@ -90,59 +76,29 @@ public class DecisionTree {
      * @param depth   the depth of the current node in the tree
      */
     private void buildTree(Node node, int depth) {
-
-        if (depth >= maxDepth || node.data().size() <= minSamples) {
-            // Base case: if depth exceeds the maximum depth or the number of samples is below the threshold, assign a label to the node
-            node.assignLabel();
+        // Base case: check if the current depth exceeds the maximum depth or the number of samples is below the threshold
+        if (depth >= maxDepth || node.size() <= minSamples) {
+            node.assignLabel(); // Assign a label to the leaf node
             return;
-        } else {
-            if (node.isLeaf()) {
-                // Another scenario is when it is a leaf node but doesn't satisfy this criteria
-            }
         }
 
-        // Get the best node from the MinHeap
-        Node parent = bestNodes.removeMin();
+        // Evaluate the best split among the remaining features
+        node.performBestSplit(features);
 
-        // Iterate through features and create left and right child nodes
-        for (String feature : features) {
-            Node left = new Node();
-            Node right = new Node();
-            left.setSplitFeature(feature);
-            right.setSplitFeature(feature);
+        // Remove the splitting feature from the list of available features
+        features.remove(node.splitFeature());
 
-            // Split the records based on the feature
-            for (DataRecord record : node.data()) {
-                if (record.get(feature)) {
-                    right.add(record);
-                } else {
-                    left.add(record);
-                }
-            }
-
-            // Calculate impurity for left and right nodes
-            left.updateImpurity();
-            right.updateImpurity();
-
-            // Insert into heap for sorting
-            bestNodes.insert(parent);
+        // Recursively build the left and right subtrees
+        if (node.left() != null) {
+            buildTree(node.left(), depth + 1);
         }
 
-        // Get the best node from the MinHeap
-        Node bestNode = bestNodes.removeMin();
-
-        // Determine whether to go left or right based on impurity
-        if (node.left().impurity() < node.impurity()) {
-            bestNodes.insert(bestNode.left());
-            // Label the leaf because we are no longer splitting on the right side
-            node.right().assignLabel();
-            buildTree(bestNode.left(), depth + 1);
-        } else {
-            bestNodes.insert(bestNode.right());
-            // Label the leaf because we are no longer splitting on the left side
-            node.left().assignLabel();
-            buildTree(bestNode.right(), depth + 1);
+        if (node.right() != null) {
+            buildTree(node.right(), depth + 1);
         }
+
+        // Restore the splitting feature to the list of available features after the recursion
+        features.add(node.splitFeature());
     }
 
     public String castVote(DataRecord datapoint) {

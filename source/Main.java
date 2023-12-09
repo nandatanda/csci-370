@@ -1,3 +1,4 @@
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,9 +51,11 @@ public class Main {
         }
 
         // Test the operation by querying a record that was read from disk
-        System.out.println(datasetList.get(0).get(0).title() + " : " + datasetList.get(1).get(0).toString());
+        // System.out.println(datasetList.get(0).get(0).title() + " : " + datasetList.get(1).get(0).toString());
 
         // Everything is loaded, time to build some trees
+        DataSet trainingSet = datasetList.get(0);
+        DecisionTree tree = new DecisionTree(trainingSet, trainingSet.features());
 
     }
 
