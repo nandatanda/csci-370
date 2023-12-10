@@ -91,6 +91,9 @@ public class RatingsMap extends LinkedHashMap<String, Integer> implements Serial
      * @param key the key whose associated value is to be incremented
      */
     public void increment(String key) {
+        if(get(key) == null){
+            System.out.println(key);
+        }
         put(key, get(key) + 1);
     }
 

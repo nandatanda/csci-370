@@ -20,7 +20,7 @@ public class Node {
     private double weightedImpurity;
 
     // Dataset associated with the node
-    private final DataSet data;
+    private DataSet data;
 
     // Left child node
     private Node left;
@@ -56,6 +56,11 @@ public class Node {
     public Node(DataSet data) {
         ratingsCount = new RatingsMap();
         ratingsCount.initialize();
+        this.data = new DataSet();
+
+        for(DataRecord r : data.data()){
+            add(r);
+        }
 
         this.data = data;
         left = null;
@@ -92,7 +97,7 @@ public class Node {
      */
     public void add(DataRecord record) {
         String rating = record.rating();
-        //ratingsCount.increment(rating);
+        ratingsCount.increment(rating);
         data.add(record);
     }
 
@@ -110,7 +115,7 @@ public class Node {
      */
     public void updateImpurity() {
         if (size() == 0) {
-            impurity = Double.NaN;
+            weightedImpurity = Double.NaN;
         } else {
             double sum = 0.0;
             for (String rating : ratingsCount.keySet()) {
@@ -249,6 +254,9 @@ public class Node {
         // Iterate through the data to split into left and right children
         for (DataRecord record : data) {
             // If the record has the splitting feature, add it to the right child
+            if(record.get(splitFeature) == null){
+                System.out.println(splitFeature);
+            }
             if (record.get(splitFeature)) {
                 if (right == null) {
                     right = new Node();
