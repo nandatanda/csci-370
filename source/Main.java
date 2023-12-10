@@ -7,7 +7,6 @@ import java.util.ArrayList;
  * It demonstrates the loading and manipulation of a dataset.
  */
 public class Main extends GUI {
-
     private static final UserConfig settings = new UserConfig();
 
     /**
@@ -31,7 +30,7 @@ public class Main extends GUI {
 
         //RandomForest rf = new RandomForest(trainingSet);
         //System.out.println(rf.set.data.get(0));
-
+        launch(args);
     }
 
     /**
