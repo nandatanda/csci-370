@@ -1,26 +1,32 @@
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class GUI extends Application {
-    public String changed(CheckBox checkBox){
+
+    FileChooser userFileUpload = new FileChooser();
+
+    private String changed(CheckBox checkBox){
         String state;
-        if(checkBox.isIndeterminate()) {
-            state = "Undefined";
-        } else if (checkBox.isSelected()) {
+        if(checkBox.isSelected()) {
             state = "Checked";
-        } else {
+        } else
             state = "Unchecked";
-        }
+
         System.out.println(state);
         return state;
+    }
+
+    private void openFile(Stage stage) {
+        userFileUpload.setTitle("Upload Data");
+        userFileUpload.showOpenDialog(stage);
     }
 
     @Override
@@ -31,8 +37,11 @@ public class GUI extends Application {
         alert.setTitle("User Input");
         alert.setHeaderText("Game Entry");
         //Menu
-        MenuItem gameEntry = new MenuItem("Open Game Form");
-        gameEntry.setOnAction(e -> alert.show());
+
+
+
+        MenuItem gameEntry = new MenuItem("Upload Data");
+        gameEntry.setOnAction(e -> openFile(stage));
         MenuItem about = new MenuItem("The Crew");
         MenuItem contact = new MenuItem("Contact");
         MenuItem rate = new MenuItem("Rate Prediction");
@@ -48,6 +57,7 @@ public class GUI extends Application {
         //Game Entry Form
 
         GridPane grid = new GridPane();
+
         //Need to get game title into string
         TextField gameTitle = new TextField();
         CheckBox console = new CheckBox();
