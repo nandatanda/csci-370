@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * The {@code Main} class serves as the entry point for the program.
  * It demonstrates the loading and manipulation of a dataset.
  */
-public class Main {
+public class Main extends GUI {
 
     private static final UserConfig settings = new UserConfig();
 
