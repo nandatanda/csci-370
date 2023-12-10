@@ -97,6 +97,7 @@ public class Node {
      */
     public void add(DataRecord record) {
         String rating = record.rating();
+        System.out.println(record.title() + record.rating());
         ratingsCount.increment(rating);
         data.add(record);
     }

@@ -142,8 +142,13 @@ public class UserConfig implements Serializable {
      * (e.g., ["E", "ET", "T", "M"] representing different content ratings)
      */
     public ArrayList<String> ratings() {
+        ArrayList<String> ratings = new ArrayList<>();
         String[] ratingsArray = (String[]) configPairs.get("ratings");
-        return new ArrayList<String>(Arrays.asList(ratingsArray));
+        for(int i = 0; i < ratingsArray.length; i++){
+            String rating = ratingsArray[i].trim();
+            ratings.add(rating);
+        }
+        return ratings;
     }
 
     /**
