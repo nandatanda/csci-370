@@ -1,5 +1,6 @@
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCombination;
@@ -10,7 +11,7 @@ import javafx.stage.Stage;
 
 public class GUI extends Application {
     public String changed(CheckBox checkBox){
-        String state = null;
+        String state;
         if(checkBox.isIndeterminate()) {
             state = "Undefined";
         } else if (checkBox.isSelected()) {
@@ -29,7 +30,7 @@ public class GUI extends Application {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, "This is Where you enter game.");
         alert.setTitle("User Input");
         alert.setHeaderText("Game Entry");
-        // Create Game form menu item
+        //Menu
         MenuItem gameEntry = new MenuItem("Open Game Form");
         gameEntry.setOnAction(e -> alert.show());
         MenuItem about = new MenuItem("The Crew");
@@ -44,33 +45,119 @@ public class GUI extends Application {
         menu2.getItems().add(contact);
         Menu menu3 = new Menu("Rate");
         menu3.getItems().add(rate);
-        // Form -->>>>>>>>>
-        Button form = new Button("Submit");
+        //Game Entry Form
+
         GridPane grid = new GridPane();
+        //Need to get game title into string
         TextField gameTitle = new TextField();
-        //Console checkbox
         CheckBox console = new CheckBox();
-        console.setAllowIndeterminate(false);
+        console.setAllowIndeterminate(false); //
         // Check box event listener methods
         console.setOnAction(e -> changed(console));
 
 
 
-        // ----
-
-        CheckBox violence = new CheckBox();
+        CheckBox alcoholReference = new CheckBox();
+        CheckBox animatedBlood = new CheckBox();
+        CheckBox blood = new CheckBox();
+        CheckBox bloodAndGore = new CheckBox();
+        CheckBox cartoonViolence = new CheckBox();
+        CheckBox crudeHumor = new CheckBox();
+        CheckBox drugReference = new CheckBox();
+        CheckBox fantasyViolence = new CheckBox();
+        CheckBox intenseViolence = new CheckBox();
+        CheckBox language = new CheckBox();
+        CheckBox lyrics = new CheckBox();
+        CheckBox matureHumor = new CheckBox();
+        CheckBox mildBlood = new CheckBox();
+        CheckBox mildCartoonViolence = new CheckBox();
+        CheckBox mildFantasyViolence = new CheckBox();
+        CheckBox mildLanguage = new CheckBox();
+        CheckBox mildLyrics = new CheckBox();
+        CheckBox mildSuggestiveThemes = new CheckBox();
+        CheckBox mildViolence = new CheckBox();
+        CheckBox noDescriptors = new CheckBox();
         CheckBox nudity = new CheckBox();
-        grid.addRow(0,new Label("Game Title: "), gameTitle);
+        CheckBox partialNudity = new CheckBox();
+        CheckBox sexualContent = new CheckBox();
+        CheckBox sexualThemes = new CheckBox();
+        CheckBox simulatedGambling = new CheckBox();
+        CheckBox strongLanguage = new CheckBox();
+        CheckBox strongSexualContent = new CheckBox();
+        CheckBox suggestiveThemes = new CheckBox();
+        CheckBox useOfAlcohol = new CheckBox();
+        CheckBox useOfDrugsAndAlcohol = new CheckBox();
+        CheckBox violence = new CheckBox();
 
+        Button form = new Button("Submit");
+
+        grid.addRow(0,new Label("Game Title: "), gameTitle);
         grid.addRow(1,new Label(""));
         grid.addRow(2,new Label("On Console:\t"), console);
         grid.addRow(3,new Label(""));
-
-        grid.addRow(4, new Label("Violence\t"), violence);
-        grid.addRow(5, new Label(""));
-        grid.addRow(6, new Label("Nudity\t"), nudity);
+        grid.addRow(4,new Label("Alcohol Reference:\t"), alcoholReference);
+        grid.addRow(5,new Label(""));
+        grid.addRow(6,new Label("Animated Blood:\t"), animatedBlood);
+        grid.addRow(7,new Label(""));
+        grid.addRow(8,new Label("Blood:\t"), blood);
         grid.addRow(9,new Label(""));
-        grid.addRow(10, form);
+        grid.addRow(10,new Label("Blood and Gore:\t"), bloodAndGore);
+        grid.addRow(11,new Label(""));
+        grid.addRow(12,new Label("Cartoon Violence:\t"), cartoonViolence);
+        grid.addRow(13,new Label(""));
+        grid.addRow(14,new Label("Crude Humor:\t"), crudeHumor);
+        grid.addRow(15,new Label(""));
+        grid.addRow(16,new Label("Drug Reference:\t"), drugReference);
+        grid.addRow(17,new Label(""));
+        grid.addRow(18,new Label("Fantasy Violence:\t"), fantasyViolence);
+        grid.addRow(19,new Label(""));
+        grid.addRow(20,new Label("Intense Violence:\t"), intenseViolence);
+        grid.addRow(21,new Label(""));
+        grid.addRow(22,new Label("Language:\t"), language);
+        grid.addRow(23,new Label(""));
+        grid.addRow(24,new Label("Lyrics:\t"), lyrics);
+        grid.addRow(25,new Label(""));
+        grid.addRow(26,new Label("Mature Humor:\t"), matureHumor);
+        grid.addRow(27,new Label(""));
+        grid.addRow(28,new Label("Mild Blood:\t"), mildBlood);
+        grid.addRow(29,new Label(""));
+        grid.addRow(30,new Label("Mild Cartoon Violence:\t"), mildCartoonViolence);
+        grid.addRow(31,new Label(""));
+        grid.addRow(32,new Label("Mild Fantasy Violence:\t"), mildFantasyViolence);
+        grid.addRow(33,new Label(""));
+        grid.addRow(34,new Label("Mild Language:\t"), mildLanguage);
+        grid.addRow(35,new Label(""));
+        grid.addRow(36,new Label("Mild Lyrics:\t"), mildLyrics);
+        grid.addRow(37,new Label(""));
+        grid.addRow(38,new Label("Mild Suggestive Themes:\t"), mildSuggestiveThemes);
+        grid.addRow(39,new Label(""));
+        grid.addRow(40,new Label("Mild Violence:\t"), mildViolence);
+        grid.addRow(41,new Label(""));
+        grid.addRow(42,new Label("No Descriptors:\t"), noDescriptors);
+        grid.addRow(43,new Label(""));
+        grid.addRow(44,new Label("Nudity:\t"), nudity);
+        grid.addRow(45,new Label(""));
+        grid.addRow(46,new Label("Partial Nudity:\t"), partialNudity);
+        grid.addRow(47,new Label(""));
+        grid.addRow(48,new Label("Sexual Content:\t"), sexualContent);
+        grid.addRow(49,new Label(""));
+        grid.addRow(50,new Label("Sexual Themes:\t"), sexualThemes);
+        grid.addRow(51,new Label(""));
+        grid.addRow(52,new Label("Simulated Gambling:\t"), simulatedGambling);
+        grid.addRow(53,new Label(""));
+        grid.addRow(54,new Label("Strong Language:\t"), strongLanguage);
+        grid.addRow(55,new Label(""));
+        grid.addRow(56,new Label("Strong Sexual Content:\t"), strongSexualContent);
+        grid.addRow(57,new Label(""));
+        grid.addRow(58,new Label("Suggestive Themes:\t"), suggestiveThemes);
+        grid.addRow(59,new Label(""));
+        grid.addRow(60,new Label("Use of Alcohol:\t"), useOfAlcohol);
+        grid.addRow(61,new Label(""));
+        grid.addRow(62,new Label("Use of Drugs and Alcohol:\t"), useOfDrugsAndAlcohol);
+        grid.addRow(63,new Label(""));
+        grid.addRow(64, new Label("Violence\t"), violence);
+        grid.addRow(65,new Label(""));
+        grid.addRow(66, form); // Submit
 
 
 
