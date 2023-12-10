@@ -26,27 +26,27 @@ public class DataRecord extends LinkedHashMap<String, Boolean> implements Serial
      * @param headers     an array of all column headers from the csv file
      * @param entry       the entry string containing the data record information
      */
-    public DataRecord(String[] headers, String entry) {
+    public DataRecord(String[] headers, String[] entry) {
         String delimiter = Main.settings().delimiter();
         int nameIndex = Main.settings().nameIndex();
         int ratingIndex = Main.settings().ratingIndex();
 
         // Split the entire entry using the delimiter
-        String[] values = entry.split(delimiter);
+
 
         // Populate the LinkedHashMap using headers and corresponding values
-        for (int j = 0; j < headers.length && j < values.length; j++) {
+        for (int j = 0; j < headers.length; j++) {
             String newFeature = headers[j].trim();
 
             if (j == nameIndex) {
                 // Store the record's title separately
-                title = values[j].trim();
+                title = entry[j].trim();
             } else if (j == ratingIndex) {
                 // Store the record's rating separately
-                rating = values[j].trim();
+                rating = entry[j].trim();
             } else {
                 // For other headers, interpret "1" or "true" as boolean true, and store them as a LinkedHashMap
-                Boolean newValue = values[j].trim().equals("1") || values[j].equalsIgnoreCase("true");
+                Boolean newValue = entry[j].trim().equals("1") || entry[j].equalsIgnoreCase("true");
                 put(newFeature, newValue);
             }
         }

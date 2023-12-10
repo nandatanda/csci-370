@@ -1,3 +1,9 @@
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -42,20 +48,21 @@ public class DataSet implements Serializable, Iterable<DataRecord> {
         configure(Main.settings());
 
         // Split the file's contents by row to form entries
-        String[] entries = file.rows();
+        try (CSVReader reader = new CSVReader(new FileReader(Main.settings().trainingDirectory()))) {
+            // reads the first line
+            String[] csvHeader = reader.readNext();
+            String[] row;
+            while ((row = reader.readNext()) != null) {
+                DataRecord newRow = new DataRecord(csvHeader, row);
+                data.add(newRow);
 
-        // Store column headers in the first row to a string array
-        String[] csvHeader = entries[0].split(settings.delimiter());
-
-        // Iterate over the remaining entries, starting from index 1
-        for (int i = 1; i < entries.length; i++) {
-            // Create a DataPoint using the header from the csv and the latest entry in the loop
-            String latestEntry = entries[i];
-            DataRecord newRow = new DataRecord(csvHeader, latestEntry);
-
-            // Add the DataPoint to the dataset
-            data.add(newRow);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (CsvValidationException e) {
+            throw new RuntimeException(e);
         }
+        String[] entries = file.rows();
 
         // Store the features from the first record & update the size
         this.features = new ArrayList<>(data.get(0).keySet());
