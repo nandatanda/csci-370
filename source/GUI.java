@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -7,7 +8,9 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -67,13 +70,20 @@ public abstract class GUI extends Application implements Serializable {
 
     @Override
     public void start(Stage stage) {
-        VBox root = new VBox();
-        Scene scene = new Scene(root, 1400, 1250);
-        Button form = new Button("Submit");
+        VBox vBox = new VBox();
+        ScrollPane scrollPane = new ScrollPane(vBox);
+        BorderPane root = new BorderPane(scrollPane);
         GridPane grid = new GridPane();
         //Need to get game title into string
         TextField gameTitle = new TextField();
+        Button form = new Button("Submit");
         CheckBox console = new CheckBox();
+
+        scrollPane.setFitToHeight(true);
+
+
+        root.setPadding(new Insets(5));
+        Scene scene = new Scene(root, 1000, 750);
 
         //Menu
         MenuItem gameEntry = new MenuItem("Upload Data");
@@ -172,11 +182,11 @@ public abstract class GUI extends Application implements Serializable {
         grid.addRow(66, form); // Submit
 
         //Add to the Scene Graph
-        root.getChildren().addAll(menuBar, grid, form);
+        vBox.getChildren().addAll(menuBar, grid, form);
         stage.setScene(scene);
         stage.setTitle("CSCI 370 - Team 6");
-        stage.setWidth(1400);
-        stage.setHeight(1250);
+        stage.setWidth(1000);
+        stage.setHeight(750);
         stage.show();
 
     }
