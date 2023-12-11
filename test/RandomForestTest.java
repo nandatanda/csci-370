@@ -14,15 +14,14 @@ class RandomForestTest {
     @Mock
     private RandomForest randomForestTest;
     private DataSet dataSetTest;
-    private DataSet trainingSet;
     private UserConfig settingsTest;
 
 
     @BeforeEach
     void setup() {
         this.dataSetTest = mock(DataSet.class);
-        this.trainingSet = mock(DataSet.class);
-        this.randomForestTest = new RandomForest(dataSetTest, trainingSet);
+        this.settingsTest = mock(UserConfig.class);
+        this.randomForestTest = new RandomForest(dataSetTest, settingsTest);
     }
 
     @Test
@@ -31,9 +30,9 @@ class RandomForestTest {
 
         for (int i = 0; i < 100; i++) {
             // Given
-            DataSet bootstrappedDataSet = randomForestTest.generateBootstrapDataSet();
+            DataSet bootstrappedDataSet = randomForestTest.generateBootstrapDataSet(dataSetTest);
             ArrayList<String> baggedFeatures = randomForestTest.generateBaggedFeatures(dataSetTest.features());
-            DecisionTree tree = new DecisionTree(bootstrappedDataSet, baggedFeatures);
+            DecisionTree tree = new DecisionTree(bootstrappedDataSet, baggedFeatures, settingsTest);
             // When
             decisionTreesTest.add(tree);
         }
