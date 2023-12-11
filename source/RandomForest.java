@@ -104,12 +104,14 @@ public class RandomForest {
 
     public ArrayList<String> generateBaggedFeatures(ArrayList<String> splittingFeatures) {
         ArrayList<String> baggedFeatures = new ArrayList<>();
-        Random rand = new Random();
-        int randomNumberOfFeatures = rand.nextInt(splittingFeatures.size() + 1);
+        ArrayList<String> localCopy = new ArrayList<>(splittingFeatures);
 
-        while (randomNumberOfFeatures > 0 && !splittingFeatures.isEmpty()) {
-            int randomIndex = rand.nextInt(splittingFeatures.size());
-            baggedFeatures.add(splittingFeatures.remove(randomIndex));
+        Random rand = new Random();
+        int randomNumberOfFeatures = rand.nextInt(localCopy.size() + 1);
+
+        while (randomNumberOfFeatures > 0 && !localCopy.isEmpty()) {
+            int randomIndex = rand.nextInt(localCopy.size());
+            baggedFeatures.add(localCopy.remove(randomIndex));
             randomNumberOfFeatures--;
         }
 
