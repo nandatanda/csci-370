@@ -23,8 +23,7 @@ public abstract class GUI extends Application implements Serializable {
 
     FileChooser userFileUpload = new FileChooser();
     FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv");
-
-    Features checkBoxFeatures = new Features();
+    FeatureGrid checkBoxFeatures = new FeatureGrid();
 
     private String changed(CheckBox checkBox){
         String state;
@@ -68,9 +67,28 @@ public abstract class GUI extends Application implements Serializable {
 
     @Override
     public void start(Stage stage) {
+        VBox root = new VBox();
+        Scene scene = new Scene(root, 1400, 1250);
+        Button form = new Button("Submit");
+        GridPane grid = new GridPane();
+        //Need to get game title into string
+        TextField gameTitle = new TextField();
+        CheckBox console = new CheckBox();
 
         //Menu
         MenuItem gameEntry = new MenuItem("Upload Data");
+        MenuItem about = new MenuItem("The Crew");
+        MenuItem contact = new MenuItem("Contact");
+        MenuItem rate = new MenuItem("Rate Prediction");
+        Menu menu = new Menu("File");
+        Menu menu1 = new Menu("About");
+        Menu menu2 = new Menu("Contact");
+        Menu menu3 = new Menu("Rate");
+        menu.getItems().add(gameEntry);
+        menu1.getItems().add(about);
+        menu2.getItems().add(contact);
+        menu3.getItems().add(rate);
+        MenuBar menuBar = new MenuBar(menu, menu1, menu2, menu3);
         gameEntry.setOnAction(e -> {
             try {
                 openFile(stage);
@@ -78,29 +96,12 @@ public abstract class GUI extends Application implements Serializable {
                 throw new RuntimeException(ex);
             }
         });
-        MenuItem about = new MenuItem("The Crew");
-        MenuItem contact = new MenuItem("Contact");
-        MenuItem rate = new MenuItem("Rate Prediction");
-        Menu menu = new Menu("File");
-        menu.getItems().add(gameEntry);
-        Menu menu1 = new Menu("About");
-        menu1.getItems().add(about);
-        Menu menu2 = new Menu("Contact");
-        menu2.getItems().add(contact);
-        Menu menu3 = new Menu("Rate");
-        menu3.getItems().add(rate);
-        MenuBar menuBar = new MenuBar(menu, menu1, menu2, menu3);
+        // Menu End
 
         //Game Entry Form
-        GridPane grid = new GridPane();
-        //Need to get game title into string
-        TextField gameTitle = new TextField();
-        CheckBox console = new CheckBox();
-        console.setAllowIndeterminate(false); //
+        console.setAllowIndeterminate(false); // Only Checked and Unchecked
         // Check box event listener methods
         console.setOnAction(e -> changed(console));
-
-        Button form = new Button("Submit");
 
         grid.addRow(0,new Label("Game Title: "), gameTitle);
         grid.addRow(1,new Label(""));
@@ -170,15 +171,12 @@ public abstract class GUI extends Application implements Serializable {
         grid.addRow(65,new Label(""));
         grid.addRow(66, form); // Submit
 
-
-        // Parent of scene graph
-        VBox root = new VBox();
+        //Add to the Scene Graph
         root.getChildren().addAll(menuBar, grid, form);
-        Scene scene = new Scene(root, 500, 250, Color.BLUE);
         stage.setScene(scene);
         stage.setTitle("CSCI 370 - Team 6");
-        stage.setWidth(1200);
-        stage.setHeight(800);
+        stage.setWidth(1400);
+        stage.setHeight(1250);
         stage.show();
 
     }

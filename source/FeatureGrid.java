@@ -1,6 +1,10 @@
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 
-public class Features extends CheckBox {
+public class FeatureGrid extends CheckBox {
+
+    public GridPane grid = new GridPane();
     CheckBox alcoholReference = new CheckBox();
     CheckBox animatedBlood = new CheckBox();
     CheckBox blood = new CheckBox();
