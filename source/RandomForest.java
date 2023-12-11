@@ -2,22 +2,19 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class RandomForest {
-    RandomForest(DataSet trainingSet, DataSet testingSet, UserConfig settings) {
+    RandomForest(DataSet trainingSet, DataSet testingSet) {
         this.trainingSet = trainingSet;
         this.testingSet = testingSet;
-        this.MIN_SAMPLES = settings.minSamples();
-        this.NUM_TREES = settings.maxTrees();
-        this.MAX_DEPTH = settings.maxDepth();
-        this.settings = settings;
+        this.testingClassifications = new ArrayList<>();
 
     }
+
+    private ArrayList<String> testingClassifications;
 
     private final DataSet trainingSet;
     private final DataSet testingSet;
 
-    private final int MIN_SAMPLES;
-    private final int NUM_TREES;
-    private final int MAX_DEPTH;
+
 
     UserConfig settings;
     private ArrayList<String> treeVotes;
@@ -30,7 +27,7 @@ public class RandomForest {
 
     public void train() {
 
-        for (int i = 0; i < NUM_TREES; i++) {
+        for (int i = 0; i < settings.maxTrees(); i++) {
             DataSet bootstrappedDataSet = generateBootstrapDataSet();
             ArrayList<String> baggedFeatures = generateBaggedFeatures(trainingSet.features());
             DecisionTree tree = new DecisionTree(bootstrappedDataSet, baggedFeatures);
@@ -46,7 +43,48 @@ public class RandomForest {
             for (DecisionTree decisionTree : decisionTrees) {
                 treeVotes.add(decisionTree.castVote(datapoint));
             }
+            testingClassifications.add(findMajorityOfTrees(treeVotes));
         }
+
+    }
+
+    public String predict(DataRecord d){
+        String predictedLabel = "";
+        for (DecisionTree decisionTree : decisionTrees) {
+            Node treeNode = decisionTree.root();
+            while (!treeNode.isLeaf()) {
+                String feature = treeNode.splitFeature();
+                if ((boolean) d.get(feature)) {
+                    treeNode = treeNode.right();
+                } else {
+                    treeNode = treeNode.left();
+                }
+            }
+            predictedLabel = treeNode.label();
+        }
+        return predictedLabel;
+    }
+
+    private String findMajorityOfTrees(ArrayList<String> votes){
+        RatingsMap ratingsCount = new RatingsMap();
+        ratingsCount.initialize();
+        // loop through tree votes and get those counts
+        for(String v : votes){
+            ratingsCount.increment(v);
+        }
+        String highestRating = "";
+        int highestCount = 0;
+        // loop through and find the highest rating among them
+        for (String r : ratingsCount.keySet()) {
+           if (ratingsCount.get(r) > highestCount){
+               highestCount = ratingsCount.get(r);
+               highestRating = r;
+           }
+        }
+        return highestRating;
+
+
+
     }
 
     public DataSet generateBootstrapDataSet() {
@@ -68,12 +106,12 @@ public class RandomForest {
     public ArrayList<String> generateBaggedFeatures(ArrayList<String> splittingFeatures) {
         ArrayList<String> baggedFeatures = new ArrayList<>();
         Random rand = new Random();
-        int fSize = rand.nextInt(splittingFeatures.size() + 1);
+        int randomNumberOfFeatures = rand.nextInt(splittingFeatures.size() + 1);
 
-        for (int i = 0; i < fSize; i++) {
+        while (randomNumberOfFeatures > 0 && !splittingFeatures.isEmpty()) {
             int randomIndex = rand.nextInt(splittingFeatures.size());
-            baggedFeatures.add(splittingFeatures.get(randomIndex));
-
+            baggedFeatures.add(splittingFeatures.remove(randomIndex));
+            randomNumberOfFeatures--;
         }
 
         return baggedFeatures;

@@ -59,7 +59,15 @@ public class Main {
         System.out.println("The number of records in the testing set is " + testingSet.size());
 
         // Everything is loaded, time to build some trees
+
         DecisionTree tree = new DecisionTree(trainingSet, trainingSet.features());
+
+        RandomForest rf = new RandomForest(trainingSet, datasetList.get(1));
+        rf.train();
+        rf.test();
+//        System.out.println(datasetList.get(1).size());
+//        DataRecord randomRecord= trainingSet.get(0);
+
 
 
     }

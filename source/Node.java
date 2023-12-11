@@ -255,6 +255,8 @@ public class Node {
         for (DataRecord record : data) {
             // If the record has the splitting feature, add it to the right child
             if(record.get(splitFeature) == null){
+               continue;
+
             }
             if (record.get(splitFeature)) {
                 if (right == null) {
