@@ -9,6 +9,11 @@ import java.util.LinkedHashMap;
  */
 public class DataRecord extends LinkedHashMap<String, Boolean> implements Serializable {
 
+    /**
+     * universal version identifier for a Serializable class.
+     * Deserialization uses this number to ensure that a loaded class corresponds exactly to a serialized object.
+     * If no match is found, then an InvalidClassException is thrown.
+     */
     @Serial
     private static final long serialVersionUID = 712275634602611871L;
     private String title;
