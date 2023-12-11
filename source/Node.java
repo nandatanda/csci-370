@@ -59,10 +59,9 @@ public class Node {
         this.data = new DataSet();
 
         for(DataRecord r : data.data()){
-            add(r);
+            ratingsCount.increment(r.rating());
         }
 
-        this.data = data;
         left = null;
         right = null;
 
@@ -254,10 +253,9 @@ public class Node {
         // Iterate through the data to split into left and right children
         for (DataRecord record : data) {
             // If the record has the splitting feature, add it to the right child
-//            if(record.get(splitFeature) == null){
-//                return;
-//
-//            }
+            if(record.get(splitFeature) == null){
+               return;
+            }
             if (record.get(splitFeature)) {
                 if (right == null) {
                     right = new Node();
