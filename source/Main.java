@@ -18,6 +18,9 @@ public class Main {
      * @throws IOException if an I/O error occurs during file operations
      */
     public static void main(String[] args) throws IOException {
+
+        UserInterface window = new UserInterface();
+
         // Load settings from config.csv
         settings.loadConfig();
 
