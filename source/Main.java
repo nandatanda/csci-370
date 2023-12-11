@@ -1,3 +1,4 @@
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,61 +22,44 @@ public class Main {
         // Load settings from config.csv
         settings.loadConfig();
 
-        // Create a FileText object to read the content of the dataset csv
-        FileText content = new FileText(settings.trainingDirectory());
-
-        // Load the dataset and split it into subsets
-        ArrayList<DataSet> subsets = loadDatasetAndSplit(content, settings.delimiter());
-        DataSet trainingSet = subsets.get(0);
-        DataSet testingSet = subsets.get(1);
-
-        //RandomForest rf = new RandomForest(trainingSet);
-        //System.out.println(rf.set.data.get(0));
-
-    }
-
-    /**
-     * Loads the dataset from a file, splits it into subsets, and performs some basic operations.
-     *
-     * @param fileText  the FileText object containing dataset information
-     * @param delimiter the delimiter used in the dataset
-     */
-    public static ArrayList<DataSet> loadDatasetAndSplit(FileText fileText, String delimiter) {
-        // Create variables to hold the superset and subsets of the dataset
-        DataSet superset;
-        ArrayList<DataSet> subsets;
-
-        // File to store serialized subsets
-        File subsetsObjectFile = new File("data/subsets.ser");
-
-        // Create a serializer for object serialization
+        // Initialize serialization object
         Serialization<DataSet> serializer = new Serialization<>();
 
-        // Check if serialized subsets file exists
-        if (!subsetsObjectFile.exists()) {
-            // If not, create a new superset, split it into subsets, and save them to files
-            superset = new DataSet(fileText, settings);
-            System.out.println(superset);
-            subsets = superset.split();
-            serializer.saveToFile(superset, "data/dataset.ser");
-            serializer.saveListToFile(subsets, "data/subsets.ser");
+        // Prepare container for training and testing sets
+        ArrayList<DataSet> datasetList = new ArrayList<>();
 
+        // Check if a serialized datasets file exists
+        File datasetsFile = new File("data/datasets.ser");
+        if (datasetsFile.exists()) {
+            // If a serialized datasets file exists, load training and testing subsets from the file
+            datasetList = serializer.loadListFromFile("data/datasets.ser", DataSet.class);
         } else {
-            // If the serialized subsets file exists, load subsets from the file
-            subsets = serializer.loadListFromFile("data/subsets.ser", DataSet.class);
+            // If the serialized datasets file doesn't exist, a new one must be constructed
+            if (settings.testingDirectory() != null) {
+                // If a testing file path is specified, create training and testing datasets from their respective files
+                datasetList.add(new DataSet(new FileText(settings.trainingDirectory())));
+                datasetList.add(new DataSet(new FileText(settings.testingDirectory())));
+            } else {
+                // If there isn't a testing file specified, the training data must be partitioned
+                ArrayList<DataSet> dataPartitions = new DataSet(new FileText(settings.trainingDirectory())).splitForTrainingAndTesting();
+                datasetList.add(dataPartitions.get(0));
+                datasetList.add(dataPartitions.get(1));
+            }
+
+            // Save the constructed dataset and subsets objects to serialized files
+            serializer.saveListToFile(datasetList, "data/datasets.ser");
         }
 
-        // Load the superset again (for demonstration purposes)
-        superset = new DataSet(fileText, settings);
+        // Test the operation by querying a record that was read from disk
+        // System.out.println(datasetList.get(0).get(0).title() + " : " + datasetList.get(1).get(0).toString());
 
-        // Print information about a data point from the superset
-        DataRecord sampleRecord = superset.get(99);
-        System.out.println("\n" + sampleRecord.title() + " (rated " + sampleRecord.rating() + ")");
-        System.out.println(sampleRecord);
-        return subsets;
+        // Everything is loaded, time to build some trees
+        DataSet trainingSet = datasetList.getFirst();
+        DecisionTree tree = new DecisionTree(trainingSet, trainingSet.features());
+
     }
 
-    public static UserConfig settings() {
-        return  settings;
+        public static UserConfig settings () {
+            return settings;
+        }
     }
-}

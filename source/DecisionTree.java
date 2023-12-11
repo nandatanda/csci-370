@@ -1,139 +1,117 @@
-
-
-import java.sql.Array;
 import java.util.ArrayList;
 
+/**
+ * The {@code DecisionTree} class represents a decision tree used for classification.
+ * It contains methods to build and manipulate the decision tree.
+ */
 public class DecisionTree {
 
-    DecisionTree(DataSet boostrappedDataSet, ArrayList<String> baggedFeatures, UserConfig settings) {
-        //Generate bootstrap
-        this.bootstrappedDataSet = boostrappedDataSet;
-        this.baggedFeatures = baggedFeatures;
-        this.MIN_SAMPLES = settings.minSamples();
-        this.MAX_DEPTH = settings.maxDepth();
-        this.TARGET_FEATURES_VALUES = settings.ratings();
-        this.root = buildTree(MAX_DEPTH, baggedFeatures, bootstrappedDataSet.asArrayList());
+    // The dataset used to build the tree
+    private final DataSet data;
 
-    }
-
-    private final ArrayList<String> TARGET_FEATURES_VALUES;
-    private final DataSet bootstrappedDataSet;
-    private final ArrayList<String> baggedFeatures;
+    // The root node of the decision tree
     private Node root;
-    private final int MIN_SAMPLES;
-    private final int MAX_DEPTH;
 
+    // The list of features used for building the tree
+    private final ArrayList<String> features;
 
-    public Node getRoot() {
-        return this.root;
+    private final int maxDepth = Main.settings().maxDepth();
+
+    private final int minSamples = Main.settings().minSamples();
+
+    /**
+     * Constructor for the DecisionTree class.
+     *
+     * @param bootstrappedDataSet the bootstrap dataset used for building the tree
+     * @param baggedFeatures      the list of features used for building the tree
+     */
+    DecisionTree(DataSet bootstrappedDataSet, ArrayList<String> baggedFeatures) {
+        data = bootstrappedDataSet;
+        root = new Node(data);
+        features = baggedFeatures;
+
+        buildTree(this.root, 0);
     }
 
-    public int getMinSamples() {
-        return this.MIN_SAMPLES;
+    /**
+     * Get the dataset used for building the tree.
+     *
+     * @return the dataset used for building the tree
+     */
+    public DataSet data() {
+        return data;
     }
 
-    public int getMaxDepth() {
-        return this.MAX_DEPTH;
+    /**
+     * Get the root node of the decision tree.
+     *
+     * @return the root node of the decision tree
+     */
+    public Node root() {
+        return root;
     }
 
-    public DataSet getBootstrappedDataSet() {
-        return this.bootstrappedDataSet;
+    /**
+     * Get the list of features used for building the tree.
+     *
+     * @return the list of features used for building the tree
+     */
+    public ArrayList<String> features() {
+        return features;
     }
 
-    public ArrayList<String> getBaggedFeatures() {
-        return this.baggedFeatures;
-    }
-
+    /**
+     * Set the root node of the decision tree.
+     *
+     * @param rootNode the root node to set
+     */
     public void setRoot(Node rootNode) {
         this.root = rootNode;
     }
 
-
-    private Node buildTree(int maxDepth, ArrayList<String> baggedFeatures, ArrayList<DataRecord> samplesInNode) {
-        if (maxDepth < 0 || samplesInNode.size() < MIN_SAMPLES) return null;
-        Node currentNode = new Node(samplesInNode);
-
-        String feature = getBestFeature(baggedFeatures, samplesInNode);
-        // Gets left and right split
-        ArrayList<ArrayList<DataRecord>> split = getSplit(feature, samplesInNode);
-        baggedFeatures.remove(feature);
-
-        if (maxDepth > 0 && samplesInNode.size() > MIN_SAMPLES) {
-            currentNode.setLeft(buildTree(maxDepth - 1, baggedFeatures, split.get(0)));
-            currentNode.setRight(buildTree(maxDepth - 1, baggedFeatures, split.get(1)));
-            if (currentNode.isLeaf()) {
-                // label leaf
-//                currentNode.labelLeaf(calculateFeatureDistribution(left));
-            }
+    /**
+     * Build the decision tree recursively using the best nodes for splitting.
+     *
+     * @param node the current node in the tree being processed
+     * @param depth   the depth of the current node in the tree
+     */
+    private void buildTree(Node node, int depth) {
+        // Base case: check if the current depth exceeds the maximum depth or the number of samples is below the threshold
+        if (depth >= maxDepth || node.size() <= minSamples) {
+            node.assignLabel(); // Assign a label to the leaf node
+            return;
         }
-        return currentNode;
-    }
 
+        // Evaluate the best split among the remaining features
+        node.performBestSplit(features);
 
-    private String getBestFeature(ArrayList<String> candidateFeatures, ArrayList<DataRecord> datapoints) {
-        double lowestImpurity = Double.POSITIVE_INFINITY;
-        String bestFeature = "";
-        for (String candidateFeature : candidateFeatures) {
-            double currentImpurity = getSplitImpurity(candidateFeature, datapoints);
-            if (currentImpurity < lowestImpurity) {
-                lowestImpurity = currentImpurity;
-                bestFeature = candidateFeature;
-            }
+        // Remove the splitting feature from the list of available features
+        features.remove(node.splitFeature());
+
+        // Recursively build the left and right subtrees
+        if (node.left() != null) {
+            buildTree(node.left(), depth + 1);
         }
-        return bestFeature;
+
+        if (node.right() != null) {
+            buildTree(node.right(), depth + 1);
+        }
+
+        // Restore the splitting feature to the list of available features after the recursion
+        features.add(node.splitFeature());
     }
 
-
-    private double getSplitImpurity(String splittingFeature, ArrayList<DataRecord> datapoints) {
-        ArrayList<ArrayList<DataRecord>> split = getSplit(splittingFeature, datapoints);
-        double lWeightedImpurity = (double) split.get(0).size() / datapoints.size() * calculateGiniImpurity(split.get(0));
-        double rWeightedImpurity = (double) split.get(1).size() / datapoints.size() * calculateGiniImpurity(split.get(1));
-        return lWeightedImpurity + rWeightedImpurity;
-    }
-
-    public ArrayList<ArrayList<DataRecord>> getSplit(String feature, ArrayList<DataRecord> samples) {
-        ArrayList<DataRecord> left = new ArrayList<>();
-        ArrayList<DataRecord> right = new ArrayList<>();
-        for (DataRecord current : samples) {
-            boolean positiveClassification = (boolean) current.get(feature);
-            if (positiveClassification) {
-                right.add(current);
+    public String castVote(DataRecord datapoint) {
+        // start form the root and loop through and get the majority label if datapoint classifies
+        Node currentNode = root;
+        while (!currentNode.isLeaf()) {
+            String feature = currentNode.splitFeature();
+            if ((boolean) datapoint.get(feature)) {
+                currentNode = currentNode.right();
             } else {
-                left.add(current);
+                currentNode = currentNode.left();
             }
         }
-        ArrayList<ArrayList<DataRecord>> split = new ArrayList<>();
-        split.add(left);
-        split.add(right);
-        return split;
-
+        return currentNode.label();
     }
-
-
-    public double calculateGiniImpurity(ArrayList<DataRecord> datapoints) {
-        int[] featureDistribution = calculateFeatureDistribution(datapoints);
-        double gini = 1, classProbability;
-        for (int count : featureDistribution) {
-            classProbability = (double) count / datapoints.size();
-            gini -= Math.pow(classProbability, 2);
-        }
-        return gini;
-    }
-
-    public int[] calculateFeatureDistribution(ArrayList<DataRecord> datapoints) {
-        int[] targetFeatureTotals = new int[TARGET_FEATURES_VALUES.size()];
-        for (DataRecord r : datapoints) {
-            String current = (String) r.get("esrb_rating");
-            for (int j = 0; j < TARGET_FEATURES_VALUES.size(); j++) {
-                String targetFeatureValue = TARGET_FEATURES_VALUES.get(j);
-                if (current.equals(targetFeatureValue)) {
-                    targetFeatureTotals[j]++;
-                }
-            }
-        }
-        return targetFeatureTotals;
-
-    }
-
-
 }
