@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 public abstract class GUI extends Application implements Serializable {
 
@@ -57,8 +58,14 @@ public abstract class GUI extends Application implements Serializable {
     }
 
     private void saveFile(File file) throws IOException {
-        Path source = file.toPath();
-        Files.copy(source, Path.of("data/userdata.csv"));
+       try {
+           Path source = file.toPath();
+           Path destination = Path.of("data/userdata.csv");
+           Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
+       } catch (IOException ex) {
+           throw new RuntimeException(ex);
+       }
+
     }
 
     @Override
