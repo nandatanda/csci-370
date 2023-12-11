@@ -64,7 +64,7 @@ public class Main {
 
     }
 
-        public static UserConfig settings () {
-            return settings;
-        }
+    public static UserConfig settings() {
+        return settings;
     }
+}
