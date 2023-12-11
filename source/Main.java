@@ -9,6 +9,9 @@ import java.util.ArrayList;
 public class Main {
 
     private static final UserConfig settings = new UserConfig();
+    private static DataSet trainingSet;
+    private static DataSet testingSet;
+
 
     /**
      * The main method that is executed when the program starts.
@@ -19,7 +22,6 @@ public class Main {
      */
     public static void main(String[] args) throws IOException {
 
-        UserInterface window = new UserInterface();
 
         // Load settings from config.csv
         settings.loadConfig();
@@ -53,8 +55,8 @@ public class Main {
         }
 
         // Name the training and testing subsets
-        DataSet trainingSet = datasetList.get(0);
-        DataSet testingSet = datasetList.get(1);
+        trainingSet = datasetList.get(0);
+        testingSet = datasetList.get(1);
 
         // Check if the training and testing sets were constructed correctly
         System.out.println("The number of records in the training set is " + trainingSet.size());
@@ -63,10 +65,19 @@ public class Main {
         // Everything is loaded, time to build some trees
         DecisionTree tree = new DecisionTree(trainingSet, trainingSet.features());
 
-
+        // Construct and populate the user interface
+        UserInterface window = new UserInterface();
     }
 
     public static UserConfig settings() {
         return settings;
+    }
+
+    public static DataSet trainingSet() {
+        return trainingSet;
+    }
+
+    public static DataSet testingSet() {
+        return testingSet;
     }
 }
