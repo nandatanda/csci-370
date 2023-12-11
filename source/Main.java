@@ -54,7 +54,7 @@ public class Main {
         // System.out.println(datasetList.get(0).get(0).title() + " : " + datasetList.get(1).get(0).toString());
 
         // Everything is loaded, time to build some trees
-        DataSet trainingSet = datasetList.get(0);
+        DataSet trainingSet = datasetList.getFirst();
         DecisionTree tree = new DecisionTree(trainingSet, trainingSet.features());
 
     }
