@@ -203,14 +203,15 @@ public class DataSet implements Serializable, Iterable<DataRecord> {
         // Make a container to return both subsets
         ArrayList<DataSet> subsets = new ArrayList<>();
 
-        // Prepare an empty dataset, maintaining settings and features from parent
-        DataSet emptySet = new DataSet();
-        emptySet.configure(settings);
-        emptySet.setFeatures(features);
+        // Add two empty datasets to the subset container
+        subsets.add(new DataSet());
+        subsets.add(new DataSet());
 
-        // Add two empty dataset copies to the container
-        subsets.add(emptySet);
-        subsets.add(emptySet);
+        // Initialize both subsets
+        for (DataSet set : subsets) {
+            set.configure(settings);
+            set.setFeatures(features);
+        }
 
         // Randomize the superset to be selected from
         shuffle();
@@ -218,13 +219,9 @@ public class DataSet implements Serializable, Iterable<DataRecord> {
         // Calculate the sizes of training and testing subsets based on ratios
         int trainingSize = (int) (size() * settings.partitionRatio());
 
-        // Test the partition of the data
-        System.out.println("The total size is " + size());
-        System.out.println("The training size should be " + trainingSize);
-
         // Assign data points to training and testing subsets
+        int subsetIndex;
         for (int i = 0; i < size(); i++) {
-            int subsetIndex;
             if (i < trainingSize) {
                 subsetIndex = 0;
             } else {
@@ -234,8 +231,6 @@ public class DataSet implements Serializable, Iterable<DataRecord> {
         }
 
         return subsets;
-
-
     }
 
     /**
