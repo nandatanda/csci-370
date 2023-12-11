@@ -22,7 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-public abstract class GUI extends Application implements Serializable {
+public abstract class GUI extends Application {
 
     FileChooser userFileUpload = new FileChooser();
     FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv");
