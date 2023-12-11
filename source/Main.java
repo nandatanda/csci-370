@@ -50,12 +50,17 @@ public class Main {
             serializer.saveListToFile(datasetList, "data/datasets.ser");
         }
 
-        // Test the operation by querying a record that was read from disk
-        // System.out.println(datasetList.get(0).get(0).title() + " : " + datasetList.get(1).get(0).toString());
+        // Name the training and testing subsets
+        DataSet trainingSet = datasetList.get(0);
+        DataSet testingSet = datasetList.get(1);
+
+        // Check if the training and testing sets were constructed correctly
+        System.out.println("The number of records in the training set is " + trainingSet.size());
+        System.out.println("The number of records in the testing set is " + testingSet.size());
 
         // Everything is loaded, time to build some trees
-        DataSet trainingSet = datasetList.getFirst();
         DecisionTree tree = new DecisionTree(trainingSet, trainingSet.features());
+
 
     }
 
