@@ -24,10 +24,6 @@ public class UserInterface extends JFrame {
         JPanel contentPane = (JPanel) getContentPane();
         contentPane.setLayout(new BorderLayout());
 
-        // Add text areas to the content pane
-        contentPane.add(romanTextArea, BorderLayout.WEST);
-        contentPane.add(arabicTextArea, BorderLayout.EAST);
-
         // Initialize and add the feature list
         List<String> features = Main.trainingSet().features();
         // Add more features as needed
@@ -41,24 +37,6 @@ public class UserInterface extends JFrame {
         setSize(1200, 675);
         setLocation(400, 200);
         setVisible(true);
-    }
-
-    /**
-     * Sets the text of the Roman numeral text area.
-     *
-     * @param s the text to be displayed in the Roman numeral text area
-     */
-    public void setRomanText(String s) {
-        romanTextArea.setText(s);
-    }
-
-    /**
-     * Sets the text of the Arabic numeral text area.
-     *
-     * @param s the text to be displayed in the Arabic numeral text area
-     */
-    public void setArabicText(String s) {
-        arabicTextArea.setText(s);
     }
 
     /**
