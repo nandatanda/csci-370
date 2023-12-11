@@ -1,17 +1,31 @@
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-public class GUI extends Application {
+public abstract class GUI extends Application implements Serializable {
 
     FileChooser userFileUpload = new FileChooser();
+    FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv");
+
+    Desktop desktop = Desktop.getDesktop();
 
     private String changed(CheckBox checkBox){
         String state;
@@ -24,9 +38,27 @@ public class GUI extends Application {
         return state;
     }
 
-    private void openFile(Stage stage) {
+    private void openFile(Stage stage) throws IOException {
+        Alert success = new Alert(Alert.AlertType.INFORMATION, "User Data");
+        success.setTitle("User File");
+        userFileUpload.getExtensionFilters().add(extensionFilter);
         userFileUpload.setTitle("Upload Data");
-        userFileUpload.showOpenDialog(stage);
+        File file = userFileUpload.showOpenDialog(stage);
+
+        if(file != null) {
+            success.setHeaderText("File Successfully Loaded");
+            success.show();
+            saveFile(file);
+        } else {
+            success.setHeaderText("File Upload Unsuccessful");
+            success.show();
+        }
+
+    }
+
+    private void saveFile(File file) throws IOException {
+        Path source = file.toPath();
+        Files.copy(source, Path.of("data/userdata.csv"));
     }
 
     @Override
@@ -34,14 +66,20 @@ public class GUI extends Application {
 
         // Create Alert
         Alert alert = new Alert(Alert.AlertType.INFORMATION, "This is Where you enter game.");
-        alert.setTitle("User Input");
-        alert.setHeaderText("Game Entry");
+        alert.setTitle("User File");
+        alert.setHeaderText("File Successfully Loaded");
         //Menu
 
 
 
         MenuItem gameEntry = new MenuItem("Upload Data");
-        gameEntry.setOnAction(e -> openFile(stage));
+        gameEntry.setOnAction(e -> {
+            try {
+                openFile(stage);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         MenuItem about = new MenuItem("The Crew");
         MenuItem contact = new MenuItem("Contact");
         MenuItem rate = new MenuItem("Rate Prediction");
@@ -165,7 +203,7 @@ public class GUI extends Application {
         grid.addRow(61,new Label(""));
         grid.addRow(62,new Label("Use of Drugs and Alcohol:\t"), useOfDrugsAndAlcohol);
         grid.addRow(63,new Label(""));
-        grid.addRow(64, new Label("Violence\t"), violence);
+        grid.addRow(64,new Label("Violence\t"), violence);
         grid.addRow(65,new Label(""));
         grid.addRow(66, form); // Submit
 
@@ -203,10 +241,9 @@ public class GUI extends Application {
 
         Scene scene = new Scene(root, 500, 250, Color.BLUE);
         stage.setScene(scene);
-        stage.setTitle("Next Gen JFX");
+        stage.setTitle("CSCI 370 - Team 6");
         stage.setWidth(750);
         stage.setHeight(450);
-        stage.setFullScreenExitKeyCombination(KeyCombination.valueOf("enter"));
         stage.show();
 
     }
