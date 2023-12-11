@@ -1,15 +1,16 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserInterface extends JFrame {
 
-    private final JTextArea romanTextArea = new JTextArea();
-    private final JTextArea arabicTextArea = new JTextArea();
+    private final JList<String> featureList = new JList<>();
     private final JMenuBar menuBar = new JMenuBar();
 
     /**
      * Constructs a UserInterface object.
-     * Initializes the window, menu bar, and content pane with text areas.
+     * Initializes the window, menu bar, and content pane with text areas and feature list.
      */
     public UserInterface() {
         // Set default window behavior
@@ -21,15 +22,23 @@ public class UserInterface extends JFrame {
 
         // Create and set the layout of the content pane
         JPanel contentPane = (JPanel) getContentPane();
-        contentPane.setLayout(new GridLayout(1, 2));
+        contentPane.setLayout(new BorderLayout());
 
         // Add text areas to the content pane
-        contentPane.add(romanTextArea);
-        contentPane.add(arabicTextArea);
+        contentPane.add(romanTextArea, BorderLayout.WEST);
+        contentPane.add(arabicTextArea, BorderLayout.EAST);
+
+        // Initialize and add the feature list
+        List<String> features = Main.trainingSet().features();
+        // Add more features as needed
+        featureList.setListData(features.toArray(new String[0]));
+
+        JScrollPane featureScrollPane = new JScrollPane(featureList);
+        contentPane.add(featureScrollPane, BorderLayout.CENTER);
 
         // Set default size and behavior
         setDefaultCloseOperation(UserInterface.EXIT_ON_CLOSE);
-        setSize(800, 450);
+        setSize(1200, 675);
         setLocation(400, 200);
         setVisible(true);
     }
@@ -50,6 +59,15 @@ public class UserInterface extends JFrame {
      */
     public void setArabicText(String s) {
         arabicTextArea.setText(s);
+    }
+
+    /**
+     * Gets the selected features from the feature list.
+     *
+     * @return a list of selected features
+     */
+    public List<String> getSelectedFeatures() {
+        return featureList.getSelectedValuesList();
     }
 
     /**
@@ -77,5 +95,9 @@ public class UserInterface extends JFrame {
 
         // Add the submenu to the frame's menu bar
         menuBar.add(fileMenu);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(UserInterface::new);
     }
 }
