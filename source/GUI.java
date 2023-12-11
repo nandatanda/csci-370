@@ -39,7 +39,6 @@ public abstract class GUI extends Application {
         } else
             state = "Unchecked";
 
-        System.out.println(state);
         return state;
     }
 
