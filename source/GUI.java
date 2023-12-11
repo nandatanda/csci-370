@@ -69,14 +69,7 @@ public abstract class GUI extends Application implements Serializable {
     @Override
     public void start(Stage stage) throws Exception {
 
-        // Create Alert
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "This is Where you enter game.");
-        alert.setTitle("User File");
-        alert.setHeaderText("File Successfully Loaded");
         //Menu
-
-
-
         MenuItem gameEntry = new MenuItem("Upload Data");
         gameEntry.setOnAction(e -> {
             try {
@@ -88,7 +81,6 @@ public abstract class GUI extends Application implements Serializable {
         MenuItem about = new MenuItem("The Crew");
         MenuItem contact = new MenuItem("Contact");
         MenuItem rate = new MenuItem("Rate Prediction");
-
         Menu menu = new Menu("File");
         menu.getItems().add(gameEntry);
         Menu menu1 = new Menu("About");
@@ -97,20 +89,16 @@ public abstract class GUI extends Application implements Serializable {
         menu2.getItems().add(contact);
         Menu menu3 = new Menu("Rate");
         menu3.getItems().add(rate);
+        MenuBar menuBar = new MenuBar(menu, menu1, menu2, menu3);
+
         //Game Entry Form
-
         GridPane grid = new GridPane();
-
         //Need to get game title into string
         TextField gameTitle = new TextField();
         CheckBox console = new CheckBox();
         console.setAllowIndeterminate(false); //
         // Check box event listener methods
         console.setOnAction(e -> changed(console));
-
-
-
-
 
         Button form = new Button("Submit");
 
@@ -183,18 +171,9 @@ public abstract class GUI extends Application implements Serializable {
         grid.addRow(66, form); // Submit
 
 
-
-
-        // Form -->>>>>>>>>
-
-        MenuBar menuBar = new MenuBar(menu, menu1, menu2, menu3);
-
-
-
-
+        // Parent of scene graph
         VBox root = new VBox();
         root.getChildren().addAll(menuBar, grid, form);
-
         Scene scene = new Scene(root, 500, 250, Color.BLUE);
         stage.setScene(scene);
         stage.setTitle("CSCI 370 - Team 6");
