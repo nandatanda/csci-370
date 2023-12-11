@@ -15,9 +15,9 @@ public class DecisionTree {
     // The list of features used for building the tree
     private final ArrayList<String> features;
 
-    private final int maxDepth = Main.settings().maxDepth();
+    private final int maxDepth;
 
-    private final int minSamples = Main.settings().minSamples();
+    private final int minSamples;
 
     /**
      * Constructor for the DecisionTree class.
@@ -29,7 +29,8 @@ public class DecisionTree {
         data = bootstrappedDataSet;
         root = new Node(data);
         features = baggedFeatures;
-
+        this.maxDepth = Main.settings().maxDepth();
+        this.minSamples = Main.settings().minSamples();
         buildTree(this.root, 0);
     }
 
