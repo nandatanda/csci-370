@@ -67,7 +67,7 @@ public abstract class GUI extends Application implements Serializable {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
 
         //Menu
         MenuItem gameEntry = new MenuItem("Upload Data");
