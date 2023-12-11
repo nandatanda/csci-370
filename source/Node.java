@@ -97,6 +97,7 @@ public class Node {
      */
     public void add(DataRecord record) {
         String rating = record.rating();
+        System.out.println(record.title() + " " + record.rating());
         ratingsCount.increment(rating);
         data.add(record);
     }
@@ -255,7 +256,7 @@ public class Node {
         for (DataRecord record : data) {
             // If the record has the splitting feature, add it to the right child
             if(record.get(splitFeature) == null){
-               return;
+                System.out.println(splitFeature);
             }
             if (record.get(splitFeature)) {
                 if (right == null) {

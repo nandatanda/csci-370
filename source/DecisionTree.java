@@ -80,8 +80,6 @@ public class DecisionTree {
         if (depth >= maxDepth || node.size() <= minSamples) {
             node.assignLabel(); // Assign a label to the leaf node
             return;
-        }else if(node.left() == null || node.right() == null){
-            node.assignLabel();
         }
 
         // Evaluate the best split among the remaining features

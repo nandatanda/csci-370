@@ -2,27 +2,29 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class RandomForest {
-    RandomForest(DataSet trainingSet, DataSet testingSet) {
+    RandomForest(DataSet trainingSet, DataSet testingSet, UserConfig settings) {
         this.trainingSet = trainingSet;
         this.testingSet = testingSet;
-        this.NUM_TREES = Main.settings().maxTrees();
-        this.decisionTrees = new ArrayList<>();
-        this.testingClassifications = new ArrayList<>();
+        this.MIN_SAMPLES = settings.minSamples();
+        this.NUM_TREES = settings.maxTrees();
+        this.MAX_DEPTH = settings.maxDepth();
+        this.settings = settings;
 
     }
 
     private final DataSet trainingSet;
     private final DataSet testingSet;
 
+    private final int MIN_SAMPLES;
     private final int NUM_TREES;
+    private final int MAX_DEPTH;
 
-
-    public ArrayList<String> testingClassifications;
-
+    UserConfig settings;
+    private ArrayList<String> treeVotes;
     private ArrayList<DecisionTree> decisionTrees;
 
-    public ArrayList<String> getTestingClassifications(){
-        return this.testingClassifications;
+    public ArrayList<String> getTreeVotes(){
+        return this.treeVotes;
     }
 
 
@@ -30,63 +32,22 @@ public class RandomForest {
 
         for (int i = 0; i < NUM_TREES; i++) {
             DataSet bootstrappedDataSet = generateBootstrapDataSet();
+            System.out.println(trainingSet.features());
             ArrayList<String> baggedFeatures = generateBaggedFeatures(trainingSet.features());
             DecisionTree tree = new DecisionTree(bootstrappedDataSet, baggedFeatures);
             decisionTrees.add(tree);
-
         }
 
     }
 
     public void test() {
         DataRecord datapoint;
-        ArrayList<String> treeVotes = new ArrayList<>();
         for (int i = 0; i < testingSet.size(); i++) {
             datapoint = testingSet.get(i);
             for (DecisionTree decisionTree : decisionTrees) {
                 treeVotes.add(decisionTree.castVote(datapoint));
             }
         }
-        testingClassifications.add(findMajorityOfTrees(treeVotes));
-
-    }
-
-    public String predict(DataRecord d){
-        String predictedLabel = "";
-        for (DecisionTree decisionTree : decisionTrees) {
-            Node treeNode = decisionTree.root();
-            while (!treeNode.isLeaf()) {
-                String feature = treeNode.splitFeature();
-                if ((boolean) d.get(feature)) {
-                    treeNode = treeNode.right();
-                } else {
-                    treeNode = treeNode.left();
-                }
-            }
-            predictedLabel = treeNode.label();
-        }
-        return predictedLabel;
-    }
-
-    private String findMajorityOfTrees(ArrayList<String> votes){
-        RatingsMap ratingsCount = new RatingsMap();
-        ratingsCount.initialize();
-        // loop through tree votes and get those counts
-        for(String v : votes){
-            ratingsCount.increment(v);
-        }
-        String highestRating = "";
-        int highestCount = 0;
-        // loop through and find the highest rating among them
-        for (String r : ratingsCount.keySet()) {
-           if (ratingsCount.get(r) > highestCount){
-               highestCount = ratingsCount.get(r);
-               highestRating = r;
-           }
-        }
-        return highestRating;
-
-
     }
 
     public DataSet generateBootstrapDataSet() {
@@ -94,7 +55,7 @@ public class RandomForest {
         Random rand = new Random();
 
         DataSet bootstrappedDataset = new DataSet();
-        bootstrappedDataset.configure(Main.settings());
+        bootstrappedDataset.configure(settings);
 
         for (int i = 0; i < trainingSet.size(); i++) {
             int r = rand.nextInt(trainingSet.size());
