@@ -1,7 +1,6 @@
 trainingDirectory,data/Video_games_esrb_rating.csv
 testingDirectory,null
-trainingRatio,7
-testingRatio,3
+partitionRatio,0.7
 nameIndex,0
 ratingIndex,33
 delimiter,comma
