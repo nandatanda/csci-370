@@ -1,7 +1,9 @@
 import java.io.*;
 import java.util.ArrayList;
 
+
 public class Serialization<T> {
+
 
     public void saveToFile(T objToSave, String filename) {
         save(objToSave, filename);

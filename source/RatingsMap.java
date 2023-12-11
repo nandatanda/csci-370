@@ -94,7 +94,7 @@ public class RatingsMap extends LinkedHashMap<String, Integer> implements Serial
         if(get(key) == null){
             System.out.println(key);
         }
-        put(key, get(key) + 1);
+        merge(key, 1, Integer::sum);
     }
 
     /**

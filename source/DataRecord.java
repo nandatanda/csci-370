@@ -1,3 +1,4 @@
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -8,6 +9,8 @@ import java.util.LinkedHashMap;
  */
 public class DataRecord extends LinkedHashMap<String, Boolean> implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 712275634602611871L;
     private String title;
     private String rating;
 
