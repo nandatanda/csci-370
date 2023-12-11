@@ -1,11 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * UserInterface represents the graphical user interface for the Roman Numeral Converter application.
- * It provides a window with text areas to display Roman and Arabic numeral representations,
- * as well as menu options for file management and numeral conversion.
- */
 public class UserInterface extends JFrame {
 
     private final JTextArea romanTextArea = new JTextArea();
