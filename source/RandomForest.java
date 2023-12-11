@@ -6,6 +6,7 @@ public class RandomForest {
         this.trainingSet = trainingSet;
         this.testingSet = testingSet;
         this.testingClassifications = new ArrayList<>();
+        this.decisionTrees = new ArrayList<>();
 
     }
 
@@ -17,17 +18,14 @@ public class RandomForest {
 
 
     UserConfig settings;
-    private ArrayList<String> treeVotes;
     private ArrayList<DecisionTree> decisionTrees;
 
-    public ArrayList<String> getTreeVotes(){
-        return this.treeVotes;
-    }
+
 
 
     public void train() {
 
-        for (int i = 0; i < settings.maxTrees(); i++) {
+        for (int i = 0; i < Main.settings().maxTrees(); i++) {
             DataSet bootstrappedDataSet = generateBootstrapDataSet();
             ArrayList<String> baggedFeatures = generateBaggedFeatures(trainingSet.features());
             DecisionTree tree = new DecisionTree(bootstrappedDataSet, baggedFeatures);
@@ -38,6 +36,7 @@ public class RandomForest {
 
     public void test() {
         DataRecord datapoint;
+        ArrayList<String> treeVotes = new ArrayList<>();
         for (int i = 0; i < testingSet.size(); i++) {
             datapoint = testingSet.get(i);
             for (DecisionTree decisionTree : decisionTrees) {
@@ -54,7 +53,7 @@ public class RandomForest {
             Node treeNode = decisionTree.root();
             while (!treeNode.isLeaf()) {
                 String feature = treeNode.splitFeature();
-                if ((boolean) d.get(feature)) {
+                if ( d.get(feature)) {
                     treeNode = treeNode.right();
                 } else {
                     treeNode = treeNode.left();

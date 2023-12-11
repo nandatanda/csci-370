@@ -254,10 +254,10 @@ public class Node {
         // Iterate through the data to split into left and right children
         for (DataRecord record : data) {
             // If the record has the splitting feature, add it to the right child
-            if(record.get(splitFeature) == null){
-               continue;
-
-            }
+//            if(record.get(splitFeature) == null){
+//                return;
+//
+//            }
             if (record.get(splitFeature)) {
                 if (right == null) {
                     right = new Node();
@@ -279,6 +279,7 @@ public class Node {
         if(right != null){
             right.updateImpurity();
         }
+
 
     }
 }

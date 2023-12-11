@@ -66,7 +66,8 @@ public class Main {
         rf.train();
         rf.test();
 //        System.out.println(datasetList.get(1).size());
-//        DataRecord randomRecord= trainingSet.get(0);
+        DataRecord randomRecord= trainingSet.get(0);
+        System.out.println(randomRecord.title() + rf.predict(randomRecord));
 
 
 
