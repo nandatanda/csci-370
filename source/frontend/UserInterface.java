@@ -1,8 +1,10 @@
+package frontend;
+
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * UserInterface represents the graphical user interface for the Roman Numeral Converter application.
+ * frontend.UserInterface represents the graphical user interface for the Roman Numeral Converter application.
  * It provides a window with text areas to display Roman and Arabic numeral representations,
  * as well as menu options for file management and numeral conversion.
  */
@@ -13,7 +15,7 @@ public class UserInterface extends JFrame {
     private final JMenuBar menuBar = new JMenuBar();
 
     /**
-     * Constructs a UserInterface object.
+     * Constructs a frontend.UserInterface object.
      * Initializes the window, menu bar, and content pane with text areas.
      */
     public UserInterface() {
@@ -59,7 +61,7 @@ public class UserInterface extends JFrame {
 
     /**
      * Creates the file menu with submenu entries for file management.
-     * Associates menu items with the FileMenuHandler.
+     * Associates menu items with the frontend.FileMenuHandler.
      */
     private void createFileMenu() {
         // Create a submenu for file management

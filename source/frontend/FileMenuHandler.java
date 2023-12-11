@@ -1,16 +1,18 @@
+package frontend;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.*;
 
 /**
- * FileMenuHandler is an ActionListener implementation that handles actions for the file menu.
+ * frontend.FileMenuHandler is an ActionListener implementation that handles actions for the file menu.
  * It listens for events triggered by menu items and performs corresponding actions.
  */
 public class FileMenuHandler implements ActionListener {
     JFrame jframe;
 
     /**
-     * Constructs a FileMenuHandler object with the specified JFrame.
+     * Constructs a frontend.FileMenuHandler object with the specified JFrame.
      *
      * @param jf the JFrame associated with the menu handler
      */
