@@ -50,12 +50,14 @@ public class Main {
             serializer.saveListToFile(datasetList, "data/datasets.ser");
         }
 
-        // Test the operation by querying a record that was read from disk
-        // System.out.println(datasetList.get(0).get(0).title() + " : " + datasetList.get(1).get(0).toString());
 
         // Everything is loaded, time to build some trees
         DataSet trainingSet = datasetList.getFirst();
-        DecisionTree tree = new DecisionTree(trainingSet, trainingSet.features());
+        RandomForest rf = new RandomForest(trainingSet, datasetList.get(1));
+        rf.train();
+        DataRecord randomRecord= trainingSet.get(0);
+
+        System.out.println(randomRecord.title() + " " + rf.predict(randomRecord));
 
     }
 
