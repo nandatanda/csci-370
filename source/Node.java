@@ -271,5 +271,14 @@ public class Node {
                 left.add(record);
             }
         }
+
+        // solves the exception: Cannot read field "data" because "this.right" is null
+        if(left != null){
+            left.updateImpurity();
+        }
+        if(right != null){
+            right.updateImpurity();
+        }
+
     }
 }
