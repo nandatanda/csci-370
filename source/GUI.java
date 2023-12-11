@@ -1,4 +1,6 @@
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -27,6 +29,8 @@ public abstract class GUI extends Application {
     FileChooser userFileUpload = new FileChooser();
     FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv");
     FeatureGrid checkBoxFeatures = new FeatureGrid();
+    Hyperlink repoLink = new Hyperlink();
+
 
     private String changed(CheckBox checkBox){
         String state;
@@ -86,8 +90,9 @@ public abstract class GUI extends Application {
         Scene scene = new Scene(root, 1000, 750);
 
         //Menu
+        repoLink.setText("https://github.com/nandatanda/csci-370");
         MenuItem gameEntry = new MenuItem("Upload Data");
-        MenuItem about = new MenuItem("The Crew");
+        MenuItem about = new MenuItem("Project Repo");
         MenuItem contact = new MenuItem("Contact");
         MenuItem rate = new MenuItem("Rate Prediction");
         Menu menu = new Menu("File");
@@ -99,6 +104,9 @@ public abstract class GUI extends Application {
         menu2.getItems().add(contact);
         menu3.getItems().add(rate);
         MenuBar menuBar = new MenuBar(menu, menu1, menu2, menu3);
+        about.setOnAction(e -> {
+            getHostServices().showDocument(repoLink.getText());
+        });
         gameEntry.setOnAction(e -> {
             try {
                 openFile(stage);
