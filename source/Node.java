@@ -56,7 +56,7 @@ public class Node {
     public Node(DataSet data) {
         ratingsCount = new RatingsMap();
         ratingsCount.initialize();
-        this.data = new DataSet();
+        this.data = data;
 
         for(DataRecord r : data.data()){
             ratingsCount.increment(r.rating());
