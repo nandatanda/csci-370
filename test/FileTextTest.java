@@ -1,12 +1,12 @@
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.jupiter.api.function.Executable;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-class FileTextTest {
+public class FileTextTest {
 
     @Test
-    void should_ReadFile_When_FileTextObjectIsCreated() {
+    public void should_ReadFile_When_FileTextObjectIsCreated() {
         //given
         final String testFilePath = "test/resources/Video_games_esrb_rating_test.csv";
         //when
@@ -16,7 +16,7 @@ class FileTextTest {
     }
 
     @Test
-    void should_ReturnNonEmptyArrayOfStrings_When_GivenInput() throws Exception {
+    public void should_ReturnNonEmptyArrayOfStrings_When_GivenInput() throws Exception {
         //given
         final String testFilePath = "test/resources/Video_games_esrb_rating_test.csv";
         //when

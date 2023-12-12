@@ -1,27 +1,25 @@
+import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class SerializationTest {
+public class SerializationTest {
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
     }
 
     @Test
-    void saveToFile() {
+    public void saveToFile() {
     }
 
     @Test
-    void saveListToFile() {
+    public void saveListToFile() {
     }
 
     @Test
-    void loadFromFile() {
+    public void loadFromFile() {
     }
 
     @Test
-    void loadListFromFile() {
+    public void loadListFromFile() {
     }
 }

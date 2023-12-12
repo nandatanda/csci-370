@@ -1,26 +1,22 @@
-import org.mockito.Mock;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Test;
+import org.mockito.Mock;
 import java.util.ArrayList;
+import static org.mockito.Mockito.mock;
 
-import static org.mockito.Mockito.*;
+public class DecisionTreeTest {
 
-class DecisionTreeTest {
-
-    private DecisionTree treeTest;
-    private ArrayList<DataRecord> dataPointsTest = new ArrayList<>();
-    private ArrayList<String> baggedFeaturesTest = new ArrayList<>();
+    public DecisionTree treeTest;
+    public ArrayList<DataRecord> dataPointsTest = new ArrayList<>();
+    public ArrayList<String> baggedFeaturesTest = new ArrayList<>();
     @Mock
-    private UserConfig settingsTest;
-    private DataSet bootstrappedDataSetTest;
+    public UserConfig settingsTest;
+    public DataSet bootstrappedDataSetTest;
 
 
 
     @BeforeEach
-    void setup(){
+    public void setup(){
         this.settingsTest = mock(UserConfig.class);
         this.treeTest = mock(DecisionTree.class);
         this.bootstrappedDataSetTest = mock(DataSet.class);
@@ -28,12 +24,13 @@ class DecisionTreeTest {
     }
 
     @Test
-    void should_ReturnValueBetweenZeroAndOne_When_ReturningGini() {
+    public void should_ReturnValueBetweenZeroAndOne_When_ReturningGini() {
         //Given
 //        double giniTest = treeTest.calculateGiniImpurity(dataPointsTest);
         //When
         //Then
 //        assertEquals(0, giniTest, 1.00);
+        System.out.println("poop");
     }
 
 }

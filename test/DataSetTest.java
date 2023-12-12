@@ -1,13 +1,9 @@
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
 import java.io.IOException;
-import java.io.Serializable;
-
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
