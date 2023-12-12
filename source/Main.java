@@ -66,10 +66,9 @@ public class Main {
 
         RandomForest rf = new RandomForest(trainingSet, datasetList.get(1));
         rf.train();
-        rf.test();
-//        System.out.println(datasetList.get(1).size());
-        DataRecord randomRecord= trainingSet.get(0);
-//        System.out.println(trainingSet.get(0).title());
+
+
+        UserInterface mainWindow = new UserInterface();
 
 
 
