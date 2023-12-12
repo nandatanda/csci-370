@@ -235,6 +235,10 @@ public class Node {
                 bestImpurity = weightedImpurity;
             }
         }
+        if(splitFeature.equals("")){
+            System.out.println("No Splitting Feature");
+            return;
+        }
 
         // After evaluating all candidates, store the winning values to class fields
         splitFeature = bestFeature;
@@ -251,9 +255,14 @@ public class Node {
      */
     private void splitData() {
         // Iterate through the data to split into left and right children
+
         for (DataRecord record : data) {
+            if(record.get(splitFeature) == null){
+                return;
+            }
             if (record.get(splitFeature)) {
                 // If the record has the splitting feature, add it to the right child
+
                 if (right == null) {
                     right = new Node();
                 }
