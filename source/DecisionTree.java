@@ -77,6 +77,7 @@ public class DecisionTree {
      * @param depth   the depth of the current node in the tree
      */
     private void buildTree(Node node, int depth) {
+        ArrayList<String> copyOfFeatures = new ArrayList<>(this.features());
         // Base case: check if the current depth exceeds the maximum depth or the number of samples is below the threshold
         if (depth >= maxDepth || node.size() <= minSamples || features().isEmpty()) {
             node.assignLabel(); // Assign a label to the leaf node
@@ -84,16 +85,18 @@ public class DecisionTree {
         }
 
         // Evaluate the best split among the remaining features
-        node.performBestSplit(features);
+        node.performBestSplit(copyOfFeatures);
 
         // Remove the splitting feature from the list of available features
-        features.remove(node.splitFeature());
+        copyOfFeatures.remove(node.splitFeature());
+
 
         // Recursively build the left and right subtrees
-        if (node.left().impurity() < node.right().impurity() && node.left() != null) {
+        if(node.left() != null){
             buildTree(node.left(), depth + 1);
             node.right().assignLabel();
-        }else{
+        }
+        else if(node.right()!= null){
             buildTree(node.right(), depth + 1);
             node.left().assignLabel();
         }
@@ -114,6 +117,10 @@ public class DecisionTree {
                 currentNode = currentNode.left();
             }
         }
-        return currentNode.label();
+        if(currentNode.label().isEmpty()){
+            return "E";
+        }else{
+            return currentNode.label();
+        }
     }
 }

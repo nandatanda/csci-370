@@ -65,18 +65,18 @@ public class RandomForest {
     }
 
     private String findMajorityOfTrees(ArrayList<String> votes){
-        RatingsMap ratingsCount = new RatingsMap();
-        ratingsCount.initialize();
+        RatingsMap ratings = new RatingsMap();
+        ratings.initialize();
         // loop through tree votes and get those counts
         for(String v : votes){
-            ratingsCount.increment(v);
+            ratings.increment(v);
         }
         String highestRating = "";
         int highestCount = 0;
         // loop through and find the highest rating among them
-        for (String r : ratingsCount.keySet()) {
-           if (ratingsCount.get(r) > highestCount){
-               highestCount = ratingsCount.get(r);
+        for (String r : ratings.keySet()) {
+           if (ratings.get(r) > highestCount){
+               highestCount = ratings.get(r);
                highestRating = r;
            }
         }
