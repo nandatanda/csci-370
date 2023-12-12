@@ -22,8 +22,6 @@ class DataSetTest {
 
     @BeforeEach
     void setup() {
-        this.settingsTest = mock(UserConfig.class);
-        this.dataSetTest = new DataSet(testDataCopy);
     }
     @Test
     void get() {
