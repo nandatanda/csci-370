@@ -62,7 +62,6 @@ public class Node {
             ratingsCount.increment(r.rating());
         }
 
-
         left = null;
         right = null;
 
@@ -237,7 +236,6 @@ public class Node {
             }
         }
 
-
         // After evaluating all candidates, store the winning values to class fields
         splitFeature = bestFeature;
         weightedImpurity = bestImpurity;
@@ -254,9 +252,8 @@ public class Node {
     private void splitData() {
         // Iterate through the data to split into left and right children
         for (DataRecord record : data) {
-            // If the record has the splitting feature, add it to the right child
-
             if (record.get(splitFeature)) {
+                // If the record has the splitting feature, add it to the right child
                 if (right == null) {
                     right = new Node();
                 }
