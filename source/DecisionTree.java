@@ -15,9 +15,9 @@ public class DecisionTree {
     // The list of features used for building the tree
     private final ArrayList<String> features;
 
-    private final int maxDepth = Main.settings().maxDepth();
+    private final int maxDepth;
 
-    private final int minSamples = Main.settings().minSamples();
+    private final int minSamples;
 
     /**
      * Constructor for the DecisionTree class.
@@ -29,7 +29,8 @@ public class DecisionTree {
         data = bootstrappedDataSet;
         root = new Node(data);
         features = baggedFeatures;
-
+        this.maxDepth = Main.settings().maxDepth();
+        this.minSamples = Main.settings().minSamples();
         buildTree(this.root, 0);
     }
 
@@ -77,7 +78,7 @@ public class DecisionTree {
      */
     private void buildTree(Node node, int depth) {
         // Base case: check if the current depth exceeds the maximum depth or the number of samples is below the threshold
-        if (depth >= maxDepth || node.size() <= minSamples) {
+        if (depth >= maxDepth || node.size() <= minSamples || features().isEmpty()) {
             node.assignLabel(); // Assign a label to the leaf node
             return;
         }
@@ -89,13 +90,14 @@ public class DecisionTree {
         features.remove(node.splitFeature());
 
         // Recursively build the left and right subtrees
-        if (node.left() != null) {
+        if (node.left().impurity() < node.right().impurity() && node.left() != null) {
             buildTree(node.left(), depth + 1);
+            node.right().assignLabel();
+        }else{
+            buildTree(node.right(), depth + 1);
+            node.left().assignLabel();
         }
 
-        if (node.right() != null) {
-            buildTree(node.right(), depth + 1);
-        }
 
         // Restore the splitting feature to the list of available features after the recursion
         features.add(node.splitFeature());

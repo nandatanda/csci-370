@@ -1,3 +1,4 @@
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,9 +10,6 @@ import java.util.ArrayList;
 public class Main {
 
     private static final UserConfig settings = new UserConfig();
-    private static DataSet trainingSet;
-    private static DataSet testingSet;
-
 
     /**
      * The main method that is executed when the program starts.
@@ -21,8 +19,6 @@ public class Main {
      * @throws IOException if an I/O error occurs during file operations
      */
     public static void main(String[] args) throws IOException {
-
-
         // Load settings from config.csv
         settings.loadConfig();
 
@@ -55,29 +51,29 @@ public class Main {
         }
 
         // Name the training and testing subsets
-        trainingSet = datasetList.get(0);
-        testingSet = datasetList.get(1);
+        DataSet trainingSet = datasetList.get(0);
+        DataSet testingSet = datasetList.get(1);
 
         // Check if the training and testing sets were constructed correctly
         System.out.println("The number of records in the training set is " + trainingSet.size());
         System.out.println("The number of records in the testing set is " + testingSet.size());
 
         // Everything is loaded, time to build some trees
+
         DecisionTree tree = new DecisionTree(trainingSet, trainingSet.features());
 
-        // Construct and populate the user interface
-        UserInterface window = new UserInterface();
+        RandomForest rf = new RandomForest(trainingSet, datasetList.get(1));
+        rf.train();
+        rf.test();
+//        System.out.println(datasetList.get(1).size());
+        DataRecord randomRecord= trainingSet.get(0);
+        System.out.println(randomRecord.title() + "\t (Rated " + rf.predict(randomRecord) + ")");
+
+
+
     }
 
     public static UserConfig settings() {
         return settings;
-    }
-
-    public static DataSet trainingSet() {
-        return trainingSet;
-    }
-
-    public static DataSet testingSet() {
-        return testingSet;
     }
 }
