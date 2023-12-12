@@ -89,8 +89,6 @@ public class UserInterface extends JFrame {
      * Handles the submission when the user clicks the submit button.
      */
     private void handleSubmission() {
-        // Add your logic to handle the submission
-        // You can use getSelectedFeatures() to get the selected features from the feature list
         List<String> selectedFeatures = getSelectedFeatures();
         // Perform the prediction and update the resultTextArea accordingly
         // ...
