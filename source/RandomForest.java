@@ -2,37 +2,31 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class RandomForest {
-    RandomForest(DataSet trainingSet, DataSet testingSet, UserConfig settings) {
+    RandomForest(DataSet trainingSet, DataSet testingSet) {
         this.trainingSet = trainingSet;
         this.testingSet = testingSet;
-        this.MIN_SAMPLES = settings.minSamples();
-        this.NUM_TREES = settings.maxTrees();
-        this.MAX_DEPTH = settings.maxDepth();
-        this.settings = settings;
+        this.testingClassifications = new ArrayList<>();
+        this.decisionTrees = new ArrayList<>();
 
     }
+
+    private ArrayList<String> testingClassifications;
 
     private final DataSet trainingSet;
     private final DataSet testingSet;
 
-    private final int MIN_SAMPLES;
-    private final int NUM_TREES;
-    private final int MAX_DEPTH;
+
 
     UserConfig settings;
-    private ArrayList<String> treeVotes;
     private ArrayList<DecisionTree> decisionTrees;
 
-    public ArrayList<String> getTreeVotes(){
-        return this.treeVotes;
-    }
+
 
 
     public void train() {
 
-        for (int i = 0; i < NUM_TREES; i++) {
+        for (int i = 0; i < Main.settings().maxTrees(); i++) {
             DataSet bootstrappedDataSet = generateBootstrapDataSet();
-            System.out.println(trainingSet.features());
             ArrayList<String> baggedFeatures = generateBaggedFeatures(trainingSet.features());
             DecisionTree tree = new DecisionTree(bootstrappedDataSet, baggedFeatures);
             decisionTrees.add(tree);
@@ -42,12 +36,54 @@ public class RandomForest {
 
     public void test() {
         DataRecord datapoint;
+        ArrayList<String> treeVotes = new ArrayList<>();
         for (int i = 0; i < testingSet.size(); i++) {
             datapoint = testingSet.get(i);
             for (DecisionTree decisionTree : decisionTrees) {
                 treeVotes.add(decisionTree.castVote(datapoint));
             }
+            testingClassifications.add(findMajorityOfTrees(treeVotes));
         }
+
+    }
+
+    public String predict(DataRecord d){
+        String predictedLabel = "";
+        for (DecisionTree decisionTree : decisionTrees) {
+            Node treeNode = decisionTree.root();
+            while (!treeNode.isLeaf()) {
+                String feature = treeNode.splitFeature();
+                if ( d.get(feature)) {
+                    treeNode = treeNode.right();
+                } else {
+                    treeNode = treeNode.left();
+                }
+            }
+            predictedLabel = treeNode.label();
+        }
+        return predictedLabel;
+    }
+
+    private String findMajorityOfTrees(ArrayList<String> votes){
+        RatingsMap ratings = new RatingsMap();
+        ratings.initialize();
+        // loop through tree votes and get those counts
+        for(String v : votes){
+            ratings.increment(v);
+        }
+        String highestRating = "";
+        int highestCount = 0;
+        // loop through and find the highest rating among them
+        for (String r : ratings.keySet()) {
+           if (ratings.get(r) > highestCount){
+               highestCount = ratings.get(r);
+               highestRating = r;
+           }
+        }
+        return highestRating;
+
+
+
     }
 
     public DataSet generateBootstrapDataSet() {
@@ -55,7 +91,7 @@ public class RandomForest {
         Random rand = new Random();
 
         DataSet bootstrappedDataset = new DataSet();
-        bootstrappedDataset.configure(settings);
+        bootstrappedDataset.configure(Main.settings());
 
         for (int i = 0; i < trainingSet.size(); i++) {
             int r = rand.nextInt(trainingSet.size());
@@ -68,13 +104,15 @@ public class RandomForest {
 
     public ArrayList<String> generateBaggedFeatures(ArrayList<String> splittingFeatures) {
         ArrayList<String> baggedFeatures = new ArrayList<>();
+        ArrayList<String> localCopy = new ArrayList<>(splittingFeatures);
+
         Random rand = new Random();
-        int fSize = rand.nextInt(splittingFeatures.size() + 1);
+        int randomNumberOfFeatures = rand.nextInt(localCopy.size() + 1);
 
-        for (int i = 0; i < fSize; i++) {
-            int randomIndex = rand.nextInt(splittingFeatures.size());
-            baggedFeatures.add(splittingFeatures.get(randomIndex));
-
+        while (randomNumberOfFeatures > 0 && !localCopy.isEmpty()) {
+            int randomIndex = rand.nextInt(localCopy.size());
+            baggedFeatures.add(localCopy.remove(randomIndex));
+            randomNumberOfFeatures--;
         }
 
         return baggedFeatures;

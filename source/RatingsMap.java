@@ -92,9 +92,9 @@ public class RatingsMap extends LinkedHashMap<String, Integer> implements Serial
      */
     public void increment(String key) {
         if(get(key) == null){
-            System.out.println(key);
+            System.out.println("Its equal to null!");
         }
-        merge(key, 1, Integer::sum);
+        put(key, get(key) + 1);
 
     }
 

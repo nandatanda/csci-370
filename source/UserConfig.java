@@ -86,17 +86,8 @@ public class UserConfig implements Serializable {
      *
      * @return the percentage split for training data
      */
-    public int trainingRatio() {
-        return Integer.parseInt(configPairs.get("trainingRatio").toString());
-    }
-
-    /**
-     * Gets the split for testing data as a ratio.
-     *
-     * @return the percentage split for testing data
-     */
-    public int testingRatio() {
-        return Integer.parseInt(configPairs.get("testingRatio").toString());
+    public Double partitionRatio() {
+        return Double.parseDouble(configPairs.get("partitionRatio").toString());
     }
 
     /**

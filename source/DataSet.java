@@ -1,7 +1,6 @@
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
@@ -19,9 +18,6 @@ public class DataSet implements Serializable, Iterable<DataRecord> {
     // List to store data records
     private final ArrayList<DataRecord> data;
 
-    // Size of the dataset
-    private int size;
-
     // Configuration settings for the dataset
     private UserConfig settings;
 
@@ -35,7 +31,6 @@ public class DataSet implements Serializable, Iterable<DataRecord> {
         this.data = new ArrayList<>();
         this.settings = null;
         this.features = null;
-        this.size = 0;
     }
 
     /**
@@ -66,7 +61,6 @@ public class DataSet implements Serializable, Iterable<DataRecord> {
 
         // Store the features from the first record & update the size
         this.features = new ArrayList<>(data.get(0).keySet());
-        this.size = data.size();
     }
 
     /**
@@ -122,7 +116,6 @@ public class DataSet implements Serializable, Iterable<DataRecord> {
      */
     public void add(DataRecord dp) {
         data.add(dp);
-        size++;
     }
 
     /**
@@ -131,7 +124,7 @@ public class DataSet implements Serializable, Iterable<DataRecord> {
      * @return the size of the dataset
      */
     public int size() {
-        return size;
+        return data.size();
     }
 
     /**
@@ -160,12 +153,12 @@ public class DataSet implements Serializable, Iterable<DataRecord> {
         ArrayList<DataSet> partitionList = new ArrayList<>();
 
         // Calculate the size of each partition
-        int partitionSize = size / x;
+        int partitionSize = size() / x;
 
         // Handle the case where x is greater than the size of the dataset
         if (partitionSize == 0) {
             partitionSize = 1;
-            x = size;  // Set x to the size of the dataset
+            x = size();  // Set x to the size of the dataset
         }
 
         // Randomize the order of records
@@ -178,7 +171,7 @@ public class DataSet implements Serializable, Iterable<DataRecord> {
             int endIndex = startIndex + partitionSize;
             if (i == x - 1) {
                 // Adjust the end index for the last partition to include any remaining records
-                endIndex = size;
+                endIndex = size();
             }
 
             // Create a new DataSet for the current partition
@@ -210,26 +203,33 @@ public class DataSet implements Serializable, Iterable<DataRecord> {
         // Make a container to return both subsets
         ArrayList<DataSet> subsets = new ArrayList<>();
 
-        // Prepare an empty dataset, maintaining settings and features from parent
-        DataSet emptySet = new DataSet();
-        emptySet.configure(settings);
-        emptySet.setFeatures(features);
+        // Add two empty datasets to the subset container
+        subsets.add(new DataSet());
+        subsets.add(new DataSet());
 
-        // Add two empty dataset copies to the container
-        subsets.add(emptySet);
-        subsets.add(emptySet);
+        // Initialize both subsets
+        for (DataSet set : subsets) {
+            set.configure(settings);
+            set.setFeatures(features);
+        }
 
         // Randomize the superset to be selected from
         shuffle();
 
         // Calculate the sizes of training and testing subsets based on ratios
-        int trainingSize = size * (settings.trainingRatio() / (settings.trainingRatio() + settings.testingRatio()));
+        int trainingSize = (int) (size() * settings.partitionRatio());
 
         // Assign data points to training and testing subsets
-        for (int i = 0; i < size; i++) {
-            int subsetIndex = i < trainingSize ? 0 : 1;
+        int subsetIndex;
+        for (int i = 0; i < size(); i++) {
+            if (i < trainingSize) {
+                subsetIndex = 0;
+            } else {
+                subsetIndex = 1;
+            }
             subsets.get(subsetIndex).add(data.get(i)); // Use the add method to add DataRecord
         }
+
         return subsets;
     }
 
@@ -258,7 +258,7 @@ public class DataSet implements Serializable, Iterable<DataRecord> {
 
         @Override
         public boolean hasNext() {
-            return currentIndex < size;
+            return currentIndex < size();
         }
 
         @Override
