@@ -9,6 +9,8 @@ import java.util.ArrayList;
  */
 public class Main {
 
+    private static DataSet trainingSet;
+    private static  DataSet testingSet;
     private static final UserConfig settings = new UserConfig();
 
     /**
@@ -75,5 +77,13 @@ public class Main {
 
     public static UserConfig settings() {
         return settings;
+    }
+
+    public static DataSet trainingSet() {
+        return trainingSet;
+    }
+
+    public static DataSet testingSet() {
+        return testingSet;
     }
 }
