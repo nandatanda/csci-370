@@ -53,8 +53,8 @@ public class Main {
         }
 
         // Name the training and testing subsets
-        DataSet trainingSet = datasetList.get(0);
-        DataSet testingSet = datasetList.get(1);
+        trainingSet = datasetList.get(0);
+        testingSet = datasetList.get(1);
 
         // Check if the training and testing sets were constructed correctly
         System.out.println("The number of records in the training set is " + trainingSet.size());
@@ -69,9 +69,6 @@ public class Main {
 
 
         UserInterface mainWindow = new UserInterface();
-
-
-
     }
 
     public static UserConfig settings() {
